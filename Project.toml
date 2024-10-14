@@ -1,0 +1,7 @@
+name = "MakieMaestro"
+uuid = "c922e6f1-a74a-406e-9215-09b2647b2648"
+authors = ["Martin Kunz <martinkunz@email.cz> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.6.7"
