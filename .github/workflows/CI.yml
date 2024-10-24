@@ -64,12 +64,7 @@ jobs:
         run: >
             cd docs;
             DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24'
-            julia --color=yes make.jl
-      - uses: julia-actions/julia-docdeploy@v1
-        env:
-          DISPLAY: :0
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+            julia --project --color=yes make.jl
       - name: Run doctests
         shell: julia --project=docs --color=yes {0}
         run: |
