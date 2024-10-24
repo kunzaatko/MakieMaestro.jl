@@ -65,10 +65,3 @@ jobs:
             cd docs;
             DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24'
             julia --project --color=yes make.jl
-      - name: Run doctests
-        shell: julia --project=docs --color=yes {0}
-        run: |
-          using Documenter: DocMeta, doctest
-          using MakieMaestro
-          DocMeta.setdocmeta!(MakieMaestro, :DocTestSetup, :(using MakieMaestro); recursive=true)
-          doctest(MakieMaestro)
