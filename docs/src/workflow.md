@@ -40,12 +40,14 @@ with_backend!(GLMakie) do
 end
 ```
 and I see inspect the figure to get the information from it.
+
 !!! tip
-  It is often useful to use the `do` block syntax to define the figure function but it is also possible to use the
-  direct syntax
-  ```julia
-  with_backend!(fig_func, GLMakie, fig_func_args...)
-  ```
+    It is often useful to use the `do` block syntax to define the figure function but it is also possible to use the
+    direct syntax
+```julia
+with_backend!(fig_func, GLMakie, fig_func_args...)
+```
+
 Next I decide whether I want to keep, modify or discard the figure.
 If I decide to keep the figure for reference, I would 
 If I decide to add the finishing touches to the figure such as adding axis labels etc., I will typically want to save it
@@ -71,6 +73,7 @@ I see the static figures for making navigation in my sloppy experimentation note
 As a cherry on top, the initial run does not take too much time, since the figure is not being rendered but only
     abstractly created.
 This makes the initial run in a resumed session a lot faster.
+
 !!! note "How does it work?"
     There is a global dictionary that stores the figures and the figure is shown only if the dictionary already contains
     this figure.
