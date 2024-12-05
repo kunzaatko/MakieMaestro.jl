@@ -6,6 +6,8 @@ using Markdown
 # TODO: Think about how should I use themes for the with_backend. Probably should handle the interactive theme more
 # intensionally <18-10-24> 
 
+# TODO: Is `inline!(doinline)` used intentionally? Can we get around without it? <18-11-24> 
+
 function with_backend(plots::Dict)
     function _run_backend(stop_first)
         """
@@ -20,7 +22,7 @@ function with_backend(plots::Dict)
             out = f(args...)
             if stop_first && backend == GLMakie
                 plots[key] != 0 && GLMakie.display(out)
-                return md"Rerun to show plot!"
+                @info "Rerun to show plot!"
             else
                 return out
             end

@@ -167,6 +167,7 @@ function savefig(
     update=false,
     varargs...,
 )
+    # FIX: `hwratio` not working!!! May be because of `https://github.com/MakieOrg/Makie.jl/issues/1939` <16-11-24> 
     # if !isfile(cache_file)
     #     @info "Creating cache file at `$cache_file`"
     #     cache = Dict()
@@ -215,6 +216,7 @@ function savefig(
     # their default themes. This Dict should be possible to be set similarly as the constants for the saving such as
     # DEFAULT_WIDTH, DEFAULT_HWRATIO, etc. <18-10-24> 
 
+    # TODO: Warn if there is no available format for a given backend <16-11-24> 
     for f in formats
         b = choose_backend(backends, f)
         local figure_theme = Themes.get_theme(
@@ -226,10 +228,10 @@ function savefig(
                 @assert name isa Vector "If the function returns multiple figures you must provide multiple names"
                 @assert length(fig) == length(name) "number of figures (`$(length(fig))`) does not match number of names (`$(length(name))`)"
                 for (fi, n) in zip(fig, name)
-                    savefig(fi, n, f, b, dir; hwratio, varargs, update)
+                    savefig(fi, n, f, b, dir; varargs, update)
                 end
             else
-                savefig(fig, name, f, b, dir; hwratio, varargs, update)
+                savefig(fig, name, f, b, dir; varargs, update)
             end
         end
     end

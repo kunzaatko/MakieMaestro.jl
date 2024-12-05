@@ -1,6 +1,7 @@
 using ColorTypes
-
 module Recipes
+
+include("ensemble-recipes.jl")
 
 # TODO: Add these tests <16-10-24> 
 # Recipes.image(rand(RGBf, 10, 10)) # should not have a `:viridis` colormap
