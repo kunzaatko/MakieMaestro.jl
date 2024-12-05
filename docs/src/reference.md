@@ -34,4 +34,11 @@ MakieMaestro.Themes.merge_generate
 ## RecipeOverrides
 
 ```@docs
+MakieMaestro.Recipes.image!
+MakieMaestro.Recipes.image
+```
+
+# Helper plotting functions
+```@docs
+MakieMaestro.Recipes.mosaic
 ```
