@@ -117,7 +117,7 @@ end
 function get_theme_types(backend, format)
     backend_theme(b) = b == CairoMakie ? :cairomakie : :glmakie
     format_theme(x) = vectorgraphic(x) ? :vector : :raster
-    return [format_theme(format), backend_theme(backend), :base]
+    return [:base, backend_theme(backend), format_theme(format)]
 end
 
 # TODO: Document the possibility of using `skip` for defining the formats for the save <18-10-24> 

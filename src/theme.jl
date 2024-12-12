@@ -23,6 +23,7 @@ include("theme-constants.jl")
 #     italic => FTFont (family = NewComputerModern, style = 10 Italic)
 #     regular => FTFont (family = NewComputerModern Math, style = Regular)
 
+# TODO: Test the theming precedence of the merge <12-12-24> 
 const ThemeGenerator = Union{Function,Theme}
 generate(gen::ThemeGenerator) = gen isa Function ? gen() : gen
 """
@@ -38,11 +39,12 @@ a theme; otherwise, the element is used as-is.
 - `themes::ThemeGenerator`: A collection of themes or theme-generating functions.
 
 # Returns
-A merged theme combining all the input themes. Note that the inputs that earlier in the collection have precedence.
+A merged theme combining all the input themes. Note that the inputs that later in the call arguments have precedence
+similarly as in a merge of dictionaries.
 
 # Example
 ```julia
-theme = merge_generate(BASE_THEME,Theme(; figure_padding=2), GL_THEME, SIZE_THEME(20u"cm", 0.5))
+theme = merge_generate(BASE_THEME, GL_THEME, Theme(; figure_padding=2), SIZE_THEME(20u"cm", 0.5))
 ```
 """
 function merge_generate(themes::Vararg{Union{ThemeGenerator}})
@@ -177,6 +179,7 @@ end
 # FIX: Adjust font sizes <21-11-23> 
 THEME[][:base] = function base_theme()
     return merge_generate(
+        theme_latexfonts,
         Theme(;
             figure_padding=2,
             Axis=(
@@ -213,7 +216,6 @@ THEME[][:base] = function base_theme()
                 tellheight=false,
             ),
         ),
-        theme_latexfonts,
     )
 end
 
