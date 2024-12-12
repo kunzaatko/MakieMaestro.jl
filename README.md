@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="./docs/src/assets/logo.png" alt="MakieMaestro.jl Logo: Makie logo that is being worked on by a painter" style="width: 35%">
+</p>
+
 # MakieMaestro
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://kunzaatko.github.io/MakieMaestro.jl/stable/)
