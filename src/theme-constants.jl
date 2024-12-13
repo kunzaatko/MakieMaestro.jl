@@ -28,14 +28,19 @@ const MARKERS = [
 const MARKERSIZE = 7
 const CYCLE = Cycle([:color, :marker]; covary=true)
 const WIDTH_DEFAULT = Ref{Union{Missing,Length}}(missing)
-const HWRATIO_DEFAULT = Ref{Number}(0.68)
+const HWRATIO_DEFAULT = Ref{Number}(float(2 / (√(5) + 1)))
 
 """
     hwratio!(val)
-Set the default height-width ratio for figures.
 
-```julia_repl
-julia> MakieMaestro.hwratio!(0.8)
+Set the height-width ratio for saving figures.
+
+```jldoctest; setup = :(using MakieMaestro.Themes)
+julia> hwratio!((1 + √(5))/2)
+1.618033988749895
+
+julia> get_hwratio()
+1.618033988749895
 ```
 """
 function hwratio!(val::Number)
@@ -44,16 +49,31 @@ end
 
 """
     get_hwratio()
-Get the default height-width ratio for figures
+
+Get the set height-width ratio for saving figures.
+
+# Examples
+```jldoctest; setup = :(using MakieMaestro.Themes)
+julia> hwratio!(0.5)
+0.5
+
+julia> get_hwratio()
+0.5
+```
 """
 get_hwratio() = HWRATIO_DEFAULT[]
 
 """
-    width!(val)
+    width!(val::Length)
+
 Set the default width for figures.
 
-```julia_repl
-julia> MakieMaestro.width!(177u"mm" * 0.8)
+```jldoctest; setup = :(using MakieMaestro.Themes)
+julia> width!(177u"mm" * 0.8)
+141.6 mm
+
+julia> get_width()
+141.6 mm
 ```
 """
 function width!(val::Length)
@@ -62,7 +82,14 @@ end
 
 """
     to_units(val::Length)
+
 Convert `val` to Makie figure units
+
+# Example
+```jldoctest; setup = :(using MakieMaestro.Themes)
+julia> Themes.to_units(2u"cm")
+7200//127
+```
 """
 function to_units(val::Length)
     return ustrip(uconvert(u"pt", val))
@@ -70,7 +97,17 @@ end
 
 """
     get_width()
+
 Get the default figure width
+
+# Examples
+```jldoctest; setup = :(using MakieMaestro.Themes)
+julia> width!(10u"cm")
+10 cm
+
+julia> get_width()
+10 cm
+```
 """
 function get_width()
     ismissing(WIDTH_DEFAULT[]) && throw(

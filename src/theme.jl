@@ -1,7 +1,13 @@
 # TODO: Assure that the gaps are set correctly such that if I use subfigures in LaTeX that the figures output is the
 # same as when I generate a figure with multiple axes <18-10-24> 
+"""
+This module is used to set and override themes. It can help you define a consistent theme for your saved figures and for the figures you experiment with interactively.
+
+
+"""
 module Themes
 using ColorTypes, Makie, ColorSchemes, Unitful
+using Makie: Theme
 
 # TODO: Perhaps these should all be only a dictionary that has the keys for the particular theme types. Such
 # a dictionary could be passed to the save-fig and the `with_theme` functions as a whole or via an accessor <18-10-24> 
@@ -24,45 +30,32 @@ include("theme-constants.jl")
 #     regular => FTFont (family = NewComputerModern Math, style = Regular)
 
 # TODO: Test the theming precedence of the merge <12-12-24> 
+# TODO: ThemeGeneratingFunction should instead be an abstract type that holds its latent arguments and is able to
+# generate the theme from the arguments passed to the invoking function. <13-12-24> 
 const ThemeGenerator = Union{Function,Theme}
 generate(gen::ThemeGenerator) = gen isa Function ? gen() : gen
+
+# TODO: Add examples <13-12-24> 
 """
-    merge_generate(themes::ThemeGenerator)
+    merge_generate(theme::ThemeGenerator,...)::Theme
 
-Merge and generate themes from a `ThemeGenerator`.
+Generate and merge all the `theme` arguments.
 
-This function takes a `ThemeGenerator` (which can be a collection of themes or theme-generating functions)
-and merges them into a single theme. If an element of `themes` is a function, it is called to generate
-a theme; otherwise, the element is used as-is.
-
-# Arguments
-- `themes::ThemeGenerator`: A collection of themes or theme-generating functions.
-
-# Returns
-A merged theme combining all the input themes. Note that the inputs that later in the call arguments have precedence
-similarly as in a merge of dictionaries.
-
-# Example
-```julia
-theme = merge_generate(BASE_THEME, GL_THEME, Theme(; figure_padding=2), SIZE_THEME(20u"cm", 0.5))
+Later input arguments have precedence similarly as in a merge of dictionaries.
 ```
+See also [`get_theme`](@ref), [`ThemeGenerator`](@ref)
 """
-function merge_generate(themes::Vararg{Union{ThemeGenerator}})
-    return merge(map(generate, themes)...)
-end
+merge_generate(themes::Vararg{Union{ThemeGenerator}}) = merge(map(generate, themes)...)
 
 """
     figsize(width::Length=get_width(), hw_ratio=get_hwratio())
 
-Calculate the figure size in points based on the given width and height-to-width ratio.
-
-# Arguments
-- `width::Length`: The desired width of the figure. Defaults to the result of `get_width()`.
-- `hw_ratio`: The height-to-width ratio. Defaults to the result of `get_hwratio()`.
+Calculate the figure size in points (`1u"pt"`) based on the given width and height-to-width ratio.
 
 # Example
-```julia
-width, height = figsize(800u"px", 0.75)
+```jldoctest; setup = :(using MakieMaestro.Themes)
+julia> w,h = Themes.figsize(32u"cm", (1 + √(5))/2)
+(907, 1467)
 ```
 """
 function figsize(width::Length=get_width(), hw_ratio=get_hwratio())
@@ -73,6 +66,7 @@ end
 
 const THEME = Ref{Dict{Symbol,ThemeGenerator}}(Dict())
 
+# TODO: Document <12-12-24> 
 gen(s::Symbol; dict=THEME[]) = (args...) -> dict[s](args...)
 
 # TODO: Use `Makie.current_default_theme()` to modify the base theme and add it to the `with_backend` function not to
@@ -268,5 +262,5 @@ end
 
 include("override-themes.jl")
 
-export width!, hwratio!, screen_parameters
+export width!, hwratio!, get_width, get_hwratio
 end

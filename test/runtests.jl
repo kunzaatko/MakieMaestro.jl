@@ -31,4 +31,13 @@ using Aqua
     else
         @info "Skipping Documenter.jl doctests. For a full run set `ENV[\"RUNTESTS_FULL\"]=true`."
     end
+    @testset "Theming" begin
+        @testset "merge_generate" begin
+            using MakieMaestro.Themes: merge_generate, ThemeGenerator, BASE_THEME, get_theme, THEME
+            # @test BASE_THEME isa ThemeGenerator
+            @test THEME[][:base] isa ThemeGenerator
+            @test THEME[][:size] isa ThemeGenerator
+            @test THEME[][:format_ticks] isa ThemeGenerator
+        end
+    end
 end

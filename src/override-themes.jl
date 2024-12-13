@@ -3,6 +3,7 @@
 # TODO: fix the notebooks and the scripts that are already done with the old system <18-10-24> 
 using OffsetArrays, LaTeXStrings
 
+# TODO: Should instead be in an Ext module that is loaded when OffsetArrays are used. <13-12-24> 
 function format_ticks(ticks)
     if ticks isa Vector{<:Real}
         if all(isinteger, ticks)
