@@ -33,11 +33,24 @@ using Aqua
     end
     @testset "Theming" begin
         @testset "merge_generate" begin
-            using MakieMaestro.Themes: merge_generate, ThemeGenerator, BASE_THEME, get_theme, THEME
+            using MakieMaestro.Themes: merge_generate, ThemeGenerator, get_theme, THEME
             # @test BASE_THEME isa ThemeGenerator
             @test THEME[][:base] isa ThemeGenerator
             @test THEME[][:size] isa ThemeGenerator
             @test THEME[][:format_ticks] isa ThemeGenerator
+            @test merge_generate(THEME[][:size](5u"cm", 0.5)) isa Theme
+
+            # NOTE: Test correct precedence  
+            @test merge_generate(THEME[][:size](5u"cm", 0.5), THEME[][:size](10u"cm", 0.5))[:size][] == THEME[][:size](10u"cm", 0.5)[:size][]
+            # NOTE: This is inconsistent in the MakieCore package. The precedence is reversed from the `merge` on
+            # dictionaries. https://github.com/MakieOrg/Makie.jl/issues/1939
+            @test_broken Base.merge(THEME[][:size](5u"cm", 0.5), THEME[][:size](10u"cm", 0.5)) == THEME[][:size](10u"cm", 0.5)
+
+            @test get_theme(:base, :rotate_labels, :orange_title) isa Theme
+            @test get_theme([:base, :rotate_labels, :orange_title]) isa Theme
+
+            # NOTE: There is no equiv defined on Attributes types. This should be handled upstream in MakieCore <13-12-24> 
+            @test_broken get_theme(:base, :rotate_labels, :orange_title) == get_theme([:base, :rotate_labels, :orange_title])
         end
     end
 end
