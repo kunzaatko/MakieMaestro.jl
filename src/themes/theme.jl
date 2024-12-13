@@ -1,9 +1,18 @@
 # TODO: Assure that the gaps are set correctly such that if I use subfigures in LaTeX that the figures output is the
 # same as when I generate a figure with multiple axes <18-10-24> 
 """
-This module is used to set and override themes. It can help you define a consistent theme for your saved figures and for the figures you experiment with interactively.
+This module is used to set themes for your figures. It can help you define a consistent
+theming scheme for your saved figures and for the figures you experiment with interactively.
 
-
+It intends to solve the problem, where `Makie` gives you the option of theming, but if you
+want to change the theme at multiple places with multiple attribute changes and perhaps
+combine these options differently for your figures, it is necessary that you create the
+override themes and merge them with the current one which sooner or later becomes tedious
+and error prone. Especially if you are to create a lot of figures with various theming
+preferences. This tries to make theming and keeping consistency in your plots a little bit
+easier by allowing you to define all the connected attributes in one theme, register it with
+`update_theme!(:my_theme, theme)` and use these where necessary in your figure creation
+process and when saving.
 """
 module Themes
 using ColorTypes, Makie, ColorSchemes, Unitful
@@ -45,12 +54,14 @@ Later input arguments have precedence similarly as in a merge of dictionaries.
 ```
 See also [`get_theme`](@ref), [`ThemeGenerator`](@ref)
 """
-merge_generate(themes::Vararg{Union{ThemeGenerator}}) = merge(map(generate, themes)...)
+merge_generate(themes::Vararg{Union{ThemeGenerator}}) =
+    merge(map(generate, reverse(themes))...)
 
 """
     figsize(width::Length=get_width(), hw_ratio=get_hwratio())
 
-Calculate the figure size in points (`1u"pt"`) based on the given width and height-to-width ratio.
+Calculate the figure size in points (`1u"pt" == (1//72)u"inch"`) based on the given width
+and height-to-width ratio.
 
 # Example
 ```jldoctest; setup = :(using MakieMaestro.Themes)
@@ -87,13 +98,14 @@ Create theme for specified keys and/or generators (including `Theme`s).
 gap = true
 theme_props = get_theme([Theme(; figure_padding=2), :font, () -> Theme(; colgap = gap, rowgap = gap),  :linewidth, :color])
 ```
-This will return a theme that combines the three specified themes together. Note that rightmost has precedence unlike
-merges on usual julia dictionaries, but same as with `Makie.Attributes`.
+This will return a theme that combines the three specified themes together. Note that
+rightmost has precedence unlike merges on usual julia dictionaries, but same as with
+`Makie.Attributes`.
 """
-function get_theme(themes::Vector{Union{ThemeGenerator,Symbol}}; dict=THEME[])
+function get_theme(themes::Vector{<:Union{ThemeGenerator,Symbol}}; dict=THEME[])
     return merge_generate(map(k -> k isa Symbol ? getindex(dict, k) : k, themes)...)
 end
-function get_theme(themes::Vararg{Union{ThemeGenerator,Symbol}}; dict=THEME[])
+function get_theme(themes::Vararg{Union{<:ThemeGenerator,Symbol}}; dict=THEME[])
     return get_theme(collect(Union{ThemeGenerator,Symbol}, themes); dict=dict)
 end
 """
@@ -108,11 +120,13 @@ Update a specific theme component in the global theme.
 This function modifies the global theme by replacing the theme generator for the specified
 component with a new one. It directly updates the `THEME` global variable.
 
-See also Use [`update_theme`](@ref) for a function a non-overwriting method.
+See also [`update_theme`](@ref)
 """
 function update_theme!(key::Symbol, new::ThemeGenerator)
     return THEME[][key] = new
 end
+# TODO: Fix these docs.. They are too long and not consistent with the documentation
+# practices in julia <13-12-24> 
 """
     update_theme(key::Symbol, with::ThemeGenerator)
 
@@ -132,11 +146,13 @@ Specific behaviour for argument types:
     - If `with` is a `Function`, it merges the result of `with` with the current theme.
     - If `with` is a `Theme`, it merges the current theme with `with`.
   - For an existing `Function`:
-    - If `with` is a `Theme`, it creates a new function that merges `with` with the result of the current function.
+    - If `with` is a `Theme`, it creates a new function that merges `with` with the result
+        of the current function.
     - If `with` is a `Function`, it throws an `ArgumentError`.
 
 # Throws
-- `ArgumentError`: If attempting to update a generating function with another generating function.
+- `ArgumentError`: If attempting to update a generating function with another generating
+function.
 """
 function update_theme(key::Symbol, with::ThemeGenerator)
     if !haskey(THEME[], key)
@@ -155,7 +171,11 @@ function update_theme(key::Symbol, with::ThemeGenerator)
             elseif with isa Function
                 throw(
                     ArgumentError(
-                        "Cannot update a generating function with a generating function. If you wish to overwrite the current generating function instead of merging, use `update_theme!(key, new)`.",
+                        """
+                        Cannot update a generating function with a generating function. If
+                        you wish to overwrite the current generating function instead of
+                        merging, use `update_theme!(key, new)`.
+                        """
                     ),
                 )
             end
@@ -252,7 +272,7 @@ THEME[][:cairomakie] = Theme(;
 # TODO: There should be a function for combining the themes based on the keys to the dictionary and the arguments
 # supplied to the theme generating function if it is a generator <18-10-24> 
 # FIX: Is this done? <23-10-24> 
-THEME[][:interactive] = function INTERACTIVE_THEME(width_ratio=0.8, hwratio=get_hwratio())
+THEME[][:interactive] = function interactive_theme(width_ratio=0.8, hwratio=get_hwratio())
     return merge_generate(
         THEME[][:glmakie],
         THEME[][:size](width_ratio * to_units(get_width()), hwratio),
@@ -262,5 +282,5 @@ end
 
 include("override-themes.jl")
 
-export width!, hwratio!, get_width, get_hwratio
+export width!, hwratio!
 end

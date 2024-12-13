@@ -33,7 +33,7 @@ end
 # FIX: The cache location should be parametrized <15-10-24> 
 # TODO: Add the `L` function <15-10-24> 
 
-include("theme.jl")
+include("themes/theme.jl")
 include("save-fig.jl")
 include("shortcuts.jl")
 include("recipe-modifications.jl")

@@ -1,4 +1,5 @@
 using Makie: Makie
+
 # FIX: Does not work for plotting functions that expect a 3D axis such as `surface!` <17-11-24> 
 # TODO: Add unit tests <17-11-24> 
 # stack = rand(RGB, 10, 10, 9)
