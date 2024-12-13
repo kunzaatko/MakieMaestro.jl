@@ -25,11 +25,6 @@ function get_figure_dir()
     end
 end
 
-include("./cache.jl")
-if !isdefined(@__MODULE__, :UPDATE)
-    global UPDATE = false
-end
-
 @enum Format Png Svg Eps Pdf PdfTex
 const FORMATS = Set([Png, Svg, Eps, Pdf, PdfTex])
 const EXTENSIONS = Dict(
@@ -120,6 +115,7 @@ function get_theme_types(backend, format)
     return [:base, backend_theme(backend), format_theme(format)]
 end
 
+# FIX: The documentation is wrong here. We already use something different than the constants for every possible theme <13-12-24> 
 # TODO: Document the possibility of using `skip` for defining the formats for the save <18-10-24> 
 # TODO: Logic for picking a backend from the set backends for a give figure with a format <18-10-24> 
 # TODO: Method that uses width and height instead of the width and hwratio. This will be done by defining another method
@@ -158,50 +154,15 @@ function savefig(
     width::Length=Themes.get_width(),
     hwratio::Number=Themes.get_hwratio(),
     dir::AbstractString=get_figure_dir();
-    # cache_file=joinpath(dir, "cache.bin"),
     backends=CairoMakie,
     override_theme=Theme(),
-    theme_dict=Themes.THEME[],
+    theme_dict=Themes.THEME[], # FIX: This should be removed. It should not be the case that someone is able to use some different theming dictionary. That person would need to write every key that is necessary for the generation. Instead it is possible to use `Themes.update_theme!` to use their own values for the predefined theming scheme. <13-12-24> 
     formats=Set([Pdf]), # skip = [:eps, :pdf_tex, :svg, :raster], # :svg, :pdf, :pdf_tex, :eps, :png, :raster, :vector
     fig_function_args=(), # TODO: These should be varargs at the end of `savefig`s arguments <18-10-24> 
     update=false,
     varargs...,
 )
-    # FIX: `hwratio` not working!!! May be because of `https://github.com/MakieOrg/Makie.jl/issues/1939` <16-11-24> 
-    # if !isfile(cache_file)
-    #     @info "Creating cache file at `$cache_file`"
-    #     cache = Dict()
-    #     touch(cache_file)
-    #     serialize(cache_file, cache)
-    # end
-
-    # FIX: This does not work, since the figure function changes pointer when recompiling <17-08-24> 
-    # cache = deserialize(cache_file)
-    # fig_key = hash((fig_function, name, dir))
-    # fig_state = hash_code(fig_function, typeof.(fig_function_args))
-    # if !UPDATE
-    #     if haskey(cache, fig_key)
-    #         if cache[fig_key] == fig_state
-    #             @info "Figure function did not change from last save. Skipping figure `$name`..."
-    #             return nothing
-    #         else
-    #             @info "Updating figure `$name` in cache..."
-    #             cache[fig_key] = fig_state
-    #             serialize(cache_file, cache)
-    #         end
-    #     else
-    #         @info "Saving figure `$name` in cache..."
-    #         cache[fig_key] = fig_state
-    #         serialize(cache_file, cache)
-    #     end
-    # else
-    #     @info "Updating figure `$name` in cache..."
-    #     cache[fig_key] = fig_state
-    #     serialize(cache_file, cache)
-    # end
-
-    # skip
-    # matrix 
+    # FIX: `hwratio` not working!!! Maybe because of `https://github.com/MakieOrg/Makie.jl/issues/1939` <16-11-24> 
 
     override_theme = override_theme isa Theme ? [override_theme] : override_theme
     backends = backends isa Module ? [backends] : backends
