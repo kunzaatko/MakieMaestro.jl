@@ -2,6 +2,8 @@ using MakieMaestro
 using Test, Documenter
 using Aqua
 
+include("./tools.jl")
+
 @testset "MakieMaestro.jl" begin
     if haskey(ENV, "RUNTESTS_FULL") || haskey(ENV, "GITHUB_ACTIONS")
         @testset "Code quality (Aqua.jl)" begin
@@ -49,8 +51,8 @@ using Aqua
             @test get_theme(:base, :rotate_labels, :orange_title) isa Theme
             @test get_theme([:base, :rotate_labels, :orange_title]) isa Theme
 
-            # NOTE: There is no equiv defined on Attributes types. This should be handled upstream in MakieCore <13-12-24> 
-            @test_broken get_theme(:base, :rotate_labels, :orange_title) == get_theme([:base, :rotate_labels, :orange_title])
+            @test issame(get_theme(:orange_title), get_theme([:orange_title]))
+            @test issame(get_theme(:base, :rotate_labels, :orange_title), get_theme([:base, :rotate_labels, :orange_title]))
         end
     end
 end
