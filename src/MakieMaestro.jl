@@ -41,6 +41,13 @@ include("pluto-helpers.jl")
 
 function __init__()
     Unitful.register(Units)
+
+    if @isdefined PlutoRunner  # running inside Pluto
+        WGLMakie.activate!()
+    elseif isinteractive() # running in REPL
+        GLMakie.activate!()
+    end
+
     return nothing
 end
 
