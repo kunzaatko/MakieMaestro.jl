@@ -5,33 +5,34 @@ using Aqua
 include("./tools.jl")
 
 @testset "MakieMaestro.jl" begin
-    if haskey(ENV, "RUNTESTS_FULL") || haskey(ENV, "GITHUB_ACTIONS")
-        @testset "Code quality (Aqua.jl)" begin
-            Aqua.test_all(MakieMaestro; ambiguities=false)
-            # Aqua.test_all(
-            #     TransferFunctions;
-            #     ambiguities=(; exclude=VERSION >= v"1.11" ? [checkindex, checkbounds] : []),
-            #     # ambiguities=VERSION >= v"1.1" ? (; broken=true) : false
-            # )
+    @testset "Code quality" begin
+        @testset "Aqua.jl" begin
+            if haskey(ENV, "RUNTESTS_FULL") || haskey(ENV, "GITHUB_ACTIONS")
+                Aqua.test_all(MakieMaestro; ambiguities=false)
+            else
+                @info "Skipping Aqua.jl quality tests. For a full run set `ENV[\"RUNTESTS_FULL\"]=true`."
+            end
         end
-    else
-        @info "Skipping Aqua.jl quality tests. For a full run set `ENV[\"RUNTESTS_FULL\"]=true`."
+        @testset "Ambiguities" begin
+            @test length(Test.detect_ambiguities(MakieMaestro)) == 0
+        end
     end
-
-    # FIX: When running locally, do not ask for SSH key password <10-12-23> 
-    if haskey(ENV, "RUNTESTS_FULL") && (
-        !haskey(ENV, "GITHUB_ACTIONS") ||
-        haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"
-    )
-        @testset "DocTests" begin
+    @testset "DocTests" begin
+        # NOTE: Show for `Unitful.jl` does nm⁻¹ on macOS and nm^-1 on Linux. This is necessary, since the `jldoctest` is only one
+        if !haskey(ENV, "GITHUB_ACTIONS") ||
+            haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"
             # NOTE: Better than doc-testing in `make.jl` because, I can track the coverage
+            # NOTE: When updating, must update also in `docs/make.jl` and  `test/fix_doctests.jl`<18-12-24> 
             DocMeta.setdocmeta!(
-                MakieMaestro, :DocTestSetup, :(using MakieMaestro); recursive=true
+                MakieMaestro,
+                :DocTestSetup,
+                :(using MakieMaestro;
+                using Logging; # NOTE: This does not need to be in the `make.jl` of docs. We want `@warn ` to function there <19-12-24> 
+                Logging.disable_logging(Logging.Warn));
+                recursive=true,
             )
             doctest(MakieMaestro)
         end
-    else
-        @info "Skipping Documenter.jl doctests. For a full run set `ENV[\"RUNTESTS_FULL\"]=true`."
     end
     @testset "Theming" begin
         @testset "merge_generate" begin
@@ -43,16 +44,23 @@ include("./tools.jl")
             @test merge_generate(THEME[][:size](5u"cm", 0.5)) isa Theme
 
             # NOTE: Test correct precedence  
-            @test merge_generate(THEME[][:size](5u"cm", 0.5), THEME[][:size](10u"cm", 0.5))[:size][] == THEME[][:size](10u"cm", 0.5)[:size][]
+            @test merge_generate(
+                THEME[][:size](5u"cm", 0.5), THEME[][:size](10u"cm", 0.5)
+            )[:size][] == THEME[][:size](10u"cm", 0.5)[:size][]
             # NOTE: This is inconsistent in the MakieCore package. The precedence is reversed from the `merge` on
             # dictionaries. https://github.com/MakieOrg/Makie.jl/issues/1939
-            @test_broken Base.merge(THEME[][:size](5u"cm", 0.5), THEME[][:size](10u"cm", 0.5)) == THEME[][:size](10u"cm", 0.5)
+            @test_broken Base.merge(
+                THEME[][:size](5u"cm", 0.5), THEME[][:size](10u"cm", 0.5)
+            ) == THEME[][:size](10u"cm", 0.5)
 
             @test get_theme(:base, :rotate_labels, :orange_title) isa Theme
             @test get_theme([:base, :rotate_labels, :orange_title]) isa Theme
 
             @test issame(get_theme(:orange_title), get_theme([:orange_title]))
-            @test issame(get_theme(:base, :rotate_labels, :orange_title), get_theme([:base, :rotate_labels, :orange_title]))
+            @test issame(
+                get_theme(:base, :rotate_labels, :orange_title),
+                get_theme([:base, :rotate_labels, :orange_title]),
+            )
         end
     end
 end

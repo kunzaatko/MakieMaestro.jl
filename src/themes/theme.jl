@@ -105,7 +105,7 @@ rightmost has precedence unlike merges on usual julia dictionaries, but same as 
 function get_theme(themes::Vector{<:Union{ThemeGenerator,Symbol}}; dict=THEME[])
     return merge_generate(map(k -> k isa Symbol ? getindex(dict, k) : k, themes)...)
 end
-function get_theme(themes::Vararg{Union{T,Symbol}}; dict=THEME[]) where {T<:ThemeGenerator}
+function get_theme(themes::Vararg{Union{ThemeGenerator,Symbol}}; dict=THEME[])
     return get_theme(collect(Union{ThemeGenerator,Symbol}, themes); dict=dict)
 end
 """
