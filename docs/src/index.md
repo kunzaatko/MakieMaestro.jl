@@ -16,10 +16,3 @@ and functions that generate them
     optimizing __my__ [workflow]().
 
 See also: [MakieExtra.jl](https://github.com/JuliaAPlavin/MakieExtra.jl)
-
-```@index
-```
-
-```@autodocs
-Modules = [MakieMaestro]
-```
