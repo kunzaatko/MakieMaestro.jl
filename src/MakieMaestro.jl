@@ -50,6 +50,4 @@ function __init__()
 
     return nothing
 end
-
-export savefig, L, fftvis
 end

@@ -32,3 +32,5 @@ heatmap(fftvis(fftshift(fft_img)))
 ```
 """
 fftvis(img) = log2.(abs.(img) .+ 1)
+
+export L, fftvis

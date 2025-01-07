@@ -245,3 +245,5 @@ end
 function savefig(figs::Vector{SavableFigure}, args...; varargs...)
     return foreach(f -> savefig(f, args...; varargs...), figs)
 end
+
+export savefig, figure_dir!
