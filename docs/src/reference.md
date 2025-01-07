@@ -14,12 +14,42 @@ Depth = 2:2
 Pages = ["reference.md"]
 ```
 
-## Public Interface
+# Exporting
 
+
+```@docs
+savefig
+figure_dir!
+```
+
+```@raw html
+<details><summary>Internals</summary>
+```
+```@docs
+MakieMaestro.get_figure_dir
+MakieMaestro.isvectorgraphic
+MakieMaestro.skip
+MakieMaestro.extension
+MakieMaestro.choose_backend
+MakieMaestro.get_themes
+```
+```@raw html
+</details>
+```
+
+# Theming
+
+```@docs
+MakieMaestro.Themes.width!
+MakieMaestro.Themes.hwratio!
+```
+
+```@raw html
+<details><summary>Internals</summary>
+```
 ```@docs
 MakieMaestro.Themes.get_theme
 MakieMaestro.Themes.interactive_size!
-MakieMaestro.Themes.hwratio!
 MakieMaestro.Themes.get_hwratio
 MakieMaestro.Themes.get_width
 MakieMaestro.Themes.to_units
@@ -27,18 +57,22 @@ MakieMaestro.Themes.figsize
 MakieMaestro.Themes.screen_parameters
 MakieMaestro.Themes.update_theme
 MakieMaestro.Themes.update_theme!
-MakieMaestro.Themes.width!
 MakieMaestro.Themes.merge_generate
 ```
+```@raw html
+</details>
+```
 
-## RecipeOverrides
+# Plotting
+
+## Overrides
 
 ```@docs
 MakieMaestro.Recipes.image!
 MakieMaestro.Recipes.image
 ```
 
-# Helper plotting functions
+## Plotting functions
 ```@docs
 MakieMaestro.Recipes.mosaic
 ```
