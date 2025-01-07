@@ -5,6 +5,11 @@ const FIGURE_DIR = Ref{Union{Missing,String}}(missing)
 """
     figure_dir!(dir)
 Set the figure directory
+
+# Examples
+```jldoctest
+julia> figure_dir!(".");
+```
 """
 function figure_dir!(dir::AbstractString)
     isdir(dir) || throw(ArgumentError("$dir is not a valid directory"))
@@ -12,8 +17,17 @@ function figure_dir!(dir::AbstractString)
 end
 
 """
-    get_figure_dir()
+    MakieMaestro.get_figure_dir()
 Get the figure directory
+
+# Examples
+```jldoctest
+julia> figure_dir!("/tmp")
+"/tmp"
+
+julia> MakieMaestro.get_figure_dir()
+"/tmp"
+```
 """
 function get_figure_dir()
     if ismissing(FIGURE_DIR[])
@@ -32,45 +46,41 @@ const EXTENSIONS = Dict(
 )
 
 """
-    vectorgraphic(x)
+    MakieMaestro.isvectorgraphic(x::Format)
 
-Determine if the given format is a vector graphic format.
-
-# Arguments
-- `x`: The format to check.
-
-# Returns
-`true` if the format is a vector graphic format (Svg, Png, Eps, or PdfTex), `false` otherwise.
+Return `true` if `x` is a vector graphic format, `false` otherwise.
 
 # Examples
-```julia
-vectorgraphic(Svg)   # returns true
-vectorgraphic(Jpg)   # returns false
+```jldoctest
+julia> MakieMaestro.isvectorgraphic(MakieMaestro.Pdf)
+true
+
+julia> MakieMaestro.isvectorgraphic(MakieMaestro.Png)
+false
 ```
 """
-vectorgraphic(x) = x ∈ [Svg, Png, Eps, PdfTex] ? true : false
+isvectorgraphic(x) = x ∈ [Svg, Eps, PdfTex, Pdf] ? true : false
 
 """
-    skip(skips::Vararg{Union{Symbol,Format}})
+    MakieMaestro.skip(skips::Vararg{Union{Symbol,Format}})
 
-Generate a set of allowed formats by excluding specified formats or format groups.
+Return a `Set{Format}` of allowed formats by excluding specified formats or format groups.
+
+Useful for customizing the output formats when saving figures,
+allowing you to easily exclude certain format types or groups of formats.
 
 # Arguments
 - `skips`: Variable number of arguments specifying formats or format groups to exclude.
            Can be individual `Format` types or symbols `:raster` or `:vector`.
 
-# Returns
-A `Set` of allowed `Format` types after excluding the specified formats.
-
 # Examples
-```julia
-skip(:raster)  # Excludes Png format
-skip(:vector)  # Excludes Png, Eps, PdfTex, and Svg formats
-skip(Png, Svg) # Excludes Png and Svg formats specifically
-```
+```jldoctest
+julia> @assert MakieMaestro.skip(:raster) == Set([MakieMaestro.PdfTex, MakieMaestro.Eps, MakieMaestro.Svg, MakieMaestro.Pdf])
 
-This function is useful for customizing the output formats when saving figures,
-allowing you to easily exclude certain format types or groups of formats.
+julia> @assert MakieMaestro.skip(:vector) == Set([MakieMaestro.Png])
+
+julia> @assert MakieMaestro.skip(MakieMaestro.Pdf, MakieMaestro.Svg) == Set([MakieMaestro.PdfTex, MakieMaestro.Png, MakieMaestro.Eps])
+```
 """
 function skip(skips::Vararg{Union{Symbol,Format}})
     deny = Set()
@@ -79,7 +89,7 @@ function skip(skips::Vararg{Union{Symbol,Format}})
             push!(deny, Png)
             continue
         elseif s == :vector
-            foreach(f -> push!(deny, f), [Png, Eps, PdfTex, Svg])
+            foreach(f -> push!(deny, f), [Pdf, Eps, PdfTex, Svg])
         else
             push!(deny, s)
         end
@@ -87,11 +97,35 @@ function skip(skips::Vararg{Union{Symbol,Format}})
     return setdiff(FORMATS, deny)
 end
 
-function extension(format::Format)
+"""
+    MakieMaestro.extension(format::Format)
+Return the string of the extension from the given `format`.
+
+# Examples
+```jldoctest
+julia> MakieMaestro.extension(MakieMaestro.Png)
+".png"
+
+julia> MakieMaestro.extension(MakieMaestro.PdfTex)
+".pdf"
+```
+"""
+function extension(format::Format)::String
     return EXTENSIONS[format]
 end
 
-function backend_formats(backend::Vararg{Module})
+"""
+    MakieMaestro.backend_formats(backend::Module,...)
+Return the set of compatible formats for given `backend`s.
+
+# Examples
+```jldoctest
+julia> @assert MakieMaestro.backend_formats(CairoMakie) == Set([ MakieMaestro.Png, MakieMaestro.Eps, MakieMaestro.Svg, MakieMaestro.Pdf ])
+
+julia> @assert MakieMaestro.backend_formats(GLMakie) == Set([MakieMaestro.Png])
+```
+"""
+function backend_formats(backend::Vararg{Module})::Set{Format}
     formats = union(
         map(b -> b == CairoMakie ? Set([Svg, Pdf, Eps, Png]) : Set([Png]), backend)...
     )
@@ -99,6 +133,22 @@ function backend_formats(backend::Vararg{Module})
     return formats
 end
 
+"""
+    MakieMaestro.choose_backend(backends::Vector{Module}, f::Format)
+Select the best backend from `backends` to export a figure in the format `f`.
+
+Prefers `CairoMakie` for most formats unless the format is `Png` and `GLMakie` is available.
+
+# Examples
+```jldoctest
+julia> MakieMaestro.choose_backend([CairoMakie, GLMakie], MakieMaestro.Svg)
+CairoMakie
+
+julia> MakieMaestro.choose_backend([WGLMakie], MakieMaestro.Eps)
+ERROR: None of the backends support the format Eps
+[...]
+```
+"""
 function choose_backend(backends::Vector{Module}, f::Format)
     if CairoMakie ∈ backends
         return CairoMakie
@@ -109,9 +159,28 @@ function choose_backend(backends::Vector{Module}, f::Format)
     end
 end
 
-function get_theme_types(backend, format)
+"""
+    MakieMaestro.get_themes(backend::Module, format::Format)
+Get the modification themes associated with the `backend` and `format`.
+
+# Examples
+```jldoctest
+julia> MakieMaestro.get_themes(CairoMakie, MakieMaestro.PdfTex)
+3-element Vector{Symbol}:
+ :base
+ :cairomakie
+ :vector
+
+julia> MakieMaestro.get_themes(GLMakie, MakieMaestro.Png)
+3-element Vector{Symbol}:
+ :base
+ :glmakie
+ :raster
+```
+"""
+function get_themes(backend::Module, format::Format)
     backend_theme(b) = b == CairoMakie ? :cairomakie : :glmakie
-    format_theme(x) = vectorgraphic(x) ? :vector : :raster
+    format_theme(x) = isvectorgraphic(x) ? :vector : :raster
     return [:base, backend_theme(backend), format_theme(format)]
 end
 
@@ -181,7 +250,7 @@ function savefig(
     for f in formats
         b = choose_backend(backends, f)
         local figure_theme = Themes.get_theme(
-            override_theme..., theme_dict[:size](width, hwratio), get_theme_types(b, f)...
+            override_theme..., theme_dict[:size](width, hwratio), get_themes(b, f)...
         )
         with_theme(figure_theme) do
             fig = fig_function(fig_function_args...)
