@@ -125,11 +125,51 @@ julia> @assert MakieMaestro.backend_formats(CairoMakie) == Set([ MakieMaestro.Pn
 julia> @assert MakieMaestro.backend_formats(GLMakie) == Set([MakieMaestro.Png])
 ```
 """
-function backend_formats(backend::Vararg{Module})::Set{Format}
+function backend_formats(backends::Vararg{Module})::Set{Format}
     formats = union(
-        map(b -> b == CairoMakie ? Set([Svg, Pdf, Eps, Png]) : Set([Png]), backend)...
+        map(b -> b == CairoMakie ? Set([Svg, Pdf, Eps, Png]) : Set([Png]), backends)...
     )
-    backend == CairoMakie && Sys.which("inkscape") !== nothing && push!(formats, PdfTex)
+    if CairoMakie in backends && Sys.which("inkscape") !== nothing
+        push!(formats, PdfTex)
+    end
+    return formats
+end
+
+"""
+    MakieMaestro.get_formats(backends::Vector{Module}, formats::Set{Format})
+Return the set of formats to generate based on the given `backends` required `formats`. Output is in the correct order for export.
+
+# Examples
+```jldoctest
+julia> MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added Svg so the PdfTex is possible to create
+2-element Vector{MakieMaestro.Format}:
+ Svg::Format = 1
+ PdfTex::Format = 4
+
+julia> MakieMaestro.get_formats([GLMakie], Set([MakieMaestro.Pdf]))
+ERROR: ArgumentError: None of the backends Module[GLMakie] support the formats Set(MakieMaestro.Format[MakieMaestro.Pdf])
+[...]
+
+julia> MakieMaestro.get_formats([CairoMakie, GLMakie], Set([MakieMaestro.Png, MakieMaestro.Svg]))
+2-element Vector{MakieMaestro.Format}:
+ Svg::Format = 1
+ Png::Format = 0
+```
+"""
+function get_formats(backends::Vector{Module}, formats::Set{Format})
+    if PdfTex in formats && !(Svg in formats)
+        @warn "PdfTex can only be used if Svg is also generated. Adding Svg to allowed formats."
+        push!(formats, Svg)
+    end
+    backend_pruned_formats = intersect(backend_formats(backends...), formats)
+    backend_pruned_formats == formats || throw(
+        ArgumentError(
+            "None of the backends $backends support the formats $(setdiff(formats, backend_pruned_formats))",
+        ),
+    )
+
+    formats = collect(intersect(backend_formats(backends...), formats))
+    sort!(formats; by=f -> f == Svg ? 1 : 2) # NOTE: pdf_tex is reliant on svg so it has to go first
     return formats
 end
 
@@ -218,22 +258,15 @@ function savefig(
     dir::AbstractString=get_figure_dir();
     backends=CairoMakie,
     override_theme=Theme(),
-    theme_dict=Themes.THEME[], # FIX: This should be removed. It should not be the case that someone is able to use some different theming dictionary. That person would need to write every key that is necessary for the generation. Instead it is possible to use `Themes.update_theme!` to use their own values for the predefined theming scheme. <13-12-24> 
     formats=Set([Pdf]), # skip = [:eps, :pdf_tex, :svg, :raster], # :svg, :pdf, :pdf_tex, :eps, :png, :raster, :vector
     fig_function_args=(), # TODO: These should be varargs at the end of `savefig`s arguments <18-10-24> 
     update=false,
     varargs...,
 )
-    # FIX: `hwratio` not working!!! Maybe because of `https://github.com/MakieOrg/Makie.jl/issues/1939` <16-11-24> 
-
     override_theme = override_theme isa Theme ? [override_theme] : override_theme
     backends = backends isa Module ? [backends] : backends
 
-    formats = collect(intersect(backend_formats(backends...), formats))
-
-    sort!(formats; by=f -> f == Svg ? 1 : 2) # NOTE: pdf_tex is reliant on svg so it has to go first
-    PdfTex in formats &&
-        @assert Svg in formats "PdfTex can only be used if Svg is also generated. Add Svg to allowed formats."
+    formats = get_formats(backends, formats)
 
     # TODO: The arguments to the distinct backends should instead be passed in as a single dict that holds backends and
     # their default themes. This Dict should be possible to be set similarly as the constants for the saving such as
@@ -243,7 +276,7 @@ function savefig(
     for f in formats
         b = choose_backend(backends, f)
         local figure_theme = Themes.get_theme(
-            override_theme..., theme_dict[:size](width, hwratio), get_themes(b, f)...
+            override_theme..., Themes.gen[:size](width, hwratio), get_themes(b, f)...
         )
         with_theme(figure_theme) do
             fig = fig_function(fig_function_args...)
