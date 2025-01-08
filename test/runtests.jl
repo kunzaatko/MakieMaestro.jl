@@ -41,12 +41,21 @@ include("./tools.jl")
             @test THEME[][:base] isa ThemeGenerator
             @test THEME[][:size] isa ThemeGenerator
             @test THEME[][:format_ticks] isa ThemeGenerator
+
+            f_themegenerator = () -> Theme(; figure_padding=3)
+            @test f_themegenerator isa ThemeGenerator
+            @test theme_latexfonts isa ThemeGenerator
+            @test issame(
+                merge_generate(f_themegenerator, theme_latexfonts),
+                Theme(; figure_padding=3, fonts=theme_latexfonts()[:fonts]),
+            )
             @test merge_generate(THEME[][:size](5u"cm", 0.5)) isa Theme
 
             # NOTE: Test correct precedence  
-            @test merge_generate(
-                THEME[][:size](5u"cm", 0.5), THEME[][:size](10u"cm", 0.5)
-            )[:size][] == THEME[][:size](10u"cm", 0.5)[:size][]
+            @test issame(
+                merge_generate(THEME[][:size](5u"cm", 0.5), THEME[][:size](10u"cm", 0.5)),
+                THEME[][:size](10u"cm", 0.5),
+            )
             # NOTE: This is inconsistent in the MakieCore package. The precedence is reversed from the `merge` on
             # dictionaries. https://github.com/MakieOrg/Makie.jl/issues/1939
             @test_broken Base.merge(
@@ -62,5 +71,9 @@ include("./tools.jl")
                 get_theme([:base, :rotate_labels, :orange_title]),
             )
         end
+    end
+    @testset "Exporting" begin
+        @testset "theme" begin end
+        @testset "`savefig`" begin end
     end
 end

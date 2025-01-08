@@ -190,38 +190,31 @@ end
 # TODO: Method that uses width and height instead of the width and hwratio. This will be done by defining another method
 # for `size_theme` function or the `figure_size` function in the `Themes` module <18-10-24> 
 """
-    savefig(fig_function, name, dir; <keyword arguments>)
+    savefig(fig_function, [name], [dir], [width], [hwratio]; <keyword arguments>)
 
-Save a figure output by `fig_function` in with themes applied and various formats in `dir` with the file name `name`
+Save the figure output by `fig_function` in with themes applied and various formats in `dir` with the file name `name`
 
-# Parameters:
-* `fig_function`: function that generates the figure or figures to save
-* `name`: name of the file to save the figure as or vector of names if multiple figures are returned
-* `dir`: relative or absolute path to the project directory (default: `FIGURE_DIR`)
+If `PdfTex` format is requested, __Inkscape__ is used to convert the `SVG` file to `PDF` with text in LaTeX.
 
-Save a figure in the selected formats. If `:pdf_tex` format is requested, Inkscape is used to convert the SVG file to
-PDF with text in LaTeX.
+# Arguments
+* `fig_function::Function`: function that generates the figure (or figures) to save
+* `width::Length`: physical width of the exported figure _(default: `MakieMaestro.Themes.get_width()`)_
+* `hwratio::Real`: height to width ratio _(default: `MakieMaestro.Themes.get_hwratio()`)_
+* `name::String` / `name::Vector{String}`: file basename _(default: `nameof(fig_function)`)_
+* `dir::String`: path to figure directory _(default: `MakieMaestro.get_figure_dir()`)_
 
-# Keyword arguments:
-* `hwratio=HWRATIO_DEFAULT`
-* `width=WIDTH_DEFAULT`
-* `backend=CairoMakie`
+## Keyword arguments
+* `backends=CairoMakie`
 * `override_theme=Theme()`
-* `size_theme=SIZE_THEME`
-* `base_theme=BASE_THEME`
-* `vector_theme=VECTOR_THEME`
-* `raster_theme=RASTER_THEME`
-* `gl_theme=GL_THEME`
-* `cairo_theme=CAIRO_THEME`
-* `skip=[:eps, :pdf_tex, :svg, :raster]` - other options are `:svg`, `:pdf`, `:pdf_tex`, `:eps`, `:png`, `:raster`, `:vector`
+* `formats=Set([Pdf])`
 * `fig_function_args=()`
 * `update=false`
 """
 function savefig(
     fig_function::Function,
-    name::Union{AbstractString,Vector{AbstractString}}=String(nameof(fig_function)),
     width::Length=Themes.get_width(),
     hwratio::Number=Themes.get_hwratio(),
+    name::Union{AbstractString,Vector{AbstractString}}=String(nameof(fig_function)),
     dir::AbstractString=get_figure_dir();
     backends=CairoMakie,
     override_theme=Theme(),
