@@ -74,6 +74,14 @@ include("./tools.jl")
     end
     @testset "Exporting" begin
         @testset "theme" begin end
-        @testset "`savefig`" begin end
+        @testset "`savefig`" begin
+            @test MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.Png])) ==
+                [MakieMaestro.Png] # Allowed formats
+            @test MakieMaestro.Svg in
+                MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added necessary Svg format
+            @test_throws ArgumentError MakieMaestro.get_formats(
+                [GLMakie], Set([MakieMaestro.Pdf])
+            )
+        end
     end
 end
