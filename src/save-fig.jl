@@ -141,10 +141,8 @@ Return the set of formats to generate based on the given `backends` required `fo
 
 # Examples
 ```jldoctest
-julia> MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added Svg so the PdfTex is possible to create
-2-element Vector{MakieMaestro.Format}:
- Svg::Format = 1
- PdfTex::Format = 4
+julia> (Sys.which("inkscape") === nothing) || MakieMaestro.Svg ∈ MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added Svg so the PdfTex is possible to create
+true
 
 julia> MakieMaestro.get_formats([GLMakie], Set([MakieMaestro.Pdf]))
 ERROR: ArgumentError: None of the backends Module[GLMakie] support the formats Set(MakieMaestro.Format[MakieMaestro.Pdf])

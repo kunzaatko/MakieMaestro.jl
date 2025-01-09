@@ -20,7 +20,7 @@ include("./tools.jl")
     @testset "DocTests" begin
         # NOTE: Show for `Unitful.jl` does nm⁻¹ on macOS and nm^-1 on Linux. This is necessary, since the `jldoctest` is only one
         if !haskey(ENV, "GITHUB_ACTIONS") ||
-            haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"
+           haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"
             # NOTE: Better than doc-testing in `make.jl` because, I can track the coverage
             # NOTE: When updating, must update also in `docs/make.jl` and  `test/fix_doctests.jl`<18-12-24> 
             DocMeta.setdocmeta!(
@@ -76,9 +76,11 @@ include("./tools.jl")
         @testset "theme" begin end
         @testset "`savefig`" begin
             @test MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.Png])) ==
-                [MakieMaestro.Png] # Allowed formats
-            @test MakieMaestro.Svg in
-                MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added necessary Svg format
+                  [MakieMaestro.Png] # Allowed formats
+            if Sys.which("inkscape") !== nothing
+                @test MakieMaestro.Svg in
+                      MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added necessary Svg format
+            end
             @test_throws ArgumentError MakieMaestro.get_formats(
                 [GLMakie], Set([MakieMaestro.Pdf])
             )
