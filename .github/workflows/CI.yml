@@ -5,6 +5,7 @@ on:
       - trunk
     tags: ['*']
   pull_request:
+    types: [opened, reopened, ready_for_review]
   workflow_dispatch:
 concurrency:
   # Skip intermediate builds: always.
@@ -31,15 +32,20 @@ jobs:
           - x64
     steps:
       - uses: actions/checkout@v4
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v2
-      - uses: julia-actions/julia-buildpkg@v1
-      - uses: julia-actions/julia-runtest@v1        
+      - uses: julia-actions/julia-buildpkg@latest
+      - uses: julia-actions/julia-runtest@latest
         with:
           prefix: xvfb-run -s '-screen 0 1024x768x24'
+      - uses: julia-actions/julia-processcoverage@v1
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
   docs:
     name: Documentation
     runs-on: ubuntu-latest
