@@ -1,0 +1,36 @@
+name: Changelog
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  generate-changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-latest
+    outputs:
+      release_body: ${{ steps.git-cliff.outputs.content }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@main
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: -vv --latest --no-exec --github-repo ${{ github.repository }}
+  publish-release:
+    name: Publish release
+    needs: generate-changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish to GitHub
+        if: ${{ !contains(github.ref, '-') }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          overwrite: true
+          tag: ${{ github.ref }}
+          body: "${{ needs.generate-changelog.outputs.release_body }}"

@@ -3,6 +3,8 @@ using Reexport
 @reexport using Unitful
 using Unitful: Length
 
+@reexport using LaTeXStrings
+
 # NOTE: No need for using Makie, since MakieExtra already re-exports Makie <22-10-24> 
 using Makie
 @reexport using MakieExtra
@@ -42,6 +44,9 @@ include("pluto-helpers.jl")
 function __init__()
     Unitful.register(Units)
 
+    # TODO: Similarly to this the default for saving figures when in a documenter context should be `SVG` instead of
+    # `PDF`. The context of the run should be determined here and used in the `savefig` in some method that defines the
+    # default formats to generate. <09-01-25> 
     if @isdefined PlutoRunner  # running inside Pluto
         WGLMakie.activate!()
     elseif isinteractive() # running in REPL

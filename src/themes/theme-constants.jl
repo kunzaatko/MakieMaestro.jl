@@ -30,6 +30,10 @@ const CYCLE = Cycle([:color, :marker]; covary=true)
 const WIDTH_DEFAULT = Ref{Union{Missing,Length}}(missing)
 const HWRATIO_DEFAULT = Ref{Number}(float(2 / (√(5) + 1)))
 
+# TODO: Define via a macro all the other paper sizes <08-01-25> 
+const A4_WIDTH = 210u"mm"
+const A4_HEIGHT = 297u"mm"
+
 """
     hwratio!(val)
 
@@ -138,21 +142,26 @@ Set the interactive figure size.
 If given a `ratio`, calculate the size from the screen parameters so that the figure takes
 up the given width/height ratio of the screen. The optional index specifies the screen to
 use.
+
+See also [`screen_parameters`](@ref), [`get_interactive_size`](@ref)
 """
 function interactive_size!(ratio::Tuple{Number,Number}; index=nothing)
-    0 < ratio <= 1 || throw(ArgumentError("ratio must be between 0 and 1"))
+    all(0 .< ratio .<= 1) ||
+        throw(ArgumentError("both numbers of ratio must be between 0 and 1"))
     screens = screen_parameters()
     if !isnothing(index)
         screen = screens[index]
     else
         try
             screen = filter!(s -> s.default, screens)
+            @assert length(screen) == 1 "Found more than one default screen. Check the output of `MakieMaestro.Themes.screen_parameters()`."
+            screen = first(screen)
         catch e
             throw(e)
         end
     end
-    interactive_size!(screen.size .* ratio)
-    return get_interactive_size()
+    interactive_size!(screen.dimensions .* ratio)
+    return screen.dimensions .* ratio
 end
 function interactive_size!(size::Tuple{Length,Length})
     return INTERACTIVE_SIZE[] = size

@@ -120,16 +120,54 @@ Return the set of compatible formats for given `backend`s.
 
 # Examples
 ```jldoctest
-julia> @assert MakieMaestro.backend_formats(CairoMakie) == Set([ MakieMaestro.Png, MakieMaestro.Eps, MakieMaestro.Svg, MakieMaestro.Pdf ])
+julia> @assert Set([ MakieMaestro.Png, MakieMaestro.Eps, MakieMaestro.Svg, MakieMaestro.Pdf ]) ⊆ MakieMaestro.backend_formats(CairoMakie) 
 
 julia> @assert MakieMaestro.backend_formats(GLMakie) == Set([MakieMaestro.Png])
 ```
 """
-function backend_formats(backend::Vararg{Module})::Set{Format}
+function backend_formats(backends::Vararg{Module})::Set{Format}
     formats = union(
-        map(b -> b == CairoMakie ? Set([Svg, Pdf, Eps, Png]) : Set([Png]), backend)...
+        map(b -> b == CairoMakie ? Set([Svg, Pdf, Eps, Png]) : Set([Png]), backends)...
     )
-    backend == CairoMakie && Sys.which("inkscape") !== nothing && push!(formats, PdfTex)
+    if CairoMakie in backends && Sys.which("inkscape") !== nothing
+        push!(formats, PdfTex)
+    end
+    return formats
+end
+
+"""
+    MakieMaestro.get_formats(backends::Vector{Module}, formats::Set{Format})
+Return the set of formats to generate based on the given `backends` required `formats`. Output is in the correct order for export.
+
+# Examples
+```jldoctest
+julia> (Sys.which("inkscape") === nothing) || MakieMaestro.Svg ∈ MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added Svg so the PdfTex is possible to create
+true
+
+julia> MakieMaestro.get_formats([GLMakie], Set([MakieMaestro.Pdf]))
+ERROR: ArgumentError: None of the backends Module[GLMakie] support the formats Set(MakieMaestro.Format[MakieMaestro.Pdf])
+[...]
+
+julia> MakieMaestro.get_formats([CairoMakie, GLMakie], Set([MakieMaestro.Png, MakieMaestro.Svg]))
+2-element Vector{MakieMaestro.Format}:
+ Svg::Format = 1
+ Png::Format = 0
+```
+"""
+function get_formats(backends::Vector{Module}, formats::Set{Format})
+    if PdfTex in formats && !(Svg in formats)
+        @warn "PdfTex can only be used if Svg is also generated. Adding Svg to allowed formats."
+        push!(formats, Svg)
+    end
+    backend_pruned_formats = intersect(backend_formats(backends...), formats)
+    backend_pruned_formats == formats || throw(
+        ArgumentError(
+            "None of the backends $backends support the formats $(setdiff(formats, backend_pruned_formats))",
+        ),
+    )
+
+    formats = collect(intersect(backend_formats(backends...), formats))
+    sort!(formats; by=f -> f == Svg ? 1 : 2) # NOTE: pdf_tex is reliant on svg so it has to go first
     return formats
 end
 
@@ -166,14 +204,12 @@ Get the modification themes associated with the `backend` and `format`.
 # Examples
 ```jldoctest
 julia> MakieMaestro.get_themes(CairoMakie, MakieMaestro.PdfTex)
-3-element Vector{Symbol}:
- :base
+2-element Vector{Symbol}:
  :cairomakie
  :vector
 
 julia> MakieMaestro.get_themes(GLMakie, MakieMaestro.Png)
-3-element Vector{Symbol}:
- :base
+2-element Vector{Symbol}:
  :glmakie
  :raster
 ```
@@ -181,41 +217,112 @@ julia> MakieMaestro.get_themes(GLMakie, MakieMaestro.Png)
 function get_themes(backend::Module, format::Format)
     backend_theme(b) = b == CairoMakie ? :cairomakie : :glmakie
     format_theme(x) = isvectorgraphic(x) ? :vector : :raster
-    return [:base, backend_theme(backend), format_theme(format)]
+    return [backend_theme(backend), format_theme(format)]
 end
 
-# FIX: The documentation is wrong here. We already use something different than the constants for every possible theme <13-12-24> 
-# TODO: Document the possibility of using `skip` for defining the formats for the save <18-10-24> 
-# TODO: Logic for picking a backend from the set backends for a give figure with a format <18-10-24> 
-# TODO: Method that uses width and height instead of the width and hwratio. This will be done by defining another method
-# for `size_theme` function or the `figure_size` function in the `Themes` module <18-10-24> 
 """
-    savefig(fig_function, name, dir; <keyword arguments>)
+    MakieMaestro.get_export_theme(backend, format, width, hwratio, override_theme...)
+Create the final export theme applied when generating the figure.
 
-Save a figure output by `fig_function` in with themes applied and various formats in `dir` with the file name `name`
+# Examples
+```jldoctest
+julia> MakieMaestro.get_export_theme(CairoMakie, MakieMaestro.Png, 10u"cm", 0.8,
+           Theme(;
+               CairoMakie=(;pdf_version=1.1)
+           ),
+           Theme(;
+               Scatter=(;markersize=8)
+           )
+       )
+Attributes with 12 entries:
+  Axis => Attributes with 8 entries:
+    xgridvisible => false
+    xticklabelsize => 10
+    xticksize => 4
+    xtickwidth => 0.7
+    ygridvisible => false
+    yticklabelsize => 10
+    yticksize => 4
+    ytickwidth => 0.7
+  backgroundcolor => transparent
+  CairoMakie => Attributes with 1 entry:
+    pdf_version => 1.1
+  Colorbar => Attributes with 9 entries:
+    bottomspinevisible => false
+    labelsize => 10
+    leftspinevisible => false
+    rightspinevisible => false
+    ticklabelsize => 10
+    ticksize => 4
+    tickwidth => 0.7
+    topspinevisible => false
+    width => 5
+  figure_padding => 2
+  fonts => Attributes with 4 entries:
+    bold => FTFont (family = NewComputerModern, style = 10 Bold)
+    bolditalic => FTFont (family = NewComputerModern, style = 10 Bold Italic)
+    italic => FTFont (family = NewComputerModern, style = 10 Italic)
+    regular => FTFont (family = NewComputerModern Math, style = Regular)
+  Heatmap => Attributes with 1 entry:
+    colormap => Spectral
+  Image => Attributes with 1 entry:
+    interpolate => false
+  Legend => Attributes with 5 entries:
+    framevisible => false
+    labelsize => 10
+    nbanks => 1
+    tellheight => false
+    tellwidth => false
+  Lines => Attributes with 1 entry:
+    cycle => Cycle([[:color]=>:color, [:marker]=>:marker], true)
+  Scatter => Attributes with 3 entries:
+    cycle => Cycle([[:color]=>:color, [:marker]=>:marker], true)
+    markersize => 8
+    strokewidth => 0
+  size => (283, 226)
+```
+"""
+function get_export_theme(backend, format, width, hwratio, override_theme...)
+    return Themes.get_theme(
+        :base,
+        get_themes(backend, format)...,
+        Themes.gen(:size)(width, hwratio),
+        override_theme...,
+    )
+end
 
-# Parameters:
-* `fig_function`: function that generates the figure or figures to save
-* `name`: name of the file to save the figure as or vector of names if multiple figures are returned
-* `dir`: relative or absolute path to the project directory (default: `FIGURE_DIR`)
+# TODO: Support templating for the names and DEDUCTION OF THE FORMAT FROM THE SUPPLIED NAME. For instance when function
+# returns multiple figures, it should be possible to name something like `["{}_surface", "{}_heatmap"]` and interpolate
+# the original name into the templates. <09-01-25> 
+# TODO: Possibility to define formats in more human-like ways and transform them into the computer way using some
+# parsing function. For instance it should be possible to pass ["pdf", "svg", "pdf_tex", MakieMaestro.Eps, :png] etc.
+# Then workflow docs for publication figures should be changed accordingly. <09-01-25> 
+# TODO: Better ways of setting the override_themes. Especially using the `Symbol`s such as `[:appendix]` in the docs.
+# Then workflow docs for publication figures should be changed accordingly <09-01-25> 
+# TODO: Possibility of using `skip` for defining the formats for the save <18-10-24> 
+# TODO: Define other methods here based on the argument types. No name change but different width. No width and hwratio,
+# but width, height instead, etc. <08-01-25>
 
-Save a figure in the selected formats. If `:pdf_tex` format is requested, Inkscape is used to convert the SVG file to
-PDF with text in LaTeX.
+"""
+    savefig(fig_function, [name], [width], [hwratio], [dir]; <keyword arguments>)
 
-# Keyword arguments:
-* `hwratio=HWRATIO_DEFAULT`
-* `width=WIDTH_DEFAULT`
-* `backend=CairoMakie`
+Save the figure output by `fig_function` in with themes applied and various formats in `dir` with the file name `name`
+
+If `PdfTex` format is requested, __Inkscape__ is used to convert the `SVG` file to `PDF` with text in LaTeX.
+
+# Arguments
+* `fig_function::Function`: function that generates the figure (or figures) to save
+* `width::Length`: physical width of the exported figure *(default: `MakieMaestro.Themes.get_width()`)*
+* `hwratio::Real`: height to width ratio *(default: `MakieMaestro.Themes.get_hwratio()`)*
+* `name::String` / `name::Vector{String}`: file basename *(default: `nameof(fig_function)`)*
+* `dir::String`: path to figure directory *(default: `MakieMaestro.get_figure_dir()`)*
+
+## Keyword arguments
+* `backends=CairoMakie`
 * `override_theme=Theme()`
-* `size_theme=SIZE_THEME`
-* `base_theme=BASE_THEME`
-* `vector_theme=VECTOR_THEME`
-* `raster_theme=RASTER_THEME`
-* `gl_theme=GL_THEME`
-* `cairo_theme=CAIRO_THEME`
-* `skip=[:eps, :pdf_tex, :svg, :raster]` - other options are `:svg`, `:pdf`, `:pdf_tex`, `:eps`, `:png`, `:raster`, `:vector`
+* `formats=Set([Pdf])`
 * `fig_function_args=()`
-* `update=false`
+* `[update]` _(default: determine by the backend)_
 """
 function savefig(
     fig_function::Function,
@@ -225,43 +332,32 @@ function savefig(
     dir::AbstractString=get_figure_dir();
     backends=CairoMakie,
     override_theme=Theme(),
-    theme_dict=Themes.THEME[], # FIX: This should be removed. It should not be the case that someone is able to use some different theming dictionary. That person would need to write every key that is necessary for the generation. Instead it is possible to use `Themes.update_theme!` to use their own values for the predefined theming scheme. <13-12-24> 
     formats=Set([Pdf]), # skip = [:eps, :pdf_tex, :svg, :raster], # :svg, :pdf, :pdf_tex, :eps, :png, :raster, :vector
     fig_function_args=(), # TODO: These should be varargs at the end of `savefig`s arguments <18-10-24> 
-    update=false,
     varargs...,
 )
-    # FIX: `hwratio` not working!!! Maybe because of `https://github.com/MakieOrg/Makie.jl/issues/1939` <16-11-24> 
-
     override_theme = override_theme isa Theme ? [override_theme] : override_theme
     backends = backends isa Module ? [backends] : backends
 
-    formats = collect(intersect(backend_formats(backends...), formats))
+    formats = get_formats(backends, formats)
 
-    sort!(formats; by=f -> f == Svg ? 1 : 2) # NOTE: pdf_tex is reliant on svg so it has to go first
-    PdfTex in formats &&
-        @assert Svg in formats "PdfTex can only be used if Svg is also generated. Add Svg to allowed formats."
-
-    # TODO: The arguments to the distinct backends should instead be passed in as a single dict that holds backends and
-    # their default themes. This Dict should be possible to be set similarly as the constants for the saving such as
-    # DEFAULT_WIDTH, DEFAULT_HWRATIO, etc. <18-10-24> 
-
-    # TODO: Warn if there is no available format for a given backend <16-11-24> 
     for f in formats
         b = choose_backend(backends, f)
-        local figure_theme = Themes.get_theme(
-            override_theme..., theme_dict[:size](width, hwratio), get_themes(b, f)...
-        )
-        with_theme(figure_theme) do
-            fig = fig_function(fig_function_args...)
-            if fig isa Vector
-                @assert name isa Vector "If the function returns multiple figures you must provide multiple names"
-                @assert length(fig) == length(name) "number of figures (`$(length(fig))`) does not match number of names (`$(length(name))`)"
+        export_theme = get_export_theme(b, f, width, hwratio, override_theme...)
+        with_theme(export_theme) do
+            fig = fig_function(fig_function_args...) # NOTE: Figure function must be called with the theme defined for theming to work <08-01-25> 
+            if fig isa Vector # If there are multiple figures returned by the function, we need to create the names and save them individually
+                if !(name isa Vector)
+                    @info "Using `\"_i\"` for the figure `\"i\"` name. If the function returns multiple figures and you want to name them differently, you must provide multiple names."
+                    name = [name * "_$i" for i in 1:length(fig)]
+                else
+                    @assert length(fig) == length(name) "number of figures (`$(length(fig))`) does not match number of names (`$(length(name))`)"
+                end
                 for (fi, n) in zip(fig, name)
-                    savefig(fi, n, f, b, dir; varargs, update)
+                    _savefig(fi, n, f, b, dir; varargs...)
                 end
             else
-                savefig(fig, name, f, b, dir; varargs, update)
+                _savefig(fig, name, f, b, dir; varargs...)
             end
         end
     end
@@ -269,50 +365,37 @@ end
 
 const SavableFigure = Union{Makie.Figure,Makie.FigureAxisPlot,Makie.FigureAxis}
 
-# FIX: This should instead be a method override for every format individually <18-10-24> 
-function savefig(
+function _savefig(
     fig::SavableFigure,
     name::AbstractString,
     format::Format,
     backend::Module,
     dir::AbstractString;
-    wait=true,
-    update=false,
+    update=(backend == CairoMakie ? true : false),
     varargs...,
 )
     path = joinpath(dir, name * extension(format))
     if format == PdfTex
-        @info "Building figure at `$(basename(path))_tex`"
-        svgpath = joinpath(dir, name * ".svg")
-        cmd_parts = [
-            "inkscape",
-            svgpath,
-            "--export-type=pdf",
-            "--export-latex",
-            "--export-filename",
-            path,
-        ]
-        # FIX: How to send the output to /dev/null in Julia? <21-11-23> 
-        # if !wait
-        #     append!(cmd_parts, ["&>/dev/null"])
-        # end
-        inkscape_cmd = Cmd(cmd_parts)
-        run(inkscape_cmd; wait)
+        _savepdftex(dir, name, path)
     else
         @info "Building figure `$(basename(path))` in $dir"
-        if backend == CairoMakie
-            # if vectorgraphic(format)
-            Makie.save(path, fig; backend, update, varargs...)
-            # else
-            #     Makie.save(path, fig; backend, update=false, px_per_unit=20, varargs...)
-            # end
-        end
-        backend == GLMakie && Makie.save(path, fig; backend, update=false, varargs...)
+        Makie.save(path, fig; backend, update, varargs...)
     end
 end
 
-function savefig(figs::Vector{SavableFigure}, args...; varargs...)
-    return foreach(f -> savefig(f, args...; varargs...), figs)
+function _savepdftex(dir, name, path; wait=true)
+    @info "Building figure at `$(basename(path))_tex`"
+    svgpath = joinpath(dir, name * ".svg")
+    cmd_parts = [
+        "inkscape",
+        svgpath,
+        "--export-type=pdf",
+        "--export-latex",
+        "--export-filename",
+        path,
+    ]
+    inkscape_cmd = Cmd(cmd_parts)
+    return run(inkscape_cmd; wait)
 end
 
 export savefig, figure_dir!
