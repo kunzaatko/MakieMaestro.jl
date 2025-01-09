@@ -19,8 +19,11 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Workflow" => "workflow.md",
-        "Manual" => "manual.md",
+        "Workflows" => [
+            "Publication Figures" => "workflows/savefig.md",
+            "Pluto.jl" => "workflows/pluto.md",
+            "Documenter.jl" => "workflows/documenter.md",
+        ],
         "Reference" => "reference.md",
     ],
 )
