@@ -30,6 +30,10 @@ const CYCLE = Cycle([:color, :marker]; covary=true)
 const WIDTH_DEFAULT = Ref{Union{Missing,Length}}(missing)
 const HWRATIO_DEFAULT = Ref{Number}(float(2 / (√(5) + 1)))
 
+# TODO: Define via a macro all the other paper sizes <08-01-25> 
+const A4_WIDTH = 210u"mm"
+const A4_HEIGHT = 297u"mm"
+
 """
     hwratio!(val)
 
