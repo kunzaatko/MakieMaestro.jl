@@ -1,5 +1,3 @@
-using LaTeXStrings
-
 """
     L(s::String)
 

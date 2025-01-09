@@ -3,6 +3,8 @@ using Reexport
 @reexport using Unitful
 using Unitful: Length
 
+@reexport using LaTeXStrings
+
 # NOTE: No need for using Makie, since MakieExtra already re-exports Makie <22-10-24> 
 using Makie
 @reexport using MakieExtra
