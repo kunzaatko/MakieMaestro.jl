@@ -32,6 +32,17 @@ include("theme-constants.jl")
 
 # TODO: ThemeGeneratingFunction should instead be an abstract type that holds its latent arguments and is able to
 # generate the theme from the arguments passed to the invoking function. <13-12-24> 
+"""
+    ThemeGenerator == Union{Function,Theme}
+A struct used for defining new theme “mixins” that can be inferred from some latent parameters.
+
+!!! danger
+    That the function returns a `Theme` value is not checked. Therefore this type is only to be used internally...
+    ```jldoctest
+    julia> (() -> nothing) isa MakieMaestro.Themes.ThemeGenerator
+    true
+    ```
+"""
 const ThemeGenerator = Union{Function,Theme}
 generate(gen::ThemeGenerator) = gen isa Function ? gen() : gen
 
@@ -70,6 +81,9 @@ function figsize(width::Length=get_width(), hw_ratio=get_hwratio())
     return width_pts, height_pts
 end
 
+# TODO: Should supply some method that gives the keys that are defined in the theme dictionary. <09-01-25> 
+# TODO: Should add the base Themes as `dark`, `light` (`theme_light`) etc. defined in Makie itself under some keys in
+# this theming dictionary. Then document this. <09-01-25> 
 const THEME = Ref{Dict{Symbol,ThemeGenerator}}(Dict())
 
 """

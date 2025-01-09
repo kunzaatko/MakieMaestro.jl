@@ -26,12 +26,16 @@ figure_dir!
 <details><summary>Internals</summary>
 ```
 ```@docs
-MakieMaestro.get_figure_dir
 MakieMaestro.isvectorgraphic
 MakieMaestro.skip
 MakieMaestro.extension
 MakieMaestro.choose_backend
+MakieMaestro.backend_formats
+
+MakieMaestro.get_figure_dir
 MakieMaestro.get_themes
+MakieMaestro.get_export_theme
+MakieMaestro.get_formats
 ```
 ```@raw html
 </details>
@@ -40,24 +44,34 @@ MakieMaestro.get_themes
 # Theming
 
 ```@docs
+MakieMaestro.Themes
+```
+
+```@docs
 MakieMaestro.Themes.width!
 MakieMaestro.Themes.hwratio!
+MakieMaestro.Themes.update_theme
+MakieMaestro.Themes.update_theme!
+MakieMaestro.Themes.get_theme
 ```
 
 ```@raw html
 <details><summary>Internals</summary>
 ```
 ```@docs
-MakieMaestro.Themes.get_theme
-MakieMaestro.Themes.interactive_size!
+MakieMaestro.Themes.ThemeGenerator
+MakieMaestro.Themes.gen
+MakieMaestro.Themes.merge_generate
+
 MakieMaestro.Themes.get_hwratio
 MakieMaestro.Themes.get_width
 MakieMaestro.Themes.to_units
 MakieMaestro.Themes.figsize
+
+MakieMaestro.Themes.ScreenInfo
+MakieMaestro.Themes.interactive_size!
+MakieMaestro.Themes.get_interactive_size
 MakieMaestro.Themes.screen_parameters
-MakieMaestro.Themes.update_theme
-MakieMaestro.Themes.update_theme!
-MakieMaestro.Themes.merge_generate
 ```
 ```@raw html
 </details>
@@ -75,4 +89,11 @@ MakieMaestro.Recipes.image
 ## Plotting functions
 ```@docs
 MakieMaestro.Recipes.mosaic
+```
+
+## Utility / QOL functions 
+
+```@docs
+MakieMaestro.L
+MakieMaestro.fftvis
 ```

@@ -1,3 +1,12 @@
+"""
+    MakieMaestro.Themes.ScreenInfo
+
+# Fields
+* `default::Union{Missing,Bool}` -- X11 default screen
+* `index::Int` -- X11 screen index
+* `size::Tuple{Int,Int}` -- pixel dimensions of the display
+* `dimensions::Tuple{Length,Length}` -- physical dimensions of the display
+"""
 struct ScreenInfo
     default::Union{Missing,Bool}
     index::Int
