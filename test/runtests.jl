@@ -1,5 +1,5 @@
 using MakieMaestro
-using Test, Documenter
+using Test, Documenter, CompatHelperLocal
 using Aqua
 
 include("./tools.jl")
@@ -15,6 +15,9 @@ include("./tools.jl")
         end
         @testset "Ambiguities" begin
             @test length(Test.detect_ambiguities(MakieMaestro)) == 0
+        end
+        @testset "Compat" begin
+            CompatHelperLocal.@check(checktest = false)
         end
     end
     @testset "DocTests" begin
