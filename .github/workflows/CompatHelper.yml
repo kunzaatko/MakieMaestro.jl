@@ -38,7 +38,7 @@ jobs:
         run: |
           import CompatHelper
           CompatHelper.main(
-            pr_title_prefix="bot(compat):",
+            pr_title_prefix="bot(compat): ",
             bump_version=true,
           )
         shell: julia --color=yes {0}
