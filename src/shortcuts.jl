@@ -21,7 +21,7 @@ This function takes the absolute value of the input `img` (typically the result 
 adds 1 to avoid log(0), and then applies a base-2 logarithm. This scaling helps to visualize
 the wide dynamic range typically present in Fourier transforms of images.
 
-# Example
+# Examples
 ```julia
 using FFTW
 img = rand(100, 100)
