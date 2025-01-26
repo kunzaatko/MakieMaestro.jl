@@ -36,6 +36,9 @@ MakieMaestro.get_figure_dir
 MakieMaestro.get_themes
 MakieMaestro.get_export_theme
 MakieMaestro.get_formats
+
+MakieMaestro._savefig
+MakieMaestro._savepdftex
 ```
 ```@raw html
 </details>

@@ -371,6 +371,15 @@ end
 
 const SavableFigure = Union{Makie.Figure,Makie.FigureAxisPlot,Makie.FigureAxis}
 
+# FIX: `@extref` to `Makie.Axis` when `objects.inv` are in the Makie documentation <26-01-25> 
+"""
+    _savefig(fig, name, format, backend, dir; update)
+Save figure `fig` with `backend` and `name` in `dir` with `format`.
+
+This is an internal function that gets called at the end of the saving stack with all of the arguments already fully
+determined. `update` should be `true` if the [`Axis`](https://docs.makie.org/stable/reference/blocks/axis#axis) is
+created separately from the plot inside in order to set the correct viewing limits for the figure.
+"""
 function _savefig(
     fig::SavableFigure,
     name::AbstractString,
@@ -381,24 +390,28 @@ function _savefig(
     varargs...,
 )
     path = joinpath(dir, name * extension(format))
+    @info "Building figure `$(basename(path) * (format == PdfTex ? "_tex" : ""))` in $dir"
     if format == PdfTex
-        _savepdftex(dir, name, path)
+        _savepdftex(joinpath(dir, name * ".svg"), path)
     else
-        @info "Building figure `$(basename(path))` in $dir"
         Makie.save(path, fig; backend, update, varargs...)
     end
 end
 
-function _savepdftex(dir, name, path; wait=true)
-    @info "Building figure at `$(basename(path))_tex`"
-    svgpath = joinpath(dir, name * ".svg")
+"""
+    _savepdftex(svgpath, outputpath; wait=true)
+Run the command for creating a `PDFTEX` figure using Inkscape.
+
+Internal function to convert `SVG` figures to `PDFTEX` (`PDF`+`LaTeX`) format assuming that the `SVG` already exists. If `wait` then the command in ran as blocking.
+"""
+function _savepdftex(svgpath, outputpath; wait=true)
     cmd_parts = [
         "inkscape",
         svgpath,
         "--export-type=pdf",
         "--export-latex",
         "--export-filename",
-        path,
+        outputpath,
     ]
     inkscape_cmd = Cmd(cmd_parts)
     return run(inkscape_cmd; wait)
