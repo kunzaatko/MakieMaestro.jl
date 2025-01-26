@@ -291,6 +291,12 @@ function get_export_theme(backend, format, width, hwratio, override_theme...)
     )
 end
 
+# TODO: Argument for `width` should support relative width that will select the width based on the default by a factor.
+# This could be done by some type that holds a factor. <25-01-25> 
+
+# TODO: The arguments for the name should first be parsed to some type that holds the optional type and the generator or
+# fixed list off names that are given to the figures that will be saved. <25-01-25> 
+
 # TODO: Support templating for the names and DEDUCTION OF THE FORMAT FROM THE SUPPLIED NAME. For instance when function
 # returns multiple figures, it should be possible to name something like `["{}_surface", "{}_heatmap"]` and interpolate
 # the original name into the templates. <09-01-25> 

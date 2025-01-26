@@ -1,3 +1,5 @@
+# TODO: Similar to the `width!` and `hwratio!` should be `fontsize` defined with mixin themes that would define relative
+# sizes such as script-size etc. <25-01-25> 
 using Unitful
 using Unitful: Length
 using MakieMaestro.Units
