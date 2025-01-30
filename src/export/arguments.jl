@@ -19,6 +19,13 @@
 # TODO: Currently does not support keyword arguments. How do I get these? Would it be better to store the function call
 # as code? I.e. a syntax tree? Then I could call the function exactly in that way at the place where it is necessary.
 # This would however be probably fragile and programmatically complex <28-01-25> 
+
+"""
+    FunctionSpec(fig, args)
+Specification of the function generating the figure with its arguments.
+
+Can be called with additional keyword arguments. The arguments are passed from the `args` field.
+"""
 struct FunctionSpec
     fig::Function
     args::Tuple
@@ -31,6 +38,16 @@ end
 (fspec::FunctionSpec)(; kwargs...) = fspec.fig(fspec.args...; kwargs...)
 Base.nameof(fspec::FunctionSpec) = nameof(fspec.fig)
 
+"""
+    PathSpec(basename, [formats], [dirname])
+    PathSpec(fullpath, [formats])
+Specification of where and which format to use for exporting a figure.
+
+- `basename` is internally a function that takes an index integer and returns the name of the figure. The function is
+    created either by a suffix or by parsing the supplied string (see examples below).
+- `formats` is a set or collection of formats wanted for the export.
+- `dirname` is the directory where the figure will be saved (checked for existence upon creation).
+"""
 struct PathSpec
     basename::Function # takes an index integer and returns the name of the figure
     formats::Set{Format}
@@ -49,10 +66,15 @@ struct PathSpec
     end
 end
 
-"""
-    PathSpec(fullpath::AbstractString, formats::Set{Format})
-Create a spec for formats names and the directory where the figures will be saved.
-"""
+function Base.show(io::IO, s::PathSpec)
+    extensions = sort([extension(f)[2:end] for f in s.formats])
+    ext_string =
+        (length(extensions) > 1 ? "{" : "") *
+        join(extensions, ",") *
+        (length(extensions) > 1 ? "}" : "")
+    return print(io, "$(joinpath(s.dirname,s.basename(0))).$ext_string")
+end
+
 function PathSpec(fullpath::AbstractString, formats) # 1A ?-> 0 
     dirname, basename = Base.Filesystem.dirname(fullpath),
     Base.Filesystem.basename(fullpath)
@@ -108,7 +130,40 @@ function name_function(basename::AbstractString; suffix=i -> "_$i")
     return name
 end
 
-# FIX: Can be done much more elegantly with use of some Unions and abstract types with methods defined on them! <28-01-25> 
+# FIX: Unintuitive order of width and height. Also width and height in printing is not aligned with width and height in
+# arguments (tuple). <30-01-25> 
+"""
+    MakieMaestro.SizeSpec(width::Length, hwratio::Real)
+Specification of the physical size of the exported image.
+
+The primary way to represent the size of a figure is it's `width` and the height to width ratio `hwratio`. However, any
+set of two values from {`width`, `hwratio`, `height`} fully determine the size. `width` and `height` may be either fixed
+values of the type [`Length`](@exref) or relative sizes to their default values by the type `Real`
+([`RelativeSize`](@ref)). None, one or two of the values may be supplied and the size is determined from these values
+and the defaults. These defaults may be set with [`width!`](@ref) and [`hwratio!`](@ref).
+
+See also [`Themes.width!`](@ref), [`Themes.get_width`](@ref), [`Themes.hwratio!`](@ref), [`Themes.get_hwratio`](@ref)
+
+# Examples
+```jldoctest; setup=:(using MakieMaestro.Themes; using MakieMaestro: SizeSpec)
+julia> Themes.width!(Themes.A4_WIDTH), Themes.hwratio!(2/(√(5) + 1));
+
+julia> SizeSpec(0.5, 2)
+w×h: 105.0 mm × 210.0 mm [h/w: 2.0]
+
+julia> SizeSpec(10u"cm")
+w×h: 10.0 cm × 6.18 cm [h/w: 2/(√5 + 1)]
+
+julia> SizeSpec((15u"cm", 10u"cm"))
+w×h: 10.0 cm × 15.0 cm [h/w: 1.5]
+
+julia> SizeSpec((15u"cm", 0.5))
+w×h: 105.0 mm × 150.0 mm [h/w: 1.4]
+
+julia> SizeSpec((2, 10u"cm"))
+w×h: 10.0 cm × 12.36 cm [h/w: 1.2]
+```
+"""
 struct SizeSpec
     width::Length
     hwratio::Real
@@ -118,6 +173,20 @@ struct SizeSpec
     end
 end
 
+function Base.show(io::IO, s::SizeSpec)
+    hwratio = if s.hwratio == float(2 / (√(5) + 1))
+        "2/(√5 + 1)"
+    else
+        string(round(s.hwratio; sigdigits=2))
+    end
+    w, h = round.(typeof(float(s.width)), (s.width, s.hwratio * s.width); digits=2)
+    return print(io, "w×h: $w × $h [h/w: $hwratio]")
+end
+
+"""
+    MakieMaestro.RelativeSize(ratio::Real)
+Size relative to the default or calculated dimensions.
+"""
 struct RelativeSize
     ratio::Real
     function RelativeSize(r)
@@ -126,15 +195,24 @@ struct RelativeSize
     end
 end
 
+"""
+    FigHeight(height::Length)
+    FigHeight(height::Real) # relative size to the default
+Specifies the height of the exported figure.
+
+See also [`RelativeSize`](@ref).
+"""
 struct FigHeight
     height::Union{Length,RelativeSize}
 end
 FigHeight(h::Real) = FigHeight(RelativeSize(h))
 
-function SizeSpec(a::Real, args...)
-    @warn "You specified a relative width size. If you intended to change the height-width ratio, use `1, hwratio` in the arguments instead."
-    return SizeSpec(RelativeSize(a), args...)
+function SizeSpec(hw::Tuple)
+    h, w = map(s -> s isa Real ? RelativeSize(s) : s, hw)
+    return SizeSpec(FigHeight(h), w)
 end
+SizeSpec(w::Real) = SizeSpec(RelativeSize(w))
+SizeSpec(w::Real, hwratio::Real) = SizeSpec(RelativeSize(w), hwratio)
 function SizeSpec(w::RelativeSize, hwratio::Real=Themes.get_hwratio()) # 1A -> 0
     return SizeSpec(w.ratio * Themes.get_width(), hwratio)
 end
@@ -146,12 +224,11 @@ function SizeSpec(h::FigHeight, hwratio::Real=Themes.get_hwratio()) # 2A -> 0
     end
     return SizeSpec(w, hwratio)
 end
-# FIX: Change these to tuples if they define a width, height pair... <30-01-25> 
 function SizeSpec(h::FigHeight, w::Length) # 2B -> 2A -> 0
     hwratio = if h.height isa RelativeSize
         h.height.ratio * Themes.get_hwratio()
     else
-        h.height / w
+        h.height / uconvert(unit(h.height), w)
     end
     return SizeSpec(w, hwratio) # 2A 
 end
