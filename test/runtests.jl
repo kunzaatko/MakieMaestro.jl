@@ -40,7 +40,6 @@ include("./tools.jl")
     @testset "Theming" begin
         @testset "merge_generate" begin
             using MakieMaestro.Themes: merge_generate, ThemeGenerator, get_theme, THEME
-            # @test BASE_THEME isa ThemeGenerator
             @test THEME[][:base] isa ThemeGenerator
             @test THEME[][:size] isa ThemeGenerator
             @test THEME[][:format_ticks] isa ThemeGenerator
@@ -124,27 +123,27 @@ include("./tools.jl")
                 # @test fspec_4() isa Figure
             end
 
-            @testset "PathNameFormatSpec" begin
+            @testset "PathSpec" begin
                 using MakieMaestro
-                using MakieMaestro: PathNameFormatSpec
+                using MakieMaestro: PathSpec
 
-                @test_throws ArgumentError PathNameFormatSpec(
+                @test_throws ArgumentError PathSpec(
                     "test", Set([MakieMaestro.Png]), "testdir"
                 ) # NOTE: Non-existent directory
                 dir = pwd()
-                @test PathNameFormatSpec(joinpath(dir, "test.png")) isa PathNameFormatSpec
-                pnfs_1 = PathNameFormatSpec(joinpath(dir, "test.png"))
+                @test PathSpec(joinpath(dir, "test.png")) isa PathSpec
+                pnfs_1 = PathSpec(joinpath(dir, "test.png"))
                 @test MakieMaestro.Png in pnfs_1.formats
                 @test pnfs_1.dirname == dir
                 @test pnfs_1.basename(0) == "test"
                 @test pnfs_1.basename(1) == "test_1"
                 @test pnfs_1.basename(2) == "test_2"
 
-                @test PathNameFormatSpec(joinpath(dir, "test.{png,svg,pdf,pdf_tex}")) isa
-                    PathNameFormatSpec
-                @test PathNameFormatSpec(joinpath(dir, "test.{png, svg, pdf, pdf_tex}")) isa
-                    PathNameFormatSpec # NOTE: With spaces
-                pnfs_2 = PathNameFormatSpec(joinpath(dir, "test.{png,svg,pdf,pdf_tex}"))
+                @test PathSpec(joinpath(dir, "test.{png,svg,pdf,pdf_tex}")) isa
+                    PathSpec
+                @test PathSpec(joinpath(dir, "test.{png, svg, pdf, pdf_tex}")) isa
+                    PathSpec # NOTE: With spaces
+                pnfs_2 = PathSpec(joinpath(dir, "test.{png,svg,pdf,pdf_tex}"))
                 @test Set([
                     MakieMaestro.Png,
                     MakieMaestro.Svg,
@@ -152,26 +151,26 @@ include("./tools.jl")
                     MakieMaestro.PdfTex,
                 ]) ⊆ pnfs_2.formats
 
-                @test_throws ArgumentError PathNameFormatSpec(
+                @test_throws ArgumentError PathSpec(
                     joinpath(dir, "test.{pdf, png")
                 )
-                @test_throws ArgumentError PathNameFormatSpec(
+                @test_throws ArgumentError PathSpec(
                     joinpath(dir, "test.pdf, png}")
                 )
-                @test_throws ErrorException PathNameFormatSpec(joinpath(dir, "testpdf")) # no default format set
+                @test_throws ErrorException PathSpec(joinpath(dir, "testpdf")) # no default format set
 
-                default_formats!(Set([MakieMaestro.Pdf]))
-                @test PathNameFormatSpec("testpdf") isa PathNameFormatSpec
+                export_formats!(Set([MakieMaestro.Pdf]))
+                @test PathSpec("testpdf") isa PathSpec
                 @test MakieMaestro.Pdf in
-                    PathNameFormatSpec(joinpath(dir, "testpdf")).formats
+                    PathSpec(joinpath(dir, "testpdf")).formats
 
-                @test_throws ArgumentError PathNameFormatSpec(
+                @test_throws ArgumentError PathSpec(
                     joinpath(dir, "test.{png,svgpdf}"), # invalid extension
                 )
 
-                @test PathNameFormatSpec(
+                @test PathSpec(
                     "test", [:png, "svg", MakieMaestro.PdfTex], dir
-                ) isa PathNameFormatSpec
+                ) isa PathSpec
             end
         end
         @testset "sizing" begin

@@ -35,8 +35,8 @@ end
 # FIX: The cache location should be parametrized <15-10-24> 
 # TODO: Add the `L` function <15-10-24> 
 
-include("themes/theme.jl")
-include("save-fig.jl")
+include("theme/theme.jl")
+include("export/savefig.jl")
 include("shortcuts.jl")
 include("recipe-modifications.jl")
 include("pluto-helpers.jl")
