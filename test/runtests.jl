@@ -23,7 +23,7 @@ include("./tools.jl")
     @testset "DocTests" begin
         # NOTE: Show for `Unitful.jl` does nm⁻¹ on macOS and nm^-1 on Linux. This is necessary, since the `jldoctest` is only one
         if !haskey(ENV, "GITHUB_ACTIONS") ||
-            haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"
+           haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"
             # NOTE: Better than doc-testing in `make.jl` because, I can track the coverage
             # NOTE: When updating, must update also in `docs/make.jl` and  `test/fix_doctests.jl`<18-12-24> 
             DocMeta.setdocmeta!(
@@ -75,7 +75,15 @@ include("./tools.jl")
         end
     end
     @testset "Exporting" begin
-        @testset "theme" begin end
+        function fig_function_w_kwargs(lims::Tuple{Real,Real}=(0, 1); N=100)
+            f = Figure()
+            ax = Axis(f[1, 1])
+            xs = LinRange(lims..., N)
+            lines!(ax, xs, sin.(xs))
+            return f
+        end
+
+        fig_function(lims::Tuple{Real,Real}=(0, 1)) = fig_function_w_kwargs(lims)
 
         @testset "format" begin
             using MakieMaestro: Format, extension
@@ -88,16 +96,9 @@ include("./tools.jl")
             @test extension(MakieMaestro.PdfTex) == ".pdf"
         end
 
-        @testset "Argument transformation stack" begin
+        @testset "Argument transformation cascade" begin
             @testset "FunctionSpec" begin
                 using MakieMaestro: FunctionSpec
-                function fig_function(lims::Tuple{Real,Real}=(0, 1))
-                    f = Figure()
-                    ax = Axis(f[1, 1])
-                    xs = LinRange(lims..., 100)
-                    lines!(ax, xs, sin.(xs))
-                    return f
-                end
                 @test FunctionSpec(fig_function) isa FunctionSpec
                 fspec_1 = FunctionSpec(fig_function)
                 @test FunctionSpec(fig_function, ((-π, π),)) isa FunctionSpec
@@ -105,14 +106,6 @@ include("./tools.jl")
                 @test fspec_1() isa Figure
                 @test fspec_2() isa Figure
                 @test nameof(fspec_1) == nameof(fspec_2) == :fig_function
-
-                function fig_function_w_kwargs(lims::Tuple{Real,Real}=(0, 1); N=100)
-                    f = Figure()
-                    ax = Axis(f[1, 1])
-                    xs = LinRange(lims..., N)
-                    lines!(ax, xs, sin.(xs))
-                    return f
-                end
 
                 @test FunctionSpec(fig_function_w_kwargs) isa FunctionSpec
                 fspec_3 = FunctionSpec(fig_function_w_kwargs)
@@ -124,6 +117,7 @@ include("./tools.jl")
             end
 
             @testset "PathSpec" begin
+
                 using MakieMaestro
                 using MakieMaestro: PathSpec
 
@@ -131,6 +125,9 @@ include("./tools.jl")
                     "test", Set([MakieMaestro.Png]), "testdir"
                 ) # NOTE: Non-existent directory
                 dir = pwd()
+                @test PathSpec(
+                    "test.pdf", dir
+                ) isa PathSpec
                 @test PathSpec(joinpath(dir, "test.png")) isa PathSpec
                 pnfs_1 = PathSpec(joinpath(dir, "test.png"))
                 @test MakieMaestro.Png in pnfs_1.formats
@@ -140,9 +137,9 @@ include("./tools.jl")
                 @test pnfs_1.basename(2) == "test_2"
 
                 @test PathSpec(joinpath(dir, "test.{png,svg,pdf,pdf_tex}")) isa
-                    PathSpec
+                      PathSpec
                 @test PathSpec(joinpath(dir, "test.{png, svg, pdf, pdf_tex}")) isa
-                    PathSpec # NOTE: With spaces
+                      PathSpec # NOTE: With spaces
                 pnfs_2 = PathSpec(joinpath(dir, "test.{png,svg,pdf,pdf_tex}"))
                 @test Set([
                     MakieMaestro.Png,
@@ -159,10 +156,13 @@ include("./tools.jl")
                 )
                 @test_throws ErrorException PathSpec(joinpath(dir, "testpdf")) # no default format set
 
-                export_formats!(Set([MakieMaestro.Pdf]))
+                export_format!(Set([MakieMaestro.Pdf]))
                 @test PathSpec("testpdf") isa PathSpec
                 @test MakieMaestro.Pdf in
-                    PathSpec(joinpath(dir, "testpdf")).formats
+                      PathSpec(joinpath(dir, "testpdf")).formats
+                @test PathSpec(
+                    "test", dir
+                ) isa PathSpec
 
                 @test_throws ArgumentError PathSpec(
                     joinpath(dir, "test.{png,svgpdf}"), # invalid extension
@@ -172,41 +172,164 @@ include("./tools.jl")
                     "test", [:png, "svg", MakieMaestro.PdfTex], dir
                 ) isa PathSpec
             end
+
+            @testset "sizing" begin
+                using MakieMaestro: SizeSpec, RelativeSize
+                using MakieMaestro.Themes
+                width!(MakieMaestro.Themes.A4_WIDTH)
+
+                @test RelativeSize(0.5) isa RelativeSize
+                @test_throws ArgumentError RelativeSize(-0.5)
+
+                # TODO: Add tests for expected final values <28-01-25> 
+                @test SizeSpec() isa SizeSpec
+                @test SizeSpec(30u"cm") isa SizeSpec
+                @test SizeSpec(RelativeSize(0.5)) isa SizeSpec
+                @test SizeSpec(0.5) isa SizeSpec
+                @test SizeSpec(0.5) == SizeSpec(RelativeSize(0.5))
+                @test SizeSpec(30u"cm", 0.5) isa SizeSpec
+                @test SizeSpec(0.5, 0.5) isa SizeSpec
+                @test_throws ArgumentError SizeSpec(0.5, -0.5) isa SizeSpec
+
+                @test FigHeight(0.5) isa FigHeight
+                @test FigHeight(30u"cm") isa FigHeight
+
+                @test SizeSpec(FigHeight(30u"cm"), 0.5) isa SizeSpec
+                @test SizeSpec(FigHeight(0.5), 0.5) isa SizeSpec
+            end
         end
-        @testset "sizing" begin
-            using MakieMaestro: SizeSpec, RelativeSize, HeightLength
-            using MakieMaestro.Themes
-            width!(MakieMaestro.Themes.A4_WIDTH)
 
-            @test RelativeSize(0.5) isa RelativeSize
-            @test_throws ArgumentError RelativeSize(-0.5)
+        @testset "`savefig`" begin
+            # NOTE: Prepare 
+            fig_dir = joinpath(tempdir(), "test_fig_dir")
+            mkdir(fig_dir)
+            figure_dir!(fig_dir)
+            width!(0.8MakieMaestro.Themes.A4_WIDTH)
+            @test MakieMaestro.Pdf in export_format!(Set([MakieMaestro.Pdf]))
 
-            # TODO: Add tests for expected final values <28-01-25> 
-            @test SizeSpec() isa SizeSpec
-            @test SizeSpec(30u"cm") isa SizeSpec
-            @test SizeSpec(RelativeSize(0.5)) isa SizeSpec
-            @test SizeSpec(0.5) isa SizeSpec
-            @test SizeSpec(0.5) == SizeSpec(RelativeSize(0.5))
-            @test SizeSpec(30u"cm", 0.5) isa SizeSpec
-            @test SizeSpec(0.5, 0.5) isa SizeSpec
-            @test_throws ArgumentError SizeSpec(0.5, -0.5) isa SizeSpec
+            @testset "utils" begin
+                @test MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.Png])) ==
+                      [MakieMaestro.Png] # Allowed formats
+                if Sys.which("inkscape") !== nothing
+                    @test MakieMaestro.Svg in
+                          MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added necessary Svg format
+                end
+                @test_throws ArgumentError MakieMaestro.get_formats(
+                    [GLMakie], Set([MakieMaestro.Pdf])
+                )
+            end
 
-            @test HeightLength(0.5) isa HeightLength
-            @test HeightLength(30u"cm") isa HeightLength
+            @testset "method availability" begin
+                figexists(name) = isfile(joinpath(fig_dir, name))
+                rmfig(name) = rm(joinpath(fig_dir, name))
+                issamefig(a, b) = success(`cmp --quiet $(joinpath(fig_dir, a)) $(joinpath(fig_dir, b))`)
 
-            @test SizeSpec(HeightLength(30u"cm"), 0.5) isa SizeSpec
-            @test SizeSpec(HeightLength(0.5), 0.5) isa SizeSpec
+                # Basic methods
+                savefig(fig_function)
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
+
+                savefig(fig_function_w_kwargs)
+                @test figexists("fig_function_w_kwargs.pdf")
+                rmfig("fig_function_w_kwargs.pdf")
+
+                # TODO: Add note to the documentation about the need to add the comma in order for the argument to be
+                # parsed as a tuple and not normal parens <30-01-25> 
+                savefig(fig_function, ((-π, π),))
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
+
+                if Sys.which("cmp") !== nothing # Check if UNIX system command exists
+                    savefig(fig_function, ["svg"])
+                    # NOTE: Comparison may not be made with `pdf` because the file is not the same even with the same
+                    # figure <30-01-25> 
+                    # NOTE: Different `N`. Should not be the same as `fig_function`
+                    savefig(fig_function_w_kwargs, ["svg"]; N=300)
+                    @test !issamefig("fig_function_w_kwargs.svg", "fig_function.svg")
+                    # NOTE: Same `N`. Should be the same as `fig_function`
+                    savefig(fig_function_w_kwargs, ["svg"]; N=100)
+                    @test issamefig("fig_function_w_kwargs.svg", "fig_function.svg")
+                    rmfig.(("fig_function_w_kwargs.svg", "fig_function.svg"))
+                end
+
+                if Sys.which("inkscape") !== nothing
+                    savefig(fig_function, ["pdf_tex"])
+                    @test figexists("fig_function.pdf_tex")
+                    rmfig("fig_function.pdf_tex")
+                end
+
+                # Multiple formats
+                savefig(fig_function, ["svg", MakieMaestro.Pdf])
+                @test figexists.(("fig_function.svg", "fig_function.pdf")) |> all
+                rmfig.(("fig_function.svg", "fig_function.pdf"))
+
+                savefig(fig_function, "name.{pdf,png}")
+                @test figexists.(("name.pdf", "name.png")) |> all
+                rmfig.(("name.pdf", "name.png"))
+
+                # Specifying a different name
+                savefig(fig_function, "other_name")
+                @test figexists("other_name.pdf")
+                rmfig("other_name.pdf")
+
+                savefig(fig_function, "other_name", ["svg", :pdf])
+                @test figexists.(("other_name.pdf", "other_name.svg")) |> all
+                rmfig.(("other_name.pdf", "other_name.svg"))
+
+                # Specifying the figure directory
+                alt_fig_dir = joinpath(tempdir(), "alt_fig_dir")
+                mkdir(alt_fig_dir)
+                savefig(fig_function, "name1", alt_fig_dir)
+                savefig(fig_function, "name2", ["pdf"], alt_fig_dir)
+                savefig(fig_function, joinpath(alt_fig_dir, "name3"), ["pdf"])
+                savefig(fig_function, joinpath(alt_fig_dir, "name4.pdf"))
+                @test any(figexists.(("name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"))) == false
+                @test isfile.(map(n -> joinpath(alt_fig_dir, n), ["name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"])) |> all
+                rm.(map(n -> joinpath(alt_fig_dir, n), ["name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"]))
+                rm(alt_fig_dir, recursive=true)
+
+                # Sizing 
+                savefig(fig_function, 100u"cm")
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
+
+                if Sys.which("cmp") !== nothing # Check if UNIX system command exists
+                    savefig(fig_function, "orig_size.svg")
+
+                    savefig(fig_function, "relative_size_one.svg", MakieMaestro.RelativeSize(1))
+                    savefig(fig_function, "relative_size_one_notyping.svg", 1)
+                    @test issamefig("orig_size.svg", "relative_size_one.svg")
+                    @test issamefig("orig_size.svg", "relative_size_one_notyping.svg")
+
+                    savefig(fig_function, "width_same.svg", MakieMaestro.Themes.get_width())
+                    @test issamefig("orig_size.svg", "width_same.svg")
+
+                    # FIX: Must change the SizeSpec constructors to be more intuitive and when supplying two numbers to
+                    # infer the hwratio instead <30-01-25> 
+                    savefig(fig_function, "hwratio_same.svg", 1, MakieMaestro.Themes.get_hwratio())
+                    @test_broken issamefig("orig_size.svg", "hwratio_same.svg")
+
+                    rmfig.(("orig_size.svg", "relative_size_one.svg", "width_same.svg", "hwratio_same.svg"))
+                end
+
+                savefig(fig_function, FigHeight(100u"cm"))
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
+
+                savefig(fig_function, 100u"cm", 0.6)
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
+
+                savefig(fig_function, FigHeight(100u"cm"), 0.6)
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
+            end
+
+            # NOTE: Destroy
+            rm(fig_dir, recursive=true)
+            export_format!(missing)
+            MakieMaestro.Themes.WIDTH_DEFAULT[] = missing
         end
-    end
-    @testset "`savefig`" begin
-        @test MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.Png])) ==
-            [MakieMaestro.Png] # Allowed formats
-        if Sys.which("inkscape") !== nothing
-            @test MakieMaestro.Svg in
-                MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added necessary Svg format
-        end
-        @test_throws ArgumentError MakieMaestro.get_formats(
-            [GLMakie], Set([MakieMaestro.Pdf])
-        )
+
     end
 end

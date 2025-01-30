@@ -54,35 +54,35 @@ end
 const FORMATS_DEFAULT = Ref{Union{Set{Format},Missing}}(missing)
 # TODO: Should accept various options for the format definitions. `String`/`Symbol`/`Format` <28-01-25> 
 """
-    export_formats!(formats)
+    export_format!(formats)
 Set the default formats to export.
 """
-function export_formats!(formats)
+function export_format!(formats)
     return FORMATS_DEFAULT[] = formats
 end
 
 """
-    MakieMaestro.get_export_formats()
+    MakieMaestro.get_export_format()
 Get the default export formats
 
 # Examples
 ```jldoctest
-julia> export_formats!(Set([MakieMaestro.Pdf]))
+julia> export_format!(Set([MakieMaestro.Pdf]))
 Set{MakieMaestro.Format} with 1 element:
   MakieMaestro.Pdf
 
-julia> MakieMaestro.get_export_formats()
+julia> MakieMaestro.get_export_format()
 Set{MakieMaestro.Format} with 1 element:
   MakieMaestro.Pdf
 
-julia> export_formats!(missing);
+julia> export_format!(missing);
 ```
 """
-function get_export_formats()
+function get_export_format()
     ismissing(FORMATS_DEFAULT[]) && throw(
         ErrorException(
             """
-            DEFAULT_FORMATS not set! Use MakieMaestro.export_formats!(formats) to set the default formats for exporting before saving a figure.
+            DEFAULT_FORMATS not set! Use MakieMaestro.export_format!(formats) to set the default formats for exporting before saving a figure.
             """,
         ),
     )

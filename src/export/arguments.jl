@@ -36,12 +36,10 @@ struct PathSpec
     formats::Set{Format}
     dirname::String # checked for validity on the file-system.
 
-    function PathSpec(
-        basename::Function, formats::Set{Format}, dirname::AbstractString
-    ) # 0
+    function PathSpec(basename::Function, formats::Set{Format}, dirname::AbstractString) # 0
         isdir(dirname) || throw(ArgumentError("`$dirname` is not a valid directory"))
         formats = if isempty(formats)
-            default = get_export_formats()
+            default = get_export_format()
             @info "Export formats not supplied. Using default formats $default."
             default
         else
@@ -65,14 +63,17 @@ function PathSpec(fullpath::AbstractString, formats) # 1A ?-> 0
         @warn "Basename has an extension $(splitext(basename)[2]). This is probably not intensional. Did you mean to supply `formats`?"
     return PathSpec(basename, formats, dirname)
 end
+function PathSpec(basename::AbstractString, dirname::AbstractString)
+    # PERF: Not optimal... Joining strings unnecessarily for later parsing. Should be inexpensive. Avoids necessity to
+    # check extension in this method also. <30-01-25> 
+    return PathSpec(joinpath(dirname, basename))
+end
 
 Base.convert(f::Type{Format}, s::AbstractString) = parse(f, s)
 Base.convert(f::Type{Format}, s::Symbol) = convert(f, string(s))
 
 function PathSpec(basename::AbstractString, formats, dirname::AbstractString)
-    return PathSpec(
-        name_function(basename), Set(convert.(Format, formats)), dirname
-    )
+    return PathSpec(name_function(basename), Set(convert.(Format, formats)), dirname)
 end
 
 """
@@ -100,7 +101,8 @@ end
 # TODO: More options for naming with templates and documentation <28-01-25> 
 function name_function(basename::AbstractString; suffix=i -> "_$i")
     function name(i)
-        i == 1 && @info "Using `\"$(suffix("i"))\"` name of figure `\"i\"` name. To change this, see documentation of `MakieMaestro.PathSpec`."
+        i == 1 &&
+            @info "Using `\"$(suffix("i"))\"` name of figure `\"i\"` name. To change this, see documentation of `MakieMaestro.PathSpec`."
         return basename * (i == 0 ? "" : suffix(i))
     end
     return name
@@ -124,16 +126,19 @@ struct RelativeSize
     end
 end
 
-struct HeightLength
+struct FigHeight
     height::Union{Length,RelativeSize}
 end
-HeightLength(h::Real) = HeightLength(RelativeSize(h))
+FigHeight(h::Real) = FigHeight(RelativeSize(h))
 
-SizeSpec(a::Real, args...) = SizeSpec(RelativeSize(a), args...)
+function SizeSpec(a::Real, args...)
+    @warn "You specified a relative width size. If you intended to change the height-width ratio, use `1, hwratio` in the arguments instead."
+    return SizeSpec(RelativeSize(a), args...)
+end
 function SizeSpec(w::RelativeSize, hwratio::Real=Themes.get_hwratio()) # 1A -> 0
     return SizeSpec(w.ratio * Themes.get_width(), hwratio)
 end
-function SizeSpec(h::HeightLength, hwratio::Real=Themes.get_hwratio()) # 2A -> 0
+function SizeSpec(h::FigHeight, hwratio::Real=Themes.get_hwratio()) # 2A -> 0
     w = if h.height isa RelativeSize
         h.height.ratio * Themes.get_width()
     else
@@ -141,7 +146,8 @@ function SizeSpec(h::HeightLength, hwratio::Real=Themes.get_hwratio()) # 2A -> 0
     end
     return SizeSpec(w, hwratio)
 end
-function SizeSpec(h::HeightLength, w::Length) # 2B -> 2A -> 0
+# FIX: Change these to tuples if they define a width, height pair... <30-01-25> 
+function SizeSpec(h::FigHeight, w::Length) # 2B -> 2A -> 0
     hwratio = if h.height isa RelativeSize
         h.height.ratio * Themes.get_hwratio()
     else
@@ -149,7 +155,7 @@ function SizeSpec(h::HeightLength, w::Length) # 2B -> 2A -> 0
     end
     return SizeSpec(w, hwratio) # 2A 
 end
-function SizeSpec(h::HeightLength, w::RelativeSize) # 2C -> 2B -> 2A -> 0
+function SizeSpec(h::FigHeight, w::RelativeSize) # 2C -> 2B -> 2A -> 0
     return SizeSpec(h, w.ratio * Themes.get_width()) # 2B
 end
 
@@ -197,8 +203,14 @@ function savefig(
     return savefig(fig, PathSpec(name, formats, dir), args...; kwargs...)
 end
 
+function savefig(
+    fig::FunctionSpec, name::AbstractString, dir::AbstractString, args...; kwargs...
+) # 2D -> 2A -> 0
+    return savefig(fig, PathSpec(name, dir), args...; kwargs...)
+end
+
 function savefig(fig::FunctionSpec, path::PathSpec, args...; kwargs...) # 3A -> 0
     return savefig(fig, path, SizeSpec(args...); kwargs...)
 end
 
-export HeightLength
+export FigHeight

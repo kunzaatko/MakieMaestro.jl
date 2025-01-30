@@ -18,7 +18,7 @@ Themes are applied from the [`:base`](@ref `Themes.get_theme`) theme and you can
 
 The arguments `fig`, `path` and `size` may be specified in a number of different ways as shown below in __Arguments__ or
 in the case of `path` and `size` be left with their default values (see [`width!`](@re), [`hwratio!`](@ref),
-[`figure_dir!`](@ref) and [`export_formats!`](@ref)). For a clearer picture of how to supply the arguments, see
+[`figure_dir!`](@ref) and [`export_format!`](@ref)). For a clearer picture of how to supply the arguments, see
 __Examples__ in the documentation, but as a rule of thumb, any sensible way to define the export arguments should work
 granted that they are in the correct order.
 
@@ -32,10 +32,10 @@ granted that they are in the correct order.
 
 * `path`: basename, directory and formats
 `name, [formats], [dir]` or `path`. In example `"protein_density_heatmap", [:svg, :pdf, :pdf_tex], "~/ImporantProject/"` or equivalently `"~/ImporantProject/protein_density_heatmap.{svg, pdf, pdf_tex}"`.
-If not supplied, the name is inferred from `nameof(fig_func)`, `formats` are taken from [`MakieMaestro.get_export_formats`](@ref) (see also [`export_formats!`](@ref)) and `dir` is taken from [`MakieMaestro.get_figure_dir`](@ref) (see also [`figure_dir!`](@ref)).
+If not supplied, the name is inferred from `nameof(fig_func)`, `formats` are taken from [`MakieMaestro.get_export_format`](@ref) (see also [`export_format!`](@ref)) and `dir` is taken from [`MakieMaestro.get_figure_dir`](@ref) (see also [`figure_dir!`](@ref)).
 
 * `size`: physical dimensions of the figure (determining combination of width, height and hwratio)
-`20.5u"cm", 0.6`, `HeightLength(5u"inch"), 8u"inch"`, `0.5, 1.5` (relative width, hwratio), `HeightLength(0.3), 0.4` (relative height, hwratio).
+`20.5u"cm", 0.6`, `FigHeight(5u"inch"), 8u"inch"`, `0.5, 1.5` (relative width, hwratio), `HeightLength(0.3), 0.4` (relative height, hwratio).
 The defaults can be set by `width!` and `hwratio!`.
 
 ## Keyword arguments
@@ -50,7 +50,7 @@ function savefig(
     size::SizeSpec;
     backends=CairoMakie,
     override_theme=Theme(),
-    update,
+    update=missing,
     kwargs...,
 )
     override_theme = override_theme isa Theme ? [override_theme] : override_theme
@@ -65,10 +65,10 @@ function savefig(
             export_fig = fig(; kwargs...) # NOTE: Figure function must be called with the theme defined for theming to work <08-01-25> 
             if export_fig isa Vector || export_fig isa Tuple
                 for (i, fig) in enumerate(export_fig)
-                    _savefig(fig, path.name(i), fmt, b, path.dirname; update)
+                    _savefig(fig, path.basename(i), fmt, b, path.dirname; update)
                 end
             else
-                _savefig(fig, path.name(0), fmt, b, dir; update)
+                _savefig(export_fig, path.basename(0), fmt, b, path.dirname; update)
             end
         end
     end
@@ -81,8 +81,8 @@ const SavableFigure = Union{Makie.Figure,Makie.FigureAxisPlot,Makie.FigureAxis}
     _savefig(fig, name, format, backend, dir; update)
 Save figure `fig` with `backend` and `name` in `dir` with `format`.
 
-This is an internal function that gets called at the end of the saving stack with all of the arguments already fully
-determined. `update` should be `true` if the [`Axis`](https://docs.makie.org/stable/reference/blocks/axis#axis) is
+Internal function that gets called at the end of the saving stack with all of the arguments already fully
+determined and the figure created with the theme activated. `update` should be `true` if the [`Axis`](https://docs.makie.org/stable/reference/blocks/axis#axis) is
 created separately from the plot inside in order to set the correct viewing limits for the figure.
 """
 function _savefig(
@@ -91,9 +91,10 @@ function _savefig(
     format::Format,
     backend::Module,
     dir::AbstractString;
-    update=(backend == CairoMakie ? true : false),
+    update=missing,
     varargs...,
 )
+    update = ismissing(update) ? (backend == CairoMakie ? true : false) : update
     path = joinpath(dir, name * extension(format))
     @info "Building figure `$(basename(path) * (format == PdfTex ? "_tex" : ""))` in $dir"
     if format == PdfTex
@@ -122,4 +123,4 @@ function _savepdftex(svgpath, outputpath; wait=true)
     return run(inkscape_cmd; wait)
 end
 
-export savefig, figure_dir!, export_formats!
+export savefig, figure_dir!, export_format!
