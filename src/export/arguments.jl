@@ -35,7 +35,19 @@ function FunctionSpec(func::Function)
     return FunctionSpec(func, ())
 end
 
-(fspec::FunctionSpec)(; kwargs...) = fspec.fig(fspec.args...; kwargs...)
+function (fspec::FunctionSpec)(; kwargs...)
+    try
+        return fspec.fig(fspec.args...; kwargs...)
+    catch e
+        # NOTE: An error that may occur with the argument cascade is that we call the function with arguments that were
+        # passed for the SizeSpec. Warn the user about that the errors indicate that this may be the case. <31-01-25>  
+        if (e isa Unitful.DimensionError || e isa e isa MethodError) &&
+            (fspec.args[1] isa Length || fspec.args[2] isa Length)
+            @warn "An error occured when calling the figure function. You may have passed arguments intended for the `SizeSpec` to the figure function. You may need to pass the first argument explicitely as `MakieMaestro.FunctionSpec(fig_function)`."
+        end
+        throw(e)
+    end
+end
 Base.nameof(fspec::FunctionSpec) = nameof(fspec.fig)
 
 """
@@ -259,12 +271,10 @@ end
 # const Formats = Union{FormatSpec, AbstractVector{<:FormatSpec}, AbstractSet{<:FormatSpec}, Tuple{Vararg{FormatSpec}}} 
 # same as in with `Chars` in julia `Base` module. <28-01-25> 
 
+# NOTE: `Tuple` as a sequence of formats is not included in these two methods because it can be confused with the
+# `SizeSpec` `(w,h)` tuple. <31-01-25>
 function savefig(
-    fig::FunctionSpec,
-    name::AbstractString,
-    formats::Union{Tuple,Vector,Set},
-    args...;
-    kwargs...,
+    fig::FunctionSpec, name::AbstractString, formats::Union{Vector,Set}, args...; kwargs...
 ) # 2B -> 2A -> 0
     return savefig(fig, PathSpec(name, formats), args...; kwargs...)
 end
@@ -272,7 +282,7 @@ end
 function savefig(
     fig::FunctionSpec,
     name::AbstractString,
-    formats::Union{Tuple,Vector,Set},
+    formats::Union{Vector,Set},
     dir::AbstractString,
     args...;
     kwargs...,
