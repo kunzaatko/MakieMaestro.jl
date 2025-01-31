@@ -88,28 +88,36 @@ When you are satisfied with the figure function, as you can check interactively,
 
 ```@example bessel-y-plot
 figure_dir!(".") # hide
-savefig(bessely_fig; formats = Set([MakieMaestro.Svg])) # bessely_fig.svg
+savefig(bessely_fig, ["svg"]) # bessely_fig.svg
 nothing # hide
 ```
 ![](bessely_fig.svg)
 
 If this figure is intended for the appendix, we can theme it with
 ```@example bessel-y-plot
-savefig(bessely_fig, "bessely_fig_appendix"; override_theme = Themes.get_theme(:appendix), formats = Set([MakieMaestro.Svg])) # bessely_fig_appendix.svg
+savefig(bessely_fig, "bessely_fig_appendix.svg"; override_theme = Themes.get_theme(:appendix)) # bessely_fig_appendix.svg
 ```
 ![](bessely_fig_appendix.svg)
+
+
+!!! hint "Export Format"
+    In many cases we would always want to export the figure in the same format. In this case for a web page (this
+    documentation), we would want `.svg`. To make this easier, you can define the default export format using
+    ```@example bessel-y-plot
+    export_format!(Set([MakieMaestro.Svg]))
+    ```
 
 To make is larger for (maybe for a full page figure), we can do that with
 
 ```@example bessel-y-plot
-savefig(bessely_fig, "bessely_fig_large", Themes.A4_WIDTH; override_theme = Themes.get_theme(:appendix), formats = Set([MakieMaestro.Svg])) # bessely_fig_large.svg
+savefig(bessely_fig, "bessely_fig_large", Themes.A4_WIDTH; override_theme = Themes.get_theme(:appendix)) # bessely_fig_large.svg
 ```
 ![](bessely_fig_large.svg)
 
 Changing the aspect ratio is possible by supplying the `hwratio` argument
 
 ```@example bessel-y-plot
-savefig(bessely_fig, "bessely_fig_wide", Themes.A4_WIDTH, 0.4; override_theme = Themes.get_theme(:appendix), formats = Set([MakieMaestro.Svg])) # bessely_fig_wide.svg
+savefig(bessely_fig, "bessely_fig_wide", Themes.A4_WIDTH, 0.4; override_theme = Themes.get_theme(:appendix)) # bessely_fig_wide.svg
 ```
 ![](bessely_fig_wide.svg)
 

@@ -20,6 +20,7 @@ Pages = ["reference.md"]
 ```@docs
 savefig
 figure_dir!
+export_format!
 ```
 
 ```@raw html
@@ -36,6 +37,13 @@ MakieMaestro.get_figure_dir
 MakieMaestro.get_themes
 MakieMaestro.get_export_theme
 MakieMaestro.get_formats
+
+MakieMaestro.FunctionSpec
+MakieMaestro.PathSpec
+MakieMaestro.get_export_format
+MakieMaestro.SizeSpec
+MakieMaestro.RelativeSize
+MakieMaestro.FigHeight
 
 MakieMaestro._savefig
 MakieMaestro._savepdftex
@@ -56,6 +64,7 @@ MakieMaestro.Themes.hwratio!
 MakieMaestro.Themes.update_theme
 MakieMaestro.Themes.update_theme!
 MakieMaestro.Themes.get_theme
+MakieMaestro.Themes.theme_keys
 ```
 
 ```@raw html

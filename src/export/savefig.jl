@@ -14,10 +14,10 @@ include("arguments.jl")
 
 Save the figure `fig` at `path` with `size`. 
 
-Themes are applied from the [`:base`](@ref `Themes.get_theme`) theme and you can supply any number of overrides, either [predefined](@ref `Themes.theme_keys`) or you own.
+Themes are applied from the [`:base`](@ref Themes.get_theme) theme and you can supply any number of overrides, either [predefined](@ref Themes.theme_keys) or you own.
 
 The arguments `fig`, `path` and `size` may be specified in a number of different ways as shown below in __Arguments__ or
-in the case of `path` and `size` be left with their default values (see [`width!`](@re), [`hwratio!`](@ref),
+in the case of `path` and `size` be left with their default values (see [`Themes.width!`](@ref Themes.width!), [`Themes.hwratio!`](@ref Themes.hwratio!),
 [`figure_dir!`](@ref) and [`export_format!`](@ref)). For a clearer picture of how to supply the arguments, see
 __Examples__ in the documentation, but as a rule of thumb, any sensible way to define the export arguments should work
 granted that they are in the correct order.
@@ -28,15 +28,15 @@ granted that they are in the correct order.
 # Arguments
 
 * `fig` -- figure(s) generating function 
-`fig_func::Function, (arg1, arg2,...)`, `() -> fig_func(arg1, arg2,...)` or `fig_func` (if it is possible to call it without any arguments). This is the only argument that is necessary to provide.
+`fig_func::Function, (arg1, arg2,...)`, `() -> fig_func(arg1, arg2,...)` or `fig_func` (if it is possible to call it without any arguments). This is the only argument that is necessary to provide. See [`FunctionSpec`](@ref).
 
 * `path`: basename, directory and formats
 `name, [formats], [dir]` or `path`. In example `"protein_density_heatmap", [:svg, :pdf, :pdf_tex], "~/ImporantProject/"` or equivalently `"~/ImporantProject/protein_density_heatmap.{svg, pdf, pdf_tex}"`.
-If not supplied, the name is inferred from `nameof(fig_func)`, `formats` are taken from [`MakieMaestro.get_export_format`](@ref) (see also [`export_format!`](@ref)) and `dir` is taken from [`MakieMaestro.get_figure_dir`](@ref) (see also [`figure_dir!`](@ref)).
+If not supplied, the name is inferred from `nameof(fig_func)`, `formats` are taken from [`MakieMaestro.get_export_format`](@ref) (see also [`export_format!`](@ref)) and `dir` is taken from [`MakieMaestro.get_figure_dir`](@ref) (see also [`figure_dir!`](@ref)). See [`PathSpec`](@ref).
 
 * `size`: physical dimensions of the figure (determining combination of width, height and hwratio)
-`20.5u"cm", 0.6`, `FigHeight(5u"inch"), 8u"inch"`, `0.5, 1.5` (relative width, hwratio), `HeightLength(0.3), 0.4` (relative height, hwratio).
-The defaults can be set by `width!` and `hwratio!`.
+`20.5u"cm", 0.6`, `FigHeight(5u"inch"), 8u"inch"`, `0.5, 1.5` (relative width, hwratio), `HeightLength(0.3), 0.4`
+(relative height, hwratio). The defaults can be set by `width!` and `hwratio!`. See [`SizeSpec`](@ref).
 
 ## Keyword arguments
 * `backends=CairoMakie`

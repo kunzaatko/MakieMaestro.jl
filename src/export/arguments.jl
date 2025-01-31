@@ -138,9 +138,9 @@ Specification of the physical size of the exported image.
 
 The primary way to represent the size of a figure is it's `width` and the height to width ratio `hwratio`. However, any
 set of two values from {`width`, `hwratio`, `height`} fully determine the size. `width` and `height` may be either fixed
-values of the type [`Length`](@exref) or relative sizes to their default values by the type `Real`
+values of the type [`Length`](@extref Unitful Length) or relative sizes to their default values by the type `Real`
 ([`RelativeSize`](@ref)). None, one or two of the values may be supplied and the size is determined from these values
-and the defaults. These defaults may be set with [`width!`](@ref) and [`hwratio!`](@ref).
+and the defaults. These defaults may be set with [`width!`](@ref Themes.width!) and [`hwratio!`](@ref Themes.hwratio!).
 
 See also [`Themes.width!`](@ref), [`Themes.get_width`](@ref), [`Themes.hwratio!`](@ref), [`Themes.get_hwratio`](@ref)
 
