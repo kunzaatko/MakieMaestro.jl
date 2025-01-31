@@ -77,3 +77,13 @@ This makes the initial run in a resumed session a lot faster.
 !!! note "How does it work?"
     There is a global dictionary that stores the figures and the figure is shown only if the dictionary already contains
     this figure.
+
+!!! tip "Edit notebook code in your editor"
+    If you would like to have the notebook code watch the content of the notebook file so that you can directly edit
+    that file and see the outcome, this is possible in __Pluto.jl__ by specifying the `Pluto.ServerSession` prior to
+    launching it like so:
+```julia
+session = Pluto.ServerSession()
+session.options.server.auto_reload_from_file = true
+Pluto.run(session)
+```
