@@ -325,6 +325,24 @@ include("./tools.jl")
                     ))
                 end
 
+                # NOTE: Warns that the error may be thrown due to SizeSpec arguments being passed to
+                # fig_function <31-01-25> 
+                using Logging
+                Logging.disable_logging(Logging.Info) # NOTE: Must enable logging after DocTests
+                # l = TestLogger()
+                # Logging.with_logger(l) do
+                #     try
+                @test_logs (:warn,) @test_throws MethodError savefig(
+                    fig_function, (100u"cm", 0.6)
+                )
+                @test_logs (:warn,) @test_throws MethodError savefig(
+                    fig_function, (0.7, 10u"cm")
+                )
+                Logging.disable_logging(Logging.Warn)
+                @test_nowarn savefig(FunctionSpec(fig_function), (10u"cm", 10u"cm"))
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
+
                 savefig(fig_function, FigHeight(100u"cm"))
                 @test figexists("fig_function.pdf")
                 rmfig("fig_function.pdf")
