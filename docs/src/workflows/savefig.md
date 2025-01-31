@@ -158,6 +158,8 @@ width!(Themes.A4_WIDTH)
 export_format!(Set([MakieMaestro.Svg]))
 ```
 and figures can then be exported using various argument sets
+<!-- TODO: Put the deleting of the figures and directories to destruction code after the example instead of running it
+in-line <31-01-25> -->
 ```@example argument-cascade
 using MakieMaestro: MakieMaestro as MM
 
@@ -169,18 +171,32 @@ function lissajous_knot(a=3, b=4, δ=3π/4; A=1, B=1, N=1000)
 end
 
 savefig(lissajous_knot)                                      # lissajous_knot.svg
+rm("lissajous_knot.svg") # hide
 savefig(lissajous_knot, (8, 3))                              # lissajous_knot.svg with a=8 and b=3
+rm("lissajous_knot.svg") # hide
 savefig(lissajous_knot, (6, 8); A=3)                         # lissajous_knot.svg with a=6, b=8 and A=3
+rm("lissajous_knot.svg") # hide
 savefig(lissajous_knot, [:svg, "pdf", MM.Png])               # lissajous_knot.{svg, pdf, png} in multiple formats
+rm.("lissajous_knot.$e" for e in ["pdf", "svg", "png"]) # hide
 savefig(lissajous_knot, "not_a_knot")                        # not_a_knot.svg
+rm("not_a_knot.svg") # hide
 savefig(lissajous_knot, "not_a_knot.pdf")                    # not_a_knot.pdf
+rm("not_a_knot.pdf") # hide
 savefig(lissajous_knot, "not_a_knot.{png,eps} ")             # not_a_knot.{png, eps} in multiple formats
+rm.("not_a_knot.$e" for e in ["png", "eps"]) # hide
 savefig(lissajous_knot, (2,1))                               # lissajous_knot.svg 2×default width
+rm("lissajous_knot.svg") # hide
 savefig(lissajous_knot, 2, 1)                                # lissajous_knot.svg 2×default width and hwratio=1
+rm("lissajous_knot.svg") # hide
 savefig(lissajous_knot, 10u"cm", 1)                          # lissajous_knot.svg 10 cm wide and square aspect ratio
+rm("lissajous_knot.svg") # hide
 # NOTE: Since the size tuple may be confused as the arguments to the figure function, we need to construct `FunctionSpec` explicitely
 savefig(MM.FunctionSpec(lissajous_knot), (10u"cm", 20u"cm")) # lissajous_knot.svg 10 cm wide and 20 cm high
+rm("lissajous_knot.svg") # hide
 isdir("./alt_dir") || mkdir("./alt_dir")                     # hide
-savefig(lissajous_knot, "alt_dir/lissajous_know.svg")        # lissajous_knot.svg in alt_dir
-savefig(lissajous_knot, "pdf", "alt_dir")                    # lissajous_knot.pdf in alt_dir
+savefig(lissajous_knot, "alt_dir/lissajous_knot.svg")        # lissajous_knot.svg in alt_dir
+rm("./alt_dir/lissajous_knot.svg") # hide
+savefig(lissajous_knot, ["pdf"], "alt_dir")                  # lissajous_knot.pdf in alt_dir
+rm("./alt_dir/lissajous_knot.pdf") # hide
+rm("./alt_dir/", recursive=true) # hide
 ```
