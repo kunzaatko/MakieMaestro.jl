@@ -8,7 +8,6 @@ include("utils.jl")
 # Argument formation cascade for the final function
 include("arguments.jl")
 
-# TODO: Add `@ref`s to the relevant structs that take care of defining the arguments in the export function <29-01-25> 
 """
     savefig(fig, [path], [size]; <keyword arguments>)
 

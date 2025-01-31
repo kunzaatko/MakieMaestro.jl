@@ -1,5 +1,3 @@
-# TODO: Add the functionality using the getters and update the function to the current API <17-10-24> 
-
 const FIGURE_DIR = Ref{Union{Missing,String}}(missing)
 """
     figure_dir!(dir)
@@ -50,16 +48,28 @@ function Base.parse(::Type{Format}, x::AbstractString)
     throw(ArgumentError("$x is not a valid format"))
 end
 
-# TODO: Should this be Pdf as the default or should this be explicitly left to the user to specify? <28-01-25> 
+Base.convert(f::Type{Format}, s::AbstractString) = parse(f, s)
+Base.convert(f::Type{Format}, s::Symbol) = convert(f, string(s))
+
 const FORMATS_DEFAULT = Ref{Union{Set{Format},Missing}}(missing)
-# TODO: Should accept various options for the format definitions. `String`/`Symbol`/`Format` <28-01-25> 
 """
     export_format!(formats)
 Set the default formats to export.
+
+```jldoctest
+julia> export_format!(["pdf", :eps]);
+
+julia> export_format!("pdf", MakieMaestro.Png, :svg);
+
+julia> export_format!(missing);
+```
 """
 function export_format!(formats)
-    return FORMATS_DEFAULT[] = formats
+    return FORMATS_DEFAULT[] =
+        formats isa Missing ? missing : Set(convert.(Format, formats))
 end
+export_format!(formats...) = export_format!(formats)
+export_format!(format::Union{Format,AbstractString,Symbol}) = export_format!((format,))
 
 """
     MakieMaestro.get_export_format()
@@ -67,7 +77,7 @@ Get the default export formats
 
 # Examples
 ```jldoctest
-julia> export_format!(Set([MakieMaestro.Pdf]))
+julia> export_format!(:pdf)
 Set{MakieMaestro.Format} with 1 element:
   MakieMaestro.Pdf
 

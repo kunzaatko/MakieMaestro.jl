@@ -104,7 +104,7 @@ savefig(bessely_fig, "bessely_fig_appendix.svg"; override_theme = Themes.get_the
     In many cases we would always want to export the figure in the same format. In this case for a web page (this
     documentation), we would want `.svg`. To make this easier, you can define the default export format using
 ```@example bessel-y-plot
-export_format!(Set([MakieMaestro.Svg]))
+export_format!(:svg)
 ```
 
 To make is larger for (maybe for a full page figure), we can do that with
@@ -155,11 +155,9 @@ using MakieMaestro # hide
 using MakieMaestro.Themes
 figure_dir!(".")
 width!(Themes.A4_WIDTH)
-export_format!(Set([MakieMaestro.Svg]))
+export_format!(:svg)
 ```
 and figures can then be exported using various argument sets
-<!-- TODO: Put the deleting of the figures and directories to destruction code after the example instead of running it
-in-line <31-01-25> -->
 ```@example argument-cascade
 using MakieMaestro: MakieMaestro as MM
 

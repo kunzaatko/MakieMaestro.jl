@@ -109,11 +109,10 @@ include("./tools.jl")
 
                 @test FunctionSpec(fig_function_w_kwargs) isa FunctionSpec
                 fspec_3 = FunctionSpec(fig_function_w_kwargs)
-                # FIX: Better type for the arguments of the function <27-01-25> 
-                # @test FunctionSpec(fig_function_w_kwargs, ((-π, π); N = 300)) isa FunctionSpec
-                # fspec_4 = FunctionSpec(fig_function_w_kwargs, ((-π, π); N = 300))
+                @test FunctionSpec(fig_function_w_kwargs, ((-π, π),)) isa FunctionSpec
+                fspec_4 = FunctionSpec(fig_function_w_kwargs, ((-π, π),))
                 @test fspec_3() isa Figure
-                # @test fspec_4() isa Figure
+                @test fspec_4(; N=300) isa Figure
             end
 
             @testset "PathSpec" begin
@@ -169,7 +168,6 @@ include("./tools.jl")
                 @test RelativeSize(0.5) isa RelativeSize
                 @test_throws ArgumentError RelativeSize(-0.5)
 
-                # TODO: Add tests for expected final values <28-01-25> 
                 @test SizeSpec() isa SizeSpec
                 @test SizeSpec(30u"cm") isa SizeSpec
                 @test SizeSpec(RelativeSize(0.5)) isa SizeSpec

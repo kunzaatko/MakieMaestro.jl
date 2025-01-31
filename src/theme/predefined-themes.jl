@@ -5,7 +5,6 @@
 
 # FIX: This theme should not set the font size. It depends on the output size which is different depending on the where
 # we are plotting. In Pluto the smaller font makes the labels illegible <18-10-24> 
-# FIX: Adjust font sizes <21-11-23> 
 THEME[][:base] = function base_theme()
     return merge_generate(
         theme_latexfonts,

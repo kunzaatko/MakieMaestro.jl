@@ -1,24 +1,6 @@
-# TODO: Argument for `width` should support relative width that will select the width based on the default by a factor.
-# This could be done by some type that holds a factor. <25-01-25> 
-
-# TODO: The arguments for the name should first be parsed to some type that holds the optional type and the generator or
-# fixed list off names that are given to the figures that will be saved. <25-01-25> 
-
-# TODO: Support templating for the names and DEDUCTION OF THE FORMAT FROM THE SUPPLIED NAME. For instance when function
-# returns multiple figures, it should be possible to name something like `["{}_surface", "{}_heatmap"]` and interpolate
-# the original name into the templates. <09-01-25> 
-# TODO: Possibility to define formats in more human-like ways and transform them into the computer way using some
-# parsing function. For instance it should be possible to pass ["pdf", "svg", "pdf_tex", MakieMaestro.Eps, :png] etc.
-# Then workflow docs for publication figures should be changed accordingly. <09-01-25> 
 # TODO: Better ways of setting the override_themes. Especially using the `Symbol`s such as `[:appendix]` in the docs.
 # Then workflow docs for publication figures should be changed accordingly <09-01-25> 
 # TODO: Possibility of using `skip` for defining the formats for the save <18-10-24> 
-# TODO: Define other methods here based on the argument types. No name change but different width. No width and hwratio,
-# but width, height instead, etc. <08-01-25>
-
-# TODO: Currently does not support keyword arguments. How do I get these? Would it be better to store the function call
-# as code? I.e. a syntax tree? Then I could call the function exactly in that way at the place where it is necessary.
-# This would however be probably fragile and programmatically complex <28-01-25> 
 
 """
     FunctionSpec(fig, args)
@@ -117,9 +99,6 @@ function PathSpec(basename::AbstractString, dirname::AbstractString)
     # check extension in this method also. <30-01-25> 
     return PathSpec(joinpath(dirname, basename))
 end
-
-Base.convert(f::Type{Format}, s::AbstractString) = parse(f, s)
-Base.convert(f::Type{Format}, s::Symbol) = convert(f, string(s))
 
 function PathSpec(basename::AbstractString, formats, dirname::AbstractString)
     return PathSpec(name_function(basename), Set(convert.(Format, formats)), dirname)
