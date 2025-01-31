@@ -2,7 +2,7 @@
 CurrentModule = MakieMaestro
 ```
 
-# Exporting figures publication 
+# Exporting publication figures 
 
 You often want to apply specific themes or export figures in different sizes.
 For instance a margin figure size and a full `\textwidth` size. 
@@ -128,4 +128,59 @@ savefig(bessely_fig, "bessely_fig_wide", Themes.A4_WIDTH, 0.4; override_theme = 
     <img src="workflows/bessely_fig.svg" alt="Bessel Y figure for main document" style="margin-right: 10px;">
     <img src="workflows/bessely_fig_appendix.svg" alt="Bessel Y figure themed for the appendix" style="margin-left: 10px;">
 </div>
+```
+
+# Arguments to the `savefig` function
+The intension of this exporting functionality is such that you do not need to think much about the process of saving the
+output of your research. After some initializations of regarding the setting up of your sizing ([`width!`](@ref
+MakieMaestro.Themes.width!), [`hwratio!`](@ref MakieMaestro.Themes.hwratio!)), desired format [`export_format!`](@ref
+MakieMaestro.export_format!) and directory to store the figures in ([`figure_dir!`](@ref MakieMaestro.figure_dir!)), you
+should be set and as long as you structure the visualizations into functions, keeping exported figures should be as
+simple as calling [`savefig`](@ref) with any set of reasonable arguments which indicate your needs about the figure.
+
+In this nature, [`savefig`](@ref) may be called with a great number of variants of arguments. The only necessary
+knowledge is the order in which the aspects of the figure are passed to the function. This order is as follows:
+1. _Source of the figure_ -- What you want to export?
+2. _File specification_ -- Where? In which format? and What name? to export to.
+3. _Size specification_ -- What are the dimensions of the figure (determined by its intended use in a 
+   poster/report/slides/article etc.)
+All of these may be specified using various arguments or left to the default. For a clearer understanding of what
+arguments are acceptable see [`savefig`](@ref) ([`SizeSpec`](@ref MakieMaestro.SizeSpec), [`PathSpec`](@ref
+MakieMaestro.PathSpec), [`FunctionSpec`](@ref MakieMaestro.FunctionSpec)).
+Here are some examples of possible calls who's outcome is mostly self explanatory.
+
+Setup of the default values
+```@repl argument-cascade
+using MakieMaestro # hide
+using MakieMaestro.Themes
+figure_dir!(".")
+width!(Themes.A4_WIDTH)
+export_format!(Set([MakieMaestro.Svg]))
+```
+and figures can then be exported using various argument sets
+```@example argument-cascade
+using MakieMaestro: MakieMaestro as MM
+
+function lissajous_knot(a=3, b=4, δ=3π/4; A=1, B=1, N=1000)
+    ts = range(0,2π,N) 
+    xs = @. A*sin(a*ts + δ)
+    ys = @. B*sin(b*ts)
+    return lines(xs, ys)
+end
+
+savefig(lissajous_knot)                                      # lissajous_knot.svg
+savefig(lissajous_knot, (8, 3))                              # lissajous_knot.svg with a=8 and b=3
+savefig(lissajous_knot, (6, 8); A=3)                         # lissajous_knot.svg with a=6, b=8 and A=3
+savefig(lissajous_knot, [:svg, "pdf", MM.Png])               # lissajous_knot.{svg, pdf, png} in multiple formats
+savefig(lissajous_knot, "not_a_knot")                        # not_a_knot.svg
+savefig(lissajous_knot, "not_a_knot.pdf")                    # not_a_knot.pdf
+savefig(lissajous_knot, "not_a_knot.{png,eps} ")             # not_a_knot.{png, eps} in multiple formats
+savefig(lissajous_knot, (2,1))                               # lissajous_knot.svg 2×default width
+savefig(lissajous_knot, 2, 1)                                # lissajous_knot.svg 2×default width and hwratio=1
+savefig(lissajous_knot, 10u"cm", 1)                          # lissajous_knot.svg 10 cm wide and square aspect ratio
+# NOTE: Since the size tuple may be confused as the arguments to the figure function, we need to construct `FunctionSpec` explicitely
+savefig(MM.FunctionSpec(lissajous_knot), (10u"cm", 20u"cm")) # lissajous_knot.svg 10 cm wide and 20 cm high
+isdir("./alt_dir") || mkdir("./alt_dir")                     # hide
+savefig(lissajous_knot, "alt_dir/lissajous_know.svg")        # lissajous_knot.svg in alt_dir
+savefig(lissajous_knot, "pdf", "alt_dir")                    # lissajous_knot.pdf in alt_dir
 ```
