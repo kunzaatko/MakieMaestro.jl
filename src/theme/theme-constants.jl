@@ -1,5 +1,8 @@
+# TODO: Add a function `height!` that also changes the older of `width!` or `hwratio!` <29-01-25> 
+# TODO: Add to docs the instructions of how to get the relevant values `textwidth`, etc. to from the LaTeX document <28-01-25> 
 # TODO: Similar to the `width!` and `hwratio!` should be `fontsize` defined with mixin themes that would define relative
-# sizes such as script-size etc. <25-01-25> 
+# sizes such as script-size etc. Also some similar ways to change the sizes of the markers and the line widths as is in
+# TiKz <25-01-25> 
 using Unitful
 using Unitful: Length
 using MakieMaestro.Units

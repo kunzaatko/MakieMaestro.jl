@@ -81,10 +81,32 @@ function figsize(width::Length=get_width(), hw_ratio=get_hwratio())
     return width_pts, height_pts
 end
 
-# TODO: Should supply some method that gives the keys that are defined in the theme dictionary. <09-01-25> 
+# TODO: Provide some way to combine these themes with some macro or whatnot and generate documentation for them
+# automatically. I expect this to work in some similar way as `@unit` in `Unitful`. Creating new themes from the
+# existing ones by calling the existing ones with some arguments if they are theme generators and storing those
+# arguments in the docs of the created theme. <29-01-25> 
 # TODO: Should add the base Themes as `dark`, `light` (`theme_light`) etc. defined in Makie itself under some keys in
 # this theming dictionary. Then document this. <09-01-25> 
 const THEME = Ref{Dict{Symbol,ThemeGenerator}}(Dict())
+
+# TODO: Some better sorting for the keys as well as maybe some way to document these. When combining themes as mixins is
+# implemented, this should show the base themes and the later ones that are mixins as a tree structure if possible. 
+# <29-01-25> 
+"""
+    theme_keys()
+Show the that are defined in the theme dictionary.
+
+```jldoctest; setup = :(using MakieMaestro.Themes)
+julia> theme_keys()[1:3]
+3-element Vector{Symbol}:
+ :base
+ :cairomakie
+ :data_aspect
+```
+"""
+function theme_keys()
+    return sort(collect(keys(THEME[])))
+end
 
 """
     gen(s::Symbol; dict=THEME[])
@@ -119,7 +141,7 @@ Attributes with 4 entries:
   rowgap => true
 ```
 """
-function get_theme(themes::Vector; dict=THEME[]) # NOTE: Reason for not specifying the eltype of the vector is that when the vector is created it tends to have an eltype of `Any` which does not fit the signature then <08-01-25> 
+function get_theme(themes::Vector=[:base]; dict=THEME[]) # NOTE: Reason for not specifying the eltype of the vector is that when the vector is created it tends to have an eltype of `Any` which does not fit the signature then <08-01-25> 
     return merge_generate(map(k -> k isa Symbol ? getindex(dict, k) : k, themes)...)
 end
 function get_theme(themes::Vararg{Union{ThemeGenerator,Symbol}}; dict=THEME[])
@@ -201,5 +223,5 @@ end
 include("predefined-themes.jl")
 include("override-themes.jl")
 
-export width!, hwratio!
+export width!, hwratio!, theme_keys
 end

@@ -28,15 +28,8 @@ module Units
     @unit pt "pt" Point (1//72)u"inch" false
 end
 
-# TODO: Update the theme to be generated depending on the ***_DEFAULT as it cannot be set beforehand <17-10-24> 
-
-# TODO: Add the Pluto snippet that I use for the backend function <16-10-24> 
-# FIX: Define WIDTH_DEFAULT and HWRATIO_DEFAULT <15-10-24> 
-# FIX: The cache location should be parametrized <15-10-24> 
-# TODO: Add the `L` function <15-10-24> 
-
-include("themes/theme.jl")
-include("save-fig.jl")
+include("theme/theme.jl")
+include("export/savefig.jl")
 include("shortcuts.jl")
 include("recipe-modifications.jl")
 include("pluto-helpers.jl")
@@ -44,9 +37,6 @@ include("pluto-helpers.jl")
 function __init__()
     Unitful.register(Units)
 
-    # TODO: Similarly to this the default for saving figures when in a documenter context should be `SVG` instead of
-    # `PDF`. The context of the run should be determined here and used in the `savefig` in some method that defines the
-    # default formats to generate. <09-01-25> 
     if @isdefined PlutoRunner  # running inside Pluto
         WGLMakie.activate!()
     elseif isinteractive() # running in REPL
