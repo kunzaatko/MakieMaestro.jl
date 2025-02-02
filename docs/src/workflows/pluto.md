@@ -44,9 +44,9 @@ and I see inspect the figure to get the information from it.
 !!! tip
     It is often useful to use the `do` block syntax to define the figure function but it is also possible to use the
     direct syntax
-```julia
-with_backend!(fig_func, GLMakie, fig_func_args...)
-```
+    ```julia
+    with_backend!(fig_func, GLMakie, fig_func_args...)
+    ```
 
 Next I decide whether I want to keep, modify or discard the figure.
 If I decide to keep the figure for reference, I would 
@@ -82,8 +82,22 @@ This makes the initial run in a resumed session a lot faster.
     If you would like to have the notebook code watch the content of the notebook file so that you can directly edit
     that file and see the outcome, this is possible in __Pluto.jl__ by specifying the `Pluto.ServerSession` prior to
     launching it like so:
-```julia
-session = Pluto.ServerSession()
-session.options.server.auto_reload_from_file = true
-Pluto.run(session)
-```
+    ```julia
+    Pluto.run(; auto_reload_from_file=true)
+    ```
+    If you prefer, you may add this to your
+    [`startup.jl`](@extref Julia :std:label:`Startup-file`) file so that you do not
+    need to remember next time:
+    ```julia
+    """
+        run_pluto()
+
+    Run Pluto session with notebook file watching enabled.
+    """
+    function run_pluto()
+        @eval begin
+            using Pluto
+            Pluto.run(; auto_reload_from_file=true)
+        end
+    end
+    ```
