@@ -21,6 +21,30 @@ using MakieMaestro.Themes
 width!(Themes.A4_WIDTH/2)
 ```
 
+!!! tip "But what is the correct size?"
+    When exporting for a ``\LaTeX`` document, you may want to decide on the size of the figure directly using the layout
+    of your document. To determine the layout, add the package `layout` to your preamble
+    ```latex
+    \usepackage{layout}
+    ```
+    and in your document body, add
+    ```latex
+    \layout{}
+    ```
+    This will produce an analogous output on a new page as
+
+    ![Layout of a LaTeX document](layout.svg)
+
+    for your document. Then if you want the width of the figure to match the width of the text, you can use this output
+    and set it accordingly
+    ```@example
+    using MakieMaestro # hide
+    using MakieMaestro.Themes # hide
+    using MakieMaestro.Units
+    width!(512u"pt") # about 181 mm
+    ```
+
+
 Now that we have a default width, any figure that we will be exporting will assume this width and calculate the height
 based on the set height-width ratio.
 The default is the golden ratio, but it is possible to change this similarly to as we set the width with the function
@@ -121,7 +145,7 @@ savefig(bessely_fig, "bessely_fig_wide", Themes.A4_WIDTH, 0.4; override_theme = 
 ```
 ![](bessely_fig_wide.svg)
 
-<!-- TODO: Why doesn't this work?! <09-01-25> -->
+<!-- TODO: Why doesn't this work?! It does not work because of this: issue https://github.com/JuliaDocs/Documenter.jl/issues/921 <09-01-25> -->
 
 ```@raw html
 <div style="display: flex; justify-content: center; align-items: center;">

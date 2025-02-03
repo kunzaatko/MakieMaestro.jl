@@ -1,3 +1,5 @@
+# TODO: Change to centring the images in the documentation. Note that this cannot be done by using raw HTML because of
+# a bug in adding the paths of the images. <03-02-25> 
 using MakieMaestro
 using Documenter, DocumenterInterLinks
 
