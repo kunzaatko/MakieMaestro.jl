@@ -1,3 +1,5 @@
+# TODO: Add an override theme to adjust the font sizes for the options that are given to latex `10pt`/`11pt`/`12pt` or
+# beamer <03-02-25> 
 # TODO: Add a function `height!` that also changes the older of `width!` or `hwratio!` <29-01-25> 
 # TODO: Add to docs the instructions of how to get the relevant values `textwidth`, etc. to from the LaTeX document <28-01-25> 
 # TODO: Similar to the `width!` and `hwratio!` should be `fontsize` defined with mixin themes that would define relative

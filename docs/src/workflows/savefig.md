@@ -9,7 +9,7 @@ For instance a margin figure size and a full `\textwidth` size.
 Also you may want to have different themes for the margin figures and the main base document figures.
 This type of task is made easier by `MakieMaestro` by supplying the `Themes` module and the `savefig` function.
 
-## Theming
+## Theming and Sizing
 
 First off, we would like to set a default width that will be used if no width is provided.
 `MakieMaestro` tries to avoid assuming any particular aspect of your figures except some elementary sensible defaults.
@@ -87,6 +87,12 @@ We can check what the final theme looks like with a combination of the various a
 Themes.get_theme(:base, :appendix, :rotate_labels);
 ```
 
+!!! tip "Font sizes"
+    You should adjust the font sizes of the figure to match the document for the physical export sizes to match. For the
+    common, built-in sizes in ``\LaTeX`` and there correspondence with point sizes, look at the
+    [wiki](https://en.wikibooks.org/wiki/LaTeX/Fonts#Built-in_sizes). Importantly, there is a difference in the sizes
+    when using `slides` or `beamer` as the document class.
+
 ## Exporting figures
 
 The key to this workflow is to have define function that produce the figure which we want to export.
@@ -145,7 +151,7 @@ savefig(bessely_fig, "bessely_fig_wide", Themes.A4_WIDTH, 0.4; override_theme = 
 ```
 ![](bessely_fig_wide.svg)
 
-<!-- TODO: Why doesn't this work?! It does not work because of this: issue https://github.com/JuliaDocs/Documenter.jl/issues/921 <09-01-25> -->
+<!-- TODO: Why doesn't this work?! It does not work because of this: issue  <09-01-25> -->
 
 ```@raw html
 <div style="display: flex; justify-content: center; align-items: center;">
