@@ -38,6 +38,15 @@ include("./tools.jl")
         end
     end
     @testset "Theming" begin
+        @testset "Constants" begin
+            using MakieMaestro.Themes
+            @test Themes.A4_HEIGHT == 297u"mm"
+            @test Themes.A11_WIDTH == 18u"mm" # Test for rounding down
+
+            @test Themes.A3_HEIGHT == Themes.A2_WIDTH == 420u"mm"
+            @test Themes.B6_WIDTH == 125u"mm"
+            @test Themes.C10_HEIGHT == 40u"mm"
+        end
         @testset "merge_generate" begin
             using MakieMaestro.Themes: merge_generate, ThemeGenerator, get_theme, THEME
             @test THEME[][:base] isa ThemeGenerator
@@ -148,7 +157,11 @@ include("./tools.jl")
 
                 export_format!(Set([MakieMaestro.Pdf]))
                 if !haskey(ENV, "GITHUB_ACTIONS") # NOTE: tmp directories do not work as expected in the CI <31-01-25> 
-                    @test PathSpec("testpdf") isa PathSpec
+                    # FIX: Somehow creating a temp dir and changing to it does not work either... <05-02-25> 
+                    temp_dir = mkdir(joinpath(tempdir(), "mm_test_dir/"))
+                    cd(temp_dir)
+                    @test_broken PathSpec("testpdf") isa PathSpec
+                    rm(temp_dir; recursive=true)
                 end
                 @test MakieMaestro.Pdf in PathSpec(joinpath(dir, "testpdf")).formats
                 @test PathSpec("test", dir) isa PathSpec

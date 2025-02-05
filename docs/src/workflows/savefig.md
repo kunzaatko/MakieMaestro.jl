@@ -91,7 +91,7 @@ Themes.get_theme(:base, :appendix, :rotate_labels);
     You should adjust the font sizes of the figure to match the document for the physical export sizes to match. For the
     common, built-in sizes in ``\LaTeX`` and there correspondence with point sizes, look at the
     [wiki](https://en.wikibooks.org/wiki/LaTeX/Fonts#Built-in_sizes). Importantly, there is a difference in the sizes
-    when using `slides` or `beamer` as the document class.
+    when using `slides` (not `beamer`) as the document class.
 
 ## Exporting figures
 

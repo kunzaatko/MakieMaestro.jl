@@ -1,3 +1,7 @@
+# TODO: An interactive tool, where one can put his figure and change the attributes using the builtin block such as
+# a sliders etc. to get the correct attributes. Changing sizes and colours, etc. The available sizes within the
+# interactive figure can be configured using some config file that would hold all the attributes. Perhaps some
+# attributes would not be possible to change like the figure sizes? <03-02-25>
 # TODO: Assure that the gaps are set correctly such that if I use subfigures in LaTeX that the figures output is the
 # same as when I generate a figure with multiple axes <18-10-24> 
 """
@@ -22,7 +26,7 @@ using Makie: Theme
 # a dictionary could be passed to the save-fig and the `with_theme` functions as a whole or via an accessor <18-10-24> 
 # TODO: Framework for setting the base theme and/or updating it etc. <18-10-24> 
 
-include("theme-constants.jl")
+include("constants.jl")
 
 # TODO: Theme generators should also be dynamic meaning that when one calls a generating function, it should be able to
 # decide based on the previous attributes that were set. This can be done by a generic argument to the theme generating
@@ -148,6 +152,9 @@ function get_theme(themes::Vararg{Union{ThemeGenerator,Symbol}}; dict=THEME[])
     return get_theme(collect(Union{ThemeGenerator,Symbol}, themes); dict=dict)
 end
 
+# FIX: Instead the difference between `update_theme!` and `update_theme` should be whether the attributes that are
+# existent in `key` are left or overwritten. Maybe this could be instead driven by some enum similarly to lua type of
+# table merge <03-02-25> 
 """
     update_theme!(key::Symbol, new::ThemeGenerator)
 Update a specific theme component in the global theme.
