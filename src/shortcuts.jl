@@ -31,4 +31,10 @@ heatmap(fftvis(fftshift(fft_img)))
 """
 fftvis(img) = log2.(abs.(img) .+ 1)
 
+# TODO: Test & Document <07-03-25> 
+function ±(w::Tuple{Int,Int}, point::NTuple{N,Int}) where {N}
+    return map(p -> UnitRange(p - w[1], p + w[2]), point)
+end
+±(w::Int, args...) = ±((w, w), args...)
+
 export L, fftvis
