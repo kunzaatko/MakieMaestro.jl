@@ -6,6 +6,10 @@ using Markdown
 # TODO: Think about how should I use themes for the with_backend. Probably should handle the interactive theme more
 # intensionally <18-10-24> 
 
+# IDEA: A way to name these figures and UI element constructor that has buttons to show these figures.. This could be
+# called somewhere in the Pluto notebook to list the particular figures and internal Pluto.jl API could be used to
+# programmatically rerun the particular cell with the figure. <04-03-25> 
+
 # TODO: Is `inline!(doinline)` used intentionally? Can we get around without it? <18-11-24> 
 
 function with_backend(plots::Dict)

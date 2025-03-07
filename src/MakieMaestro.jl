@@ -1,3 +1,4 @@
+# TODO: Overload ± to select a window around a index <06-03-25> 
 module MakieMaestro
 using Reexport
 @reexport using Unitful
@@ -6,21 +7,14 @@ using Unitful: Length
 @reexport using LaTeXStrings
 
 # NOTE: No need for using Makie, since MakieExtra already re-exports Makie <22-10-24> 
-using Makie
 @reexport using MakieExtra
+
+# FIX: For some reason, the @lift macro is not reexported with MakieExtra <07-03-25> 
+@reexport using Makie: @lift
+
 # NOTE: We cannot reexport since there would be overlapping definitions with Makie re-exported from MakieExtra <22-10-24> 
 using GLMakie, CairoMakie, WGLMakie
 export GLMakie, CairoMakie, WGLMakie
-# @lift = MakieExtra.@lift
-# Text = MakieExtra.Text
-lift = MakieExtra.lift
-macro lift(a)
-    MakieExtra.@lift(a)
-end
-width = MakieExtra.width
-Text = Makie.Text
-# @lift = MakieExtra.@lift
-# Text = MakieExtra.Text
 
 module Units
     using Unitful
