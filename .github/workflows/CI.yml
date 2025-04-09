@@ -25,7 +25,8 @@ jobs:
       matrix:
         version:
           - '1.11'
-          - 'pre'
+          # - '~1.12.0-0'
+          # - 'pre' # NOTE: Broken WGLMakie <09-04-25> 
         os:
           - ubuntu-latest
         arch:
