@@ -1,5 +1,7 @@
 using Makie: Makie
 
+# TODO: Should return Figure or Axis figure similar to `image!` in this package <17-03-25> 
+
 # FIX: Does not work for plotting functions that expect a 3D axis such as `surface!` <17-11-24> 
 # TODO: Add unit tests <17-11-24> 
 # stack = rand(RGB, 10, 10, 9)

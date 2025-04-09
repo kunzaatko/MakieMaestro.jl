@@ -23,7 +23,7 @@ include("./tools.jl")
     @testset "DocTests" begin
         # NOTE: Show for `Unitful.jl` does nm⁻¹ on macOS and nm^-1 on Linux. This is necessary, since the `jldoctest` is only one
         if !haskey(ENV, "GITHUB_ACTIONS") ||
-            haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"
+           haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"
             # NOTE: Better than doc-testing in `make.jl` because, I can track the coverage
             # NOTE: When updating, must update also in `docs/make.jl` and  `test/fix_doctests.jl`<18-12-24> 
             DocMeta.setdocmeta!(
@@ -157,10 +157,9 @@ include("./tools.jl")
 
                 export_format!(Set([MakieMaestro.Pdf]))
                 if !haskey(ENV, "GITHUB_ACTIONS") # NOTE: tmp directories do not work as expected in the CI <31-01-25> 
-                    # FIX: Somehow creating a temp dir and changing to it does not work either... <05-02-25> 
                     temp_dir = mkdir(joinpath(tempdir(), "mm_test_dir/"))
                     cd(temp_dir)
-                    @test_broken PathSpec("testpdf") isa PathSpec
+                    @test PathSpec("testpdf") isa PathSpec
                     rm(temp_dir; recursive=true)
                 end
                 @test MakieMaestro.Pdf in PathSpec(joinpath(dir, "testpdf")).formats
@@ -208,10 +207,10 @@ include("./tools.jl")
 
             @testset "utils" begin
                 @test MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.Png])) ==
-                    [MakieMaestro.Png] # Allowed formats
+                      [MakieMaestro.Png] # Allowed formats
                 if Sys.which("inkscape") !== nothing
                     @test MakieMaestro.Svg in
-                        MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added necessary Svg format
+                          MakieMaestro.get_formats([CairoMakie], Set([MakieMaestro.PdfTex])) # Added necessary Svg format
                 end
                 @test_throws ArgumentError MakieMaestro.get_formats(
                     [GLMakie], Set([MakieMaestro.Pdf])

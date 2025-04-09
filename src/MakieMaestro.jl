@@ -9,8 +9,8 @@ using Unitful: Length
 # NOTE: No need for using Makie, since MakieExtra already re-exports Makie <22-10-24> 
 @reexport using MakieExtra
 
-# FIX: For some reason, the @lift macro is not reexported with MakieExtra <07-03-25> 
-@reexport using Makie: @lift
+# not reexported of type with MakieExtra <07-03-25> 
+@reexport using Makie: lift, width, Text, @lift
 
 # NOTE: We cannot reexport since there would be overlapping definitions with Makie re-exported from MakieExtra <22-10-24> 
 using GLMakie, CairoMakie, WGLMakie
