@@ -5,58 +5,51 @@ using Documenter.MarkdownAST, Documenter.IOCapture
 abstract type MakieExportPath end
 
 """
-    explicit_path(p::MakieExportPath, node, page, doc)
+    build_path(p::MakieExportPath, page, doc)
 
-Return the explicit path `MakieExportPath` for the current block.
+Return the path where to _build_ the figure in the block.
 """
-function absolute_path(
-    p::MakieExportPath, ::Documenter.Node, ::Documenter.Page, ::Documenter.Document
-)
-    throw(error("Explicit path is not implemeted for type $(typeof(p))"))
+function build_path(::MakieExportPath, args...) end
+
+"""
+    ref_path(p::MakieExportPath, page, doc)
+Return the path where to _reference_ the figure in the block.
+"""
+function ref_path(p::MakieExportPath, page::Documenter.Page, doc::Documenter.Document)
+    return joinpath(".", normpath(relpath(build_path(p, page, doc), doc.user.build)))
 end
 
-struct ExplicitPath <: MakieExportPath
+"""
+   DirectPath(path::String) 
+Specifying the direct path from the build/source root
+"""
+struct DirectPath <: MakieExportPath
     path::String
-    function ExplicitPath(path::String)
-        if !isdir(path)
-            @info "MakieCodeBlock: Creating figure directory at `$path`"
-            mkpath(path)
-        end
-        return new(path)
+end
+
+function build_path(p::DirectPath, ::Documenter.Page, doc::Documenter.Document)
+    build_path = normpath(joinpath(pwd(), doc.user.build, p.path))
+    if !isdir(build_path)
+        @info "MakieCodeBlocks: Creating figure directory at `$(build_path)`"
+        mkpath(build_path)
     end
+    return build_path
 end
 
-function source_path(
-    ::ExplicitPath, node::MarkdownAST.Node, page::Documenter.Page, doc::Documenter.Document
-)
-    return error("TODO")
+"""
+    RelativePath(path::String)
+Specifying the relative path from the Documenter.page where the `@makie` block is located.
+"""
+struct RelativePath <: MakieExportPath
+    path::String
 end
-
-function absolute_path(
-    p::ExplicitPath, node::MarkdownAST.Node, page::Documenter.Page, doc::Documenter.Document
-)
-    # TODO: Warn if the export path is not in the assets directory <07-05-25> 
-    return p.path
-end
-
-const DEFAULT_PATH = "assets/"
-struct AutoPath <: MakieExportPath end
-
-function source_path(
-    ::AutoPath, node::MarkdownAST.Node, page::Documenter.Page, doc::Documenter.Document
-)
-    return "./" * DEFAULT_PATH
-end
-
-function absolute_path(
-    ::AutoPath, node::MarkdownAST.Node, page::Documenter.Page, doc::Documenter.Document
-)
-    path = joinpath(Documenter.currentdir(), "src", DEFAULT_PATH)
-    if !isdir(path)
-        @info "MakieCodeBlock: Creating figure directory at `$path`"
-        mkpath(path)
+function build_path(p::RelativePath, page::Documenter.Page, ::Documenter.Document)
+    build_path = normpath(joinpath(pwd(), dirname(page.build), p.path))
+    if !isdir(build_path)
+        @info "MakieCodeBlocks: Creating figure directory at `$(build_path)`"
+        mkpath(build_path)
     end
-    return path
+    return build_path
 end
 
 # TODO: Identities of the codeblocks should be merged with the `@example` block identities and the values from them used
@@ -77,19 +70,15 @@ struct MakieCodeBlocks <: Documenter.Plugin
             throw(ArgumentError("At least one export format must be specified"))
         return new(figure_dir, export_format)
     end
-    MakieCodeBlocks() = new(AutoPath(), [:svg, :pdf])
 end
-function MakieCodeBlocks(figure_dir::String, export_format::Vector{Symbol}=[:svg, :pdf])
-    return MakieCodeBlocks(ExplicitPath(figure_dir), export_format)
-end
-
-function source_path(p::MakieCodeBlocks, node, page, doc)
-    return source_path(p.figure_dir, node, page, doc)
+function MakieCodeBlocks(
+    figure_dir::String="assets/figs", export_format::Vector{Symbol}=[:svg, :pdf]
+)
+    return MakieCodeBlocks(DirectPath(figure_dir), export_format)
 end
 
-function absolute_path(p::MakieCodeBlocks, node, page, doc)
-    return absolute_path(p.figure_dir, node, page, doc)
-end
+build_path(p::MakieCodeBlocks, args...) = build_path(p.figure_dir, args...)
+ref_path(p::MakieCodeBlocks, args...) = ref_path(p.figure_dir, args...)
 
 # Code adapted from `DocumenterDiagrams.jl`
 
@@ -117,7 +106,7 @@ A block of code that contains a julia script generating a Makie figure which is 
 struct MakieBlock <: Documenter.AbstractDocumenterBlock
     codeblock::MarkdownAST.CodeBlock # Makie figure code block
     basename::String                 # basename for the export
-    dir::String                      # Dir for the export
+    build::String                      # Dir for the export
     formats::Vector{Symbol}          # Formats for export
     code::String                     # Code of the figure
     options::MakieBlockOptions       # Options to the block
@@ -160,14 +149,14 @@ function Documenter.Selectors.runner(::Type{MakieFigureExpander}, node, page, do
     plugin = Documenter.getplugin(doc, MakieCodeBlocks)
 
     basename = "makie_figure_" * string(hash(block.code)) # TODO: allow override with `figure_block_options`
-    dir = absolute_path(plugin, node, page, doc)
+    build = build_path(plugin, page, doc)
 
     formats = plugin.export_format # TODO: allow merge with `figure_block_options` <07-05-25> 
 
     makie_block = MakieBlock(
         block,                    # codeblock
         basename,                 # basename
-        dir,                      # explicit path of the export figure without the name
+        build,                      # explicit path of the export figure without the name
         formats,                  # formats for export
         block.code,               # code
         figure_block_options,
@@ -190,7 +179,7 @@ function Documenter.Selectors.runner(::Type{MakieFigureExpander}, node, page, do
         "function $(makie_block.basename)()\n" *
         makie_block.code *
         "\nend\n" *
-        "savefig($(makie_block.basename), PathSpec(\"$(makie_block.basename)\", $(makie_block.formats), \"$(makie_block.dir)\"))\n"
+        "savefig($(makie_block.basename), PathSpec(\"$(makie_block.basename)\", $(makie_block.formats), \"$(makie_block.build)\"))\n"
 
     # linenumbernode = Documenter.LineNumberNode(
     #     lines === nothing ? 0 : lines.first, basename(page.source)
@@ -224,13 +213,17 @@ function Documenter.Selectors.runner(::Type{MakieFigureExpander}, node, page, do
         end
     end
 
+    @info "Saved figure `$(makie_block.basename)` to `$(makie_block.build)`"
+
     prefered_formats = [:svg, :png, :pdf]
     format = prefered_formats[findfirst(x -> x in makie_block.formats, prefered_formats)] # TODO: allow the user to pick a preferred format
 
     # FIX: This should use the internal `extension` method to determine the extension for the format <07-05-25> 
     document_path = joinpath(
-        source_path(plugin, node, page, doc), makie_block.basename * "." * string(format)
+        ref_path(plugin, page, doc), makie_block.basename * "." * string(format)
     )
+
+    @info "Reference of figure `$(makie_block.basename)` at `$(document_path)`"
     makie_generated = GeneratedMakieImage(Documenter.LocalImage(document_path))
     node.element = makie_generated
 
