@@ -9,7 +9,7 @@ abstract type MakieExportPath end
 
 Return the explicit path `MakieExportPath` for the current block.
 """
-function explicit_path(
+function absolute_path(
     p::MakieExportPath, ::Documenter.Node, ::Documenter.Page, ::Documenter.Document
 )
     throw(error("Explicit path is not implemeted for type $(typeof(p))"))
@@ -26,16 +26,29 @@ struct ExplicitPath <: MakieExportPath
     end
 end
 
-function explicit_path(
+function source_path(
+    ::ExplicitPath, node::MarkdownAST.Node, page::Documenter.Page, doc::Documenter.Document
+)
+    return error("TODO")
+end
+
+function absolute_path(
     p::ExplicitPath, node::MarkdownAST.Node, page::Documenter.Page, doc::Documenter.Document
 )
     # TODO: Warn if the export path is not in the assets directory <07-05-25> 
     return p.path
 end
 
-const DEFAULT_PATH = "assets/figs/"
+const DEFAULT_PATH = "assets/"
 struct AutoPath <: MakieExportPath end
-function explicit_path(
+
+function source_path(
+    ::AutoPath, node::MarkdownAST.Node, page::Documenter.Page, doc::Documenter.Document
+)
+    return "./" * DEFAULT_PATH
+end
+
+function absolute_path(
     ::AutoPath, node::MarkdownAST.Node, page::Documenter.Page, doc::Documenter.Document
 )
     path = joinpath(Documenter.currentdir(), "src", DEFAULT_PATH)
@@ -70,8 +83,12 @@ function MakieCodeBlocks(figure_dir::String, export_format::Vector{Symbol}=[:svg
     return MakieCodeBlocks(ExplicitPath(figure_dir), export_format)
 end
 
-function get_figure_dir(p::MakieCodeBlocks, node, page, doc)
-    return explicit_path(p.figure_dir, node, page, doc)
+function source_path(p::MakieCodeBlocks, node, page, doc)
+    return source_path(p.figure_dir, node, page, doc)
+end
+
+function absolute_path(p::MakieCodeBlocks, node, page, doc)
+    return absolute_path(p.figure_dir, node, page, doc)
 end
 
 # Code adapted from `DocumenterDiagrams.jl`
@@ -143,8 +160,7 @@ function Documenter.Selectors.runner(::Type{MakieFigureExpander}, node, page, do
     plugin = Documenter.getplugin(doc, MakieCodeBlocks)
 
     basename = "makie_figure_" * string(hash(block.code)) # TODO: allow override with `figure_block_options`
-    dir = get_figure_dir(plugin, node, page, doc)
-    path = joinpath(dir, basename)
+    dir = absolute_path(plugin, node, page, doc)
 
     formats = plugin.export_format # TODO: allow merge with `figure_block_options` <07-05-25> 
 
@@ -212,7 +228,9 @@ function Documenter.Selectors.runner(::Type{MakieFigureExpander}, node, page, do
     format = prefered_formats[findfirst(x -> x in makie_block.formats, prefered_formats)] # TODO: allow the user to pick a preferred format
 
     # FIX: This should use the internal `extension` method to determine the extension for the format <07-05-25> 
-    document_path = joinpath(makie_block.dir, makie_block.basename * "." * string(format))
+    document_path = joinpath(
+        source_path(plugin, node, page, doc), makie_block.basename * "." * string(format)
+    )
     makie_generated = GeneratedMakieImage(Documenter.LocalImage(document_path))
     node.element = makie_generated
 
