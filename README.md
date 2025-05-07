@@ -10,3 +10,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/kunzaatko/MakieMaestro.jl/badge.svg)](https://coveralls.io/github/kunzaatko/MakieMaestro.jl)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
+<a href="https://kunzaatko.github.io/">
+    <img src="https://raw.githubusercontent.com/pedromxavier/flag-badges/main/badges/CZ.svg" alt="made in Czechia">
+</a>

@@ -27,15 +27,18 @@ granted that they are in the correct order.
 # Arguments
 
 * `fig` -- figure(s) generating function 
-`fig_func::Function, (arg1, arg2,...)`, `() -> fig_func(arg1, arg2,...)` or `fig_func` (if it is possible to call it without any arguments). This is the only argument that is necessary to provide. See [`FunctionSpec`](@ref).
+!!! info
+    `fig_func::Function, (arg1, arg2,...)`, `() -> fig_func(arg1, arg2,...)` or `fig_func` (if it is possible to call it without any arguments). This is the only argument that is necessary to provide. See [`FunctionSpec`](@ref).
 
 * `path`: basename, directory and formats
-`name, [formats], [dir]` or `path`. In example `"protein_density_heatmap", [:svg, :pdf, :pdf_tex], "~/ImporantProject/"` or equivalently `"~/ImporantProject/protein_density_heatmap.{svg, pdf, pdf_tex}"`.
-If not supplied, the name is inferred from `nameof(fig_func)`, `formats` are taken from [`MakieMaestro.get_export_format`](@ref) (see also [`export_format!`](@ref)) and `dir` is taken from [`MakieMaestro.get_figure_dir`](@ref) (see also [`figure_dir!`](@ref)). See [`PathSpec`](@ref).
+!!! info
+    `name, [formats], [dir]` or `path`. In example `"protein_density_heatmap", [:svg, :pdf, :pdf_tex], "~/ImporantProject/"` or equivalently `"~/ImporantProject/protein_density_heatmap.{svg, pdf, pdf_tex}"`.
+    If not supplied, the name is inferred from `nameof(fig_func)`, `formats` are taken from [`MakieMaestro.get_export_format`](@ref) (see also [`export_format!`](@ref)) and `dir` is taken from [`MakieMaestro.get_figure_dir`](@ref) (see also [`figure_dir!`](@ref)). See [`PathSpec`](@ref).
 
 * `size`: physical dimensions of the figure (determining combination of width, height and hwratio)
-`20.5u"cm", 0.6`, `FigHeight(5u"inch"), 8u"inch"`, `0.5, 1.5` (relative width, hwratio), `HeightLength(0.3), 0.4`
-(relative height, hwratio). The defaults can be set by `width!` and `hwratio!`. See [`SizeSpec`](@ref).
+!!! info
+    `20.5u"cm", 0.6`, `FigHeight(5u"inch"), 8u"inch"`, `0.5, 1.5` (relative width, hwratio), `HeightLength(0.3), 0.4`
+    (relative height, hwratio). The defaults can be set by `width!` and `hwratio!`. See [`SizeSpec`](@ref).
 
 ## Keyword arguments
 * `backends=CairoMakie`

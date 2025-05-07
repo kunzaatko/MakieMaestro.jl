@@ -10,9 +10,6 @@ Pages = ["reference.md"]
 Depth = 2:2
 ```
 
-```@index
-Pages = ["reference.md"]
-```
 
 # Exporting
 
@@ -50,6 +47,11 @@ MakieMaestro._savepdftex
 ```
 ```@raw html
 </details>
+```
+
+# Documenter
+```@docs
+MakieMaestro.docblocks
 ```
 
 # Theming
