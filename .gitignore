@@ -14,3 +14,4 @@ docs/site/
 docs/src/assets/logo.xcf
 
 **/.claude/settings.local.json
+docs/src/assets/*
