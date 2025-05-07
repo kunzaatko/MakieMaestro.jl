@@ -17,9 +17,9 @@ using YourPackage
 
 # Create the MakiePlugin with optional customization
 makie_blocks = MakieMaestro.docblocks(
-    figure_dir = @__DIR__ * "/assets/",  # default = @__DIR__ * "/assets/figs", 
+    figure_dir = "assets/my_figure_dir",  # default is  "/assets/figs", 
     # Optional: specify the export formats (default: [:svg, :pdf])
-    export_format = [:svg, :png, :pdf]
+    export_format = [:svg, :png, :pdf, :eps],
 )
 
 makedocs(
@@ -39,15 +39,13 @@ language tag:
 
 ````markdown
 ```@makie
-fig = Figure()
-ax = Axis(fig[1, 1], title = "Example Plot")
-lines!(ax, 0..10, sin)
-fig
+# Your code for generating the figure
+fig # Return the figure at the end of the block
 ```
 ````
 
 The code will be executed during the documentation build, and the resulting figure will be saved and inserted into your
-documentation as a [`Documenter.LocalImage`](@extref), which will be further expanded.
+documentation as an image (specifically the [Documenter `LocalImage`](@extref `Documenter.LocalImage`)).
 
 The code in the block must return a `Figure` in order to work. 
 
@@ -65,7 +63,7 @@ This code block
 ````markdown
 ```@makie
 x = 0:0.1:2π
-fig,ax,_ = lines(x, sin.(x), linewidth = 2, label = "sin(x)")
+fig,ax,_ = lines(x, sin.(x) ./ x, linewidth = 2, label = "sin(x)")
 axislegend(ax)
 fig
 ```
@@ -73,7 +71,7 @@ fig
 generates the following figure
 ```@makie
 x = 0:0.1:2π
-fig,ax,_ = lines(x, sin.(x), linewidth = 2, label = "sin(x)")
+fig,ax,_ = lines(x, sin.(x) ./ x, linewidth = 2, label = "sin(x)")
 axislegend(ax)
 fig
 ```
