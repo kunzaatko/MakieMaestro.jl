@@ -1,4 +1,3 @@
-using Markdown
 # FIX: Think this over. It should instead return a function that does the with_backend functionality and the dict of
 # plots <16-10-24> 
 # NOTE: Must not be exported to enable to call as `with_backend = with_backend(plot_dict)`

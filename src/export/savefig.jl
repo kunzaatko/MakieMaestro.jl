@@ -1,6 +1,6 @@
 # TODO: At the end of the arguments cascade should be themes that are passed in the override instead of it being
 # a keyword argument. <29-01-25> 
-using CairoMakie, GLMakie, Serialization
+using CairoMakie, GLMakie
 
 # Helpers for setting the directory, specifying formats for export and selecting the theme
 include("utils.jl")
