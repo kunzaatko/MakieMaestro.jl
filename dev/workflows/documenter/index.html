@@ -15,9 +15,42 @@ makedocs(
 )</code></pre><div class="admonition is-success"><header class="admonition-header">Tip</header><div class="admonition-body"><p>It is not necessary to create the plugin with <code>MakieMaestro.docblocks</code>. As long as you do not want to change the defaults, it is only necessary to load <code>MakieMaestro</code>.</p></div></div><h2 id="Basic-Usage"><a class="docs-heading-anchor" href="#Basic-Usage">Basic Usage</a><a id="Basic-Usage-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-Usage" title="Permalink"></a></h2><p>Once the plugin is set up, you can include Makie figures in your documentation using code blocks with the <code>@makie</code> language tag:</p><pre><code class="language-markdown hljs">```@makie
 # Your code for generating the figure
 fig # Return the figure at the end of the block
-```</code></pre><p>The code will be executed during the documentation build, and the resulting figure will be saved and inserted into your documentation as an image (specifically the <a href="https://documenter.juliadocs.org/stable/lib/internals/documents/#Documenter.LocalImage">Documenter <code>LocalImage</code></a>).</p><p>The code in the block must return a <code>Figure</code> in order to work. </p><div class="admonition is-success"><header class="admonition-header">Tip</header><div class="admonition-body"><pre><code class="nohighlight hljs">using MakieMaestro   </code></pre><p>is already included at the top of the block for convenience.</p></div></div><h2 id="Example"><a class="docs-heading-anchor" href="#Example">Example</a><a id="Example-1"></a><a class="docs-heading-anchor-permalink" href="#Example" title="Permalink"></a></h2><p>Here&#39;s an example of using the <code>@makie</code> code block in documentation:</p><p>This code block</p><pre><code class="language-markdown hljs">```@makie
+```</code></pre><p>The code will be executed during the documentation build, and the resulting figure will be saved and inserted into your documentation as an image (specifically the <a href="https://documenter.juliadocs.org/stable/lib/internals/documents/#Documenter.LocalImage">Documenter <code>LocalImage</code></a>).</p><p>The code in the block must return a <code>Figure</code> in order to work. </p><div class="admonition is-success"><header class="admonition-header">Tip</header><div class="admonition-body"><pre><code class="nohighlight hljs">using MakieMaestro   </code></pre><p>is already included at the top of the block for convenience.</p></div></div><p>You can also use named blocks with the same format as for the documenter <a href="https://documenter.juliadocs.org/stable/man/syntax/#reference-at-example"><code>@example</code> block</a>. The code will be evaluated in the same module as the <code>@example</code> blocks with this name, so it will have the global variables at its disposal. </p><p>For example this is possible to </p><pre><code class="language-markdown hljs">```@example sine
+x = 0.01:0.01:10
+y = sin.(x) ./ x .+ x
+```
+```@makie  sine
+lines(x,y)
+```</code></pre><h2 id="Example"><a class="docs-heading-anchor" href="#Example">Example</a><a id="Example-1"></a><a class="docs-heading-anchor-permalink" href="#Example" title="Permalink"></a></h2><p>Here&#39;s an example of using the <code>@makie</code> code block in documentation:</p><p>This code block</p><pre><code class="language-markdown hljs">```@makie
 x = 0:0.1:2π
 fig,ax,_ = lines(x, sin.(x) ./ x, linewidth = 2, label = &quot;sin(x)&quot;)
 axislegend(ax)
 fig
-```</code></pre><p>generates the following figure</p><img src="../../assets/figs/makie_figure_9074615854043479880.svg" alt/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../pluto/">« Pluto.jl</a><a class="docs-footer-nextpage" href="../../reference/">Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.2 on <span class="colophon-date" title="Wednesday 7 May 2025 22:21">Wednesday 7 May 2025</span>. Using Julia version 1.11.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+```</code></pre><p>generates the following figure</p><img src="../../assets/figs/makie_9074615854043479880.svg" alt/><p>This <code>@example</code> and <code>@makie</code> blocks are evaluated in the same module</p><pre><code class="language-markdown hljs">```@example A
+x = 0.01:0.01:10
+y = sin.(x) ./ x .+ x
+```
+```@makie  A
+lines(x,y)
+```</code></pre><p>and produce </p><pre><code class="language-julia hljs">x = 0.01:0.01:10
+y = sin.(x) ./ x .+ x</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">1000-element Vector{Float64}:
+ 1.0099833334166664
+ 1.019933334666654
+ 1.0298500067498553
+ 1.039733354665854
+ 1.0495833854135665
+ 1.0594001079907434
+ 1.0691835333933253
+ 1.0789336746146587
+ 1.088650546644567
+ 1.0983341664682815
+ ⋮
+ 9.872094049683994
+ 9.881258635300792
+ 9.890429771024179
+ 9.89960752480611
+ 9.90879196383095
+ 9.917983154510601
+ 9.927181162479751
+ 9.936386052591162
+ 9.945597888911063</code></pre><img src="../../assets/figs/makie_A7367087167345386888.svg" alt/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../pluto/">« Pluto.jl</a><a class="docs-footer-nextpage" href="../../reference/">Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.2 on <span class="colophon-date" title="Thursday 8 May 2025 11:15">Thursday 8 May 2025</span>. Using Julia version 1.11.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
