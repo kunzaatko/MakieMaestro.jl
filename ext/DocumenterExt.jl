@@ -115,18 +115,17 @@ function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
     formats = basename = caption = alt = size = theme = nothing
     if !isnothing(kwargs)
         # TODO: Test before going forward <08-05-25> 
-        formats_match = match(r".*(?:\s*extensions\s*=\s*([^;]+)).*", kwargs)
-        basename_match = match(r".*(?:\s*basename\s*=\s*\"(.+)\").*", kwargs)
-        caption_match = match(r".*(?:\s*caption\s*=\s*\"(.+)\").*", kwargs)
+        formats_match = match(r".*(?:\s*formats\s*=\s*([^;]+)).*", kwargs)
+        basename_match = match(r".*(?:\s*basename\s*=\s*\"([^\"]+)\").*", kwargs)
+        caption_match = match(r".*(?:\s*caption\s*=\s*\"([^\"]+)\").*", kwargs)
         formats, basename, caption =
             map((formats_match, basename_match, caption_match)) do m
-                !isnothing(m) ? m.captures : nothing
+                !isnothing(m) ? string(first(m.captures)) : nothing
             end
-        @show formats, caption
         @warn "Options for Makie code blocks are not fully implemented yet! Only `name` works reliably."
     end
 
-    return MakieBlockOptions(; name, formats, basename, caption, alt, size, theme)
+    return MakieBlockOptions(; name, basename, caption, alt, size, theme)
 end
 
 """
