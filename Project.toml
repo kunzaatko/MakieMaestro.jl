@@ -1,6 +1,6 @@
 name = "MakieMaestro"
 uuid = "c922e6f1-a74a-406e-9215-09b2647b2648"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Martin Kunz <martinkunz@email.cz> and contributors"]
 
 [deps]
