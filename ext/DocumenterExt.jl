@@ -83,19 +83,50 @@ ref_path(p::MakieCodeBlocks, args...) = ref_path(p.figure_dir, args...)
 # Code adapted from `DocumenterDiagrams.jl`
 
 """
-    MakieFigureExpander <: Documenter.Expanders.ExpanderPipeline
+    MakieFigureBlocks <: Documenter.Expanders.NestedExpanderPipeline
 
 An expander pipeline for generating Makie figures from code `@makie` code blocks and expanding them into the
 documentation as images.
 
-See [`Documenter.Expanders.ExpanderPipeline`](@extref).
+See [`Documenter.Expanders.NestedExpanderPipeline`](@extref).
 """
-abstract type MakieFigureExpander <: Documenter.Expanders.ExpanderPipeline end
+abstract type MakieFigureBlocks <: Documenter.Expanders.NestedExpanderPipeline end
 
-# TODO: Implement this <07-05-25> 
+# TODO: Add functionality of "caption", "alt text", "dimensions", "theme"  <08-05-25> 
 const Option{T} = Union{Nothing,T}
 @kwdef struct MakieBlockOptions
     name::Option{String} = nothing
+    formats::Option{Vector{Symbol}} = nothing
+    basename::Option{String} = nothing
+    caption::Option{String} = nothing
+    alt::Option{String} = nothing
+    size::Option{MakieMaestro.SizeSpec} = nothing
+    theme::Option{Vector{Symbol}} = nothing
+end
+
+"""
+    parse(::Type{MakieBlockOptions}, s)
+Block options that are located after the `@makie` code identifier.
+"""
+function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
+    matched = match(r"(?:\s+([^\s;]+))?\s*(;.*)?$(?:\s+([^\s;]+))?\s*(;.*)?$", s)
+    isnothing(matched) && throw(error("Invalid `@makie` options syntax"))
+    name, kwargs = matched.captures
+    formats = basename = caption = alt = size = theme = nothing
+    if !isnothing(kwargs)
+        # TODO: Test before going forward <08-05-25> 
+        formats_match = match(r".*(?:\s*extensions\s*=\s*([^;]+)).*", kwargs)
+        basename_match = match(r".*(?:\s*basename\s*=\s*\"(.+)\").*", kwargs)
+        caption_match = match(r".*(?:\s*caption\s*=\s*\"(.+)\").*", kwargs)
+        formats, basename, caption =
+            map((formats_match, basename_match, caption_match)) do m
+                !isnothing(m) ? m.captures : nothing
+            end
+        @show formats, caption
+        @warn "Options for Makie code blocks are not fully implemented yet! Only `name` works reliably."
+    end
+
+    return MakieBlockOptions(; name, formats, basename, caption, alt, size, theme)
 end
 
 """
@@ -106,7 +137,7 @@ A block of code that contains a julia script generating a Makie figure which is 
 struct MakieBlock <: Documenter.AbstractDocumenterBlock
     codeblock::MarkdownAST.CodeBlock # Makie figure code block
     basename::String                 # basename for the export
-    build::String                      # Dir for the export
+    build::String                    # Dir for the export
     formats::Vector{Symbol}          # Formats for export
     code::String                     # Code of the figure
     options::MakieBlockOptions       # Options to the block
@@ -120,10 +151,10 @@ struct GeneratedMakieImage <: Documenter.AbstractDocumenterBlock
     local_image::Documenter.LocalImage
 end
 
-# Parsing
-Documenter.Selectors.order(::Type{MakieFigureExpander}) = 10.5
+# Same as `ExampleBlocks`
+Documenter.Selectors.order(::Type{MakieFigureBlocks}) = 8.0
 
-function Documenter.Selectors.matcher(::Type{MakieFigureExpander}, node, page, doc)
+function Documenter.Selectors.matcher(::Type{MakieFigureBlocks}, node, page, doc)
     return Documenter.iscode(node, r"^@makie")
 end
 
@@ -131,42 +162,39 @@ end
 # https://github.com/JuliaDocs/Documenter.jl/blob/3806ff5057ab855c80b5c53d41b512e8dc3c42b4/src/expander_pipeline.jl?plain=1#L806-L905
 # <07-05-25> 
 
-function Documenter.Selectors.runner(::Type{MakieFigureExpander}, node, page, doc)
+function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
     block = node.element
 
     options = match(r"@makie(.*)$", block.info)
 
-    figure_block_options = MakieBlockOptions()
-
     # TODO: Options should include a `name` then used for the figure name in the path and `caption` <07-05-25> 
-    if !isnothing(options)
-        options = strip(options.match)
-        # TODO: Parse options <07-05-25> 
-        # merge(figure_block_options, options)
-        @warn "Options for Makie code blocks are not implemented yet"
-    end
+    options = isnothing(options) ? "" : options
+    block_options = parse(MakieBlockOptions, options.match)
 
     plugin = Documenter.getplugin(doc, MakieCodeBlocks)
 
-    basename = "makie_figure_" * string(hash(block.code)) # TODO: allow override with `figure_block_options`
+    name = ifelse(isnothing(block_options.name), "", block_options.name)
+    formats = ifelse(
+        isnothing(block_options.formats), plugin.export_format, block_options.formats
+    )  # TODO: allow merge with `figure_block_options` <07-05-25> 
+
+    basename = "makie_" * name * string(hash(block.code)) # TODO: allow override with `figure_block_options`
     build = build_path(plugin, page, doc)
 
-    formats = plugin.export_format # TODO: allow merge with `figure_block_options` <07-05-25> 
-
     makie_block = MakieBlock(
-        block,                    # codeblock
-        basename,                 # basename
-        build,                      # explicit path of the export figure without the name
-        formats,                  # formats for export
-        block.code,               # code
-        figure_block_options,
+        block,         # codeblock
+        basename,      # basename
+        build,         # explicit path of the export figure without the name
+        formats,       # formats for export
+        block.code,    # code
+        block_options, # code block options
     )
-
+    identifier = name == "" ? string(hash(block.code)) : name
     # The sandboxed module -- either a new one or a cached one from this page.
     mod = Documenter.get_sandbox_module!(
         page.globals.meta,
         "atexample",
-        makie_block.options.name;
+        identifier;
         share_default_module=Documenter.share_default_module(page),
     )
 

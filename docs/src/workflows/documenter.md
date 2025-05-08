@@ -55,6 +55,22 @@ The code in the block must return a `Figure` in order to work.
     ```
     is already included at the top of the block for convenience.
 
+You can also use named blocks with the same format as for the documenter [`@example` block](@extref Documenter
+:std:label:`reference-at-example`). The code will be evaluated in the same module as the `@example` blocks with this
+name, so it will have the global variables at its disposal. 
+
+For example this is possible to 
+
+````markdown
+```@example sine
+x = 0.01:0.01:10
+y = sin.(x) ./ x .+ x
+```
+```@makie  sine
+lines(x,y)
+```
+````
+
 ## Example
 
 Here's an example of using the `@makie` code block in documentation:
@@ -74,4 +90,23 @@ x = 0:0.1:2π
 fig,ax,_ = lines(x, sin.(x) ./ x, linewidth = 2, label = "sin(x)")
 axislegend(ax)
 fig
+```
+
+This `@example` and `@makie` blocks are evaluated in the same module
+````markdown
+```@example A
+x = 0.01:0.01:10
+y = sin.(x) ./ x .+ x
+```
+```@makie  A
+lines(x,y)
+```
+````
+and produce 
+```@example A
+x = 0.01:0.01:10
+y = sin.(x) ./ x .+ x
+```
+```@makie  A
+lines(x,y)
 ```
