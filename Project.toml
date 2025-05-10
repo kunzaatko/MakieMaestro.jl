@@ -18,7 +18,6 @@ WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 
 [weakdeps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-MarkdownAST = "d0879d2d-cac2-40c8-9cee-1863dc0c7391"
 
 [extensions]
 DocumenterExt = "Documenter"
@@ -32,7 +31,6 @@ GLMakie = "^0.10, ^0.11"
 LaTeXStrings = "1.3.1"
 Makie = "^0.21, ^0.22"
 MakieExtra = "0.1.33"
-MarkdownAST = "0.1.2"
 OffsetArrays = "1.14.1"
 Reexport = "1.2.2"
 Unitful = "1.21.0"
