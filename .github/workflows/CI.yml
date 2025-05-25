@@ -24,7 +24,9 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - '1.11'
+          - 'min'
+          - 'lts'
+          - 'pre'
           # - '~1.12.0-0'
           # - 'pre' # NOTE: Broken WGLMakie <09-04-25> 
         os:
