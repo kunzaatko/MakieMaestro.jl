@@ -1,7 +1,7 @@
 name = "MakieMaestro"
 uuid = "c922e6f1-a74a-406e-9215-09b2647b2648"
-version = "0.3.0"
 authors = ["Martin Kunz <martinkunz@email.cz> and contributors"]
+version = "0.3.1"
 
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
@@ -23,7 +23,7 @@ Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterExt = "Documenter"
 
 [compat]
-CairoMakie = "^0.12, ^0.13"
+CairoMakie = "^0.12, ^0.13, 0.15"
 ColorSchemes = "3.26.0"
 ColorTypes = "^0.7, ^0.8,^0.9,^0.10,^0.11, ^0.12"
 Documenter = "1.10.2"
