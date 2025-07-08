@@ -21,10 +21,11 @@ links = InterLinks(
     # a documentation page apart from the example notebook <26-01-25> 
 )
 
-# makieblocks = MakieCodeBlocks(
-#     @__DIR__ * "/assets/figures",
-#     [:svg, :png, :pdf]
-# )
+MakieMaestro.Themes.width!(15u"cm")
+makieblocks = MakieDocBlocks(
+    joinpath(@__DIR__, "assets/figures"),
+    [:svg, :png, :pdf]
+)
 
 makedocs(;
     modules=[MakieMaestro],
@@ -47,8 +48,9 @@ makedocs(;
     ],
     plugins=[
         links,
-        # makieblocks
+        makieblocks
     ],
+    doctest=false # tests run in `test/runtests.jl`
 )
 
 deploydocs(; repo="github.com/kunzaatko/MakieMaestro.jl", devbranch="trunk")
