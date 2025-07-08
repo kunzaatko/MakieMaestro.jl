@@ -15,9 +15,11 @@ To use the MakieMaestro Documenter plugin in your documentation, add the followi
 using Documenter, MakieMaestro
 using YourPackage
 
+MakieMaestro.Themes.width!(15u"cm") # Make sure to set a default width or use the `width` option in the `@makie` block
+
 # Create the MakiePlugin with optional customization
-makie_blocks = MakieMaestro.docblocks(
-    figure_dir = "assets/my_figure_dir",  # default is  "/assets/figs", 
+makie_blocks = MakieDocBlocks(
+    figure_dir = "assets/my_figure_dir",  # default is  "assets/figs", 
     # Optional: specify the export formats (default: [:svg, :pdf])
     export_format = [:svg, :png, :pdf, :eps],
 )

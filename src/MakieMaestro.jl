@@ -24,6 +24,7 @@ include("export/savefig.jl")
 include("shortcuts.jl")
 include("recipe-modifications.jl")
 include("pluto-helpers.jl")
+include("documentation.jl")
 
 function __init__()
     Unitful.register(Units)
@@ -35,16 +36,6 @@ function __init__()
     end
 
     return nothing
-end
-
-"""
-    docblocks(path=@__DIR__ * "assets/figs/", formats=[:svg, :pdf])
-Create the plugin for generating Documenter figures from blocks of code in the documentation pages.
-"""
-function docblocks(args...)
-    DocumenterExt = Base.get_extension(@__MODULE__, :DocumenterExt)
-    !isnothing(DocumenterExt) || throw(error("Documenter is not loaded"))
-    return DocumenterExt.MakieCodeBlocks(args...)
 end
 
 end
