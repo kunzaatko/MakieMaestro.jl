@@ -136,13 +136,10 @@ Later arguments have precedence similarly to `Base.merge(A::Dict, B::Dict)`.
 julia> gap = true
 true
 
-julia> theme_props = MakieMaestro.Themes.get_theme([Theme(; figure_padding=2), () -> Theme(; colgap = gap, rowgap = gap), :orange_title])
-Attributes with 4 entries:
-  Axis => Attributes with 1 entry:
-    titlecolor => orange
-  colgap => true
-  figure_padding => 2
-  rowgap => true
+julia> theme_props = MakieMaestro.Themes.get_theme([Theme(; figure_padding=2), () -> Theme(; colgap = gap, rowgap = gap), :orange_title]);
+
+julia> @assert theme_props.colgap[] == theme_props.rowgap[] == true
+
 ```
 """
 function get_theme(themes::Vector=[:base]; dict=THEME[]) # NOTE: Reason for not specifying the eltype of the vector is that when the vector is created it tends to have an eltype of `Any` which does not fit the signature then <08-01-25> 
