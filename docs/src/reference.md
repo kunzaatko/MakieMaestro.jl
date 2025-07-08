@@ -51,7 +51,7 @@ MakieMaestro._savepdftex
 
 # Documenter
 ```@docs
-MakieMaestro.docblocks
+MakieMaestro.MakieDocBlocks
 ```
 
 # Theming

@@ -5,10 +5,7 @@ using Reexport
 using Unitful: Length
 
 @reexport using LaTeXStrings
-
-# NOTE: No need for using Makie, since MakieExtra already re-exports Makie <22-10-24> 
-@reexport using MakieExtra
-
+@reexport using Makie
 # not reexported of type with MakieExtra <07-03-25> 
 @reexport using Makie: lift, width, Text, @lift
 
@@ -27,6 +24,7 @@ include("export/savefig.jl")
 include("shortcuts.jl")
 include("recipe-modifications.jl")
 include("pluto-helpers.jl")
+include("documentation.jl")
 
 function __init__()
     Unitful.register(Units)
@@ -38,16 +36,6 @@ function __init__()
     end
 
     return nothing
-end
-
-"""
-    docblocks(path=@__DIR__ * "assets/figs/", formats=[:svg, :pdf])
-Create the plugin for generating Documenter figures from blocks of code in the documentation pages.
-"""
-function docblocks(args...)
-    DocumenterExt = Base.get_extension(@__MODULE__, :DocumenterExt)
-    !isnothing(DocumenterExt) || throw(error("Documenter is not loaded"))
-    return DocumenterExt.MakieCodeBlocks(args...)
 end
 
 end

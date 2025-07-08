@@ -278,60 +278,17 @@ Create the final export theme applied when generating the figure.
 
 # Examples
 ```jldoctest
-julia> MakieMaestro.get_export_theme(CairoMakie, MakieMaestro.Png, 10u"cm", 0.8,
+julia> theme = MakieMaestro.get_export_theme(CairoMakie, MakieMaestro.Png, 10u"cm", 0.8,
            Theme(;
                CairoMakie=(;pdf_version=1.1)
            ),
            Theme(;
                Scatter=(;markersize=8)
            )
-       )
-Attributes with 12 entries:
-  Axis => Attributes with 8 entries:
-    xgridvisible => false
-    xticklabelsize => 10
-    xticksize => 4
-    xtickwidth => 0.7
-    ygridvisible => false
-    yticklabelsize => 10
-    yticksize => 4
-    ytickwidth => 0.7
-  backgroundcolor => transparent
-  CairoMakie => Attributes with 1 entry:
-    pdf_version => 1.1
-  Colorbar => Attributes with 9 entries:
-    bottomspinevisible => false
-    labelsize => 10
-    leftspinevisible => false
-    rightspinevisible => false
-    ticklabelsize => 10
-    ticksize => 4
-    tickwidth => 0.7
-    topspinevisible => false
-    width => 5
-  figure_padding => 2
-  fonts => Attributes with 4 entries:
-    bold => FTFont (family = NewComputerModern, style = 10 Bold)
-    bolditalic => FTFont (family = NewComputerModern, style = 10 Bold Italic)
-    italic => FTFont (family = NewComputerModern, style = 10 Italic)
-    regular => FTFont (family = NewComputerModern Math, style = Regular)
-  Heatmap => Attributes with 1 entry:
-    colormap => Spectral
-  Image => Attributes with 1 entry:
-    interpolate => false
-  Legend => Attributes with 5 entries:
-    framevisible => false
-    labelsize => 10
-    nbanks => 1
-    tellheight => false
-    tellwidth => false
-  Lines => Attributes with 1 entry:
-    cycle => Cycle([[:color]=>:color, [:marker]=>:marker], true)
-  Scatter => Attributes with 3 entries:
-    cycle => Cycle([[:color]=>:color, [:marker]=>:marker], true)
-    markersize => 8
-    strokewidth => 0
-  size => (283, 226)
+       );
+
+julia> theme.size[]
+(283, 226)
 ```
 """
 function get_export_theme(backend, format, width, hwratio, override_theme...)
