@@ -23,7 +23,7 @@ links = InterLinks(
 
 MakieMaestro.Themes.width!(15u"cm")
 makieblocks = MakieDocBlocks(
-    joinpath(@__DIR__, "assets/figures"),
+    "assets/figures",
     [:svg, :png, :pdf]
 )
 
