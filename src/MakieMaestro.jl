@@ -5,10 +5,7 @@ using Reexport
 using Unitful: Length
 
 @reexport using LaTeXStrings
-
-# NOTE: No need for using Makie, since MakieExtra already re-exports Makie <22-10-24> 
-@reexport using MakieExtra
-
+@reexport using Makie
 # not reexported of type with MakieExtra <07-03-25> 
 @reexport using Makie: lift, width, Text, @lift
 
