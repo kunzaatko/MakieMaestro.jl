@@ -31,8 +31,18 @@ makedocs(
 ```
 
 !!! tip 
-    It is not necessary to create the plugin with `MakieMaestro.docblocks`. As long as you do not want to change the
-    defaults, it is only necessary to load `MakieMaestro`.
+    It is not necessary to create the plugin with `MakieDocBlocks`. As long as you do not want to change the default
+    settings of the plugin. You only need to load `MakieMaestro` to use the `Documenter` plugin. However, consider
+    defining the plugin if you are developing a package with other contributors as it is more explicit and will make it
+    easier for them to understand the documentation generation process.
+
+!!! warning
+    The target figure directory should not be preceded by a slash.
+    ```julia 
+    # MakieDocBlocks(figure_dir = "/assets/my_figure_dir") # ⚠️ DOESN'T WORK!!!
+    MakieDocBlocks(figure_dir = "assets/my_figure_dir") # ⬅️ USE THIS
+    ```
+    For more details about this issue, see the functioning of [`joinpath`](@extref Julia :jl:function:`Base.Filesystem.joinpath`)
 
 ## Basic Usage
 
