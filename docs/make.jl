@@ -14,8 +14,8 @@ DocMeta.setdocmeta!(
 links = InterLinks(
     "Unitful" => "https://painterqubits.github.io/Unitful.jl/stable/",
     "Julia" => "https://docs.julialang.org/en/v1/",
-    "Documenter" => "https://documenter.juliadocs.org/stable/"
-    # "Makie" => "https://docs.makie.org/stable/", # NOTE: Makie documentation does not generate an objects.inv file
+    "Documenter" => "https://documenter.juliadocs.org/stable/",
+    "Makie" => "https://docs.makie.org/stable/", # NOTE: Makie documentation does not generate an objects.inv file
     # for some reason <26-01-25> 
     # "MakieExtra" => "https://github.com/JuliaAPlavin/MakieExtra.jl" # NOTE: MakieExtra.jl does not have
     # a documentation page apart from the example notebook <26-01-25> 
