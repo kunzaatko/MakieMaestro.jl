@@ -86,5 +86,8 @@ end
     @cond_testset "documenter" begin
         include("documenter.jl")
     end
+
+    @cond_testset "recipes" begin
+        include("recipes.jl")
     end
 end
