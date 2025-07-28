@@ -1,7 +1,7 @@
 name = "MakieMaestro"
 uuid = "c922e6f1-a74a-406e-9215-09b2647b2648"
 authors = ["Martin Kunz <martinkunz@email.cz> and contributors"]
-version = "0.3.1"
+version = "0.4.0"
 
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
