@@ -67,6 +67,8 @@ function create_axes!(
         ax_inds = sort!([
             (i, j) for i in 1:nrows, j in 1:ncols if ((j - 1) * nrows) + i <= naxes
         ])
+    else
+        ax_inds = [(i, j) for i in 1:nrows, j in 1:ncols]
     end
 
     @assert length(ax_inds) == naxes
