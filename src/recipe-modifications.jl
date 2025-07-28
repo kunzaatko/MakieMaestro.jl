@@ -67,7 +67,7 @@ function Recipes.image(args...; _axis=(; aspect=Makie.DataAspect()), axis=(;), k
     attributes = Dict{Symbol,Any}(kwargs..., :axis => axis)
     figkws = Makie.fig_keywords!(attributes)
 
-    plot = Plot{Makie.default_plot_func(Image, pargs)}(pargs, attributes)
+    plot = Plot{Makie.image}(pargs, attributes)
     figax = Makie.create_axis_like(plot, figkws, figarg)
     ax = figax isa Makie.FigureAxis ? figax.axis : figax
 

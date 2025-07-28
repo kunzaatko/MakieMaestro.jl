@@ -1,4 +1,5 @@
 # TODO: Overload ± to select a window around a index <06-03-25> 
+# TODO: Get the defaults figure dir and size and export format from the environment or the .env file <14-07-25> 
 module MakieMaestro
 using Reexport
 @reexport using Unitful

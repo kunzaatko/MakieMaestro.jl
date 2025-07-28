@@ -15,26 +15,90 @@ using Makie: Makie
 # mosaic(mat2; axis = (; title = map(string, 1:9)), plt=surface!)
 # mosaic(mat2; axis = (; title = map(string, 1:9)), plt=heatmap!)
 
-"""
-    mosaic(datas::AbstractVector; 
-            nrows, ncols,
-           plt=Recipes.image!, ax_func! = identity, linkaxes=true, vargs...)
-    mosaic(datas::Stack, args...; vargs...)
-    mosaic(datas::AbstractMatrix; vargs...)
+# TODO: Should instead take a plotting function that can take any iterable data and plot it into the supplied axis or
+# GridCell or indexed figure <22-07-25> 
 
-Create a grid-like arrangement of plots.
+# TODO: Add support for vector like `kwargs` with length of number of data <28-07-25> 
+# TODO: Now there is support for single function multiple data. Add support for multiple functions single data <28-07-25> 
+function mosaic!(fn::Function, axs::AbstractArray{<:Makie.AbstractAxis}, data...; kwargs...)
+    @assert length(data) == length(axs) "Number of `data`s is not equal to the length of `axs`"
+    plts = map(axs, data) do a, d
+        fn(a, d; kwargs...)
+    end
+    return plts
+end
+
+function mosaic!(axs::AbstractArray{<:Makie.AbstractAxis}, data...)
+    return mosaic!(Makie.plot!, axs, data...)
+end
+
+function create_figure(; figure=(;)) end
+
+const FigureLike = Union{Makie.Figure,Makie.GridPosition,Makie.GridSubposition}
+
+function create_axes!(
+    f::FigureLike, naxes; nrows=nothing, ncols=nothing, axis=(;), linkaxes=true
+)
+    if isnothing(nrows) && isnothing(ncols)
+        forced_dim = :nrows
+        nrows = 1
+        ncols = ceil(Int, naxes / nrows)
+    elseif isnothing(ncols)
+        forced_dim = :nrows
+        @assert nrows isa Integer "`ncols` must be an integer"
+        ncols = ceil(Int, naxes / nrows)
+    elseif isnothing(nrows)
+        forced_dim = :ncols
+        @assert ncols isa Integer "`nrows` must be an integer"
+        nrows = ceil(Int, naxes / ncols)
+    else # specified both `nrows` and `ncols`
+        forced_dim = :none
+        @assert nrows * ncols == naxes "Data length must match nrows * ncols"
+    end
+
+    axis_multi = filter(v -> v isa Vector && length(v) == naxes, axis)
+    axis_single = filter(v -> !(v isa Vector) || length(v) != naxes, axis)
+
+    if forced_dim == :nrows
+        ax_inds = sort!([
+            (i, j) for i in 1:nrows, j in 1:ncols if ((i - 1) * ncols) + j <= naxes
+        ])
+    elseif forced_dim == :ncols
+        ax_inds = sort!([
+            (i, j) for i in 1:nrows, j in 1:ncols if ((j - 1) * nrows) + i <= naxes
+        ])
+    else
+        ax_inds = [(i, j) for i in 1:nrows, j in 1:ncols]
+    end
+
+    @assert length(ax_inds) == naxes
+
+    ax = [Makie.Axis(f[i...]; axis_single...) for i in ax_inds]
+
+    # TODO: Could be done in the construction <28-07-25> 
+    for k in keys(axis_multi)
+        for (i, v) in enumerate(axis_multi[k])
+            setproperty!(ax[i], k, v)
+        end
+    end
+
+    if linkaxes
+        Makie.linkaxes!(ax...)
+    end
+    return ax
+end
+
+"""
+    mosaic([fn::Function=plot!], data...; <keyword-args>)
+    mosaic([fn::Function=plot!], datas::AbstractMatrix; <keyword-args>)
+
+Create a grid-like arrangement of plots. If passed a `Matrix` of objects to plot, the number of rows and columns is
+preserved in the grid.
 
 # Arguments
-- `datas`: Vector, 3D array, or matrix of data to be plotted
 - `nrows` / `ncols`: Number of rows / columns
-- `plt`: Plotting function to apply (default: `image!`)  
-- `ax!`: Function to modify axis properties (default: identity)
 - `linkaxes`: Boolean to control axis linking (default: true)
-- `vargs...`: Additional plotting arguments passed to the plotting function
-
-The function creates a Makie Figure object with a grid of plots, applies the specified 
-plotting function to each data element, and returns the resulting figure. It supports 
-vectorized arguments that match the data length and automatically handles tuple-packed data.
+- `vargs...`: Additional plotting arguments are passed to the plotting function
 
 # Returns
 - A Makie Figure object containing the mosaic of plots that have linked axes
@@ -55,67 +119,27 @@ fig = mosaic(datamat)
 ```
 """
 function mosaic(
-    datas::AbstractVector;
+    fn::Function,
+    data::Vararg;
     nrows=nothing,
     ncols=nothing,
-    plt=Recipes.image!,
-    (ax!)=identity,
+    figure=(;),
     axis=(;),
     linkaxes=true,
-    vargs...,
+    kwargs...,
 )
-    if isnothing(nrows) && isnothing(ncols)
-        forced_dim = :nrows
-        nrows = 1
-        ncols = ceil(Int, length(datas) / nrows)
-    elseif isnothing(ncols)
-        forced_dim = :nrows
-        @assert nrows isa Integer "`ncols` must be an integer"
-        ncols = ceil(Int, length(datas) / nrows)
-    elseif isnothing(nrows)
-        forced_dim = :ncols
-        @assert ncols isa Integer "`nrows` must be an integer"
-        nrows = ceil(Int, length(datas) / ncols)
-    else
-        forced_dim = :none
-        @assert nrows * ncols == length(datas) "Data length must match nrows * ncols"
-    end
+    f = Makie.Figure(; figure...)
+    ax = create_axes!(
+        f, length(data); nrows=nrows, ncols=ncols, axis=axis, linkaxes=linkaxes
+    )
 
-    f = Makie.Figure(;)
-    # TODO: Filter the others out and apply them in the axis creations <17-11-24> 
-    v_axis_vargs = filter(v -> v isa Vector && length(v) == length(datas), axis)
-    ax = [Makie.Axis(f[i, j]) for i in 1:nrows, j in 1:ncols]
-
-    for k in keys(v_axis_vargs)
-        for (i, v) in enumerate(v_axis_vargs[k])
-            setproperty!(ax[i], k, v)
-        end
-    end
-
-    if forced_dim == :nrows
-        delete!.(ax[(length(datas) + 1):end]) # remove the empty axes
-    elseif forced_dim == :ncols
-        rest = ncols * nrows - length(datas)
-        if rest != 0
-            delete!.(ax[(end - rest + 1):end, end]) # remove the empty axes
-        end
-    end
-
-    vector_vargs = filter(v -> v isa Vector && length(v) == length(datas), vargs)
-    for (ind, (a, data)) in enumerate(zip(ax[:], datas))
-        a_vargs = NamedTuple(
-            map((k, v) -> k => v[ind], zip(keys(vector_vargs), vector_vargs))
-        )
-        if data isa Tuple # unpack the data if it is a tuple
-            plt(a, data...; a_vargs..., vargs...)
-        else
-            plt(a, data; a_vargs..., vargs...)
-        end
-        ax!(a)
-    end
-    Makie.linkaxes!(ax...)
-    return f
+    return f, ax, mosaic!(fn, ax, data...; kwargs...)
 end
+
+function mosaic(args...; kwargs...)
+    return mosaic(Makie.plot!, args...; kwargs...)
+end
+
 const Stack = AbstractArray{T,3} where {T}
 function mosaic(datas::Stack; vargs...)
     return mosaic(eachslice(datas; dims=3); vargs...)
