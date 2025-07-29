@@ -44,6 +44,15 @@ makedocs(
     ```
     For more details about this issue, see the functioning of [`joinpath`](@extref Julia :jl:function:`Base.Filesystem.joinpath`)
 
+!!! info "CI setup"
+    For the CI to be able to build figures using `GLMakie` you need to set up a screen in the CI environment. You can do
+    this by prepending the command with `DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24' --`. For example for building
+    the documentation, you will run the command
+    ```bash
+    DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24' -- julia --project --color=yes make.jl
+    ```
+    Look at the workflows in this repository for a working example.
+
 ## Basic Usage
 
 Once the plugin is set up, you can include Makie figures in your documentation using code blocks with the `@makie`
