@@ -1,5 +1,7 @@
 using Makie: Makie
 
+# TODO: Add documentation for the `mosaic` and `mosaic!` functions <28-07-25> 
+
 # TODO: Should return Figure or Axis figure similar to `image!` in this package <17-03-25> 
 
 # FIX: Does not work for plotting functions that expect a 3D axis such as `surface!` <17-11-24> 
@@ -120,15 +122,14 @@ fig = mosaic(datamat)
 """
 function mosaic(
     fn::Function,
+    f::FigureLike,
     data::Vararg;
     nrows=nothing,
     ncols=nothing,
-    figure=(;),
     axis=(;),
     linkaxes=true,
     kwargs...,
 )
-    f = Makie.Figure(; figure...)
     ax = create_axes!(
         f, length(data); nrows=nrows, ncols=ncols, axis=axis, linkaxes=linkaxes
     )
@@ -136,8 +137,12 @@ function mosaic(
     return f, ax, mosaic!(fn, ax, data...; kwargs...)
 end
 
-function mosaic(args...; kwargs...)
-    return mosaic(Makie.plot!, args...; kwargs...)
+function mosaic(f::FigureLike, args...; kwargs...)
+    return mosaic(Makie.plot!, f, args...; kwargs...)
+end
+
+function mosaic(args...; figure=(;), kwargs...)
+    return mosaic(Makie.Figure(; figure...), args...; kwargs...)
 end
 
 const Stack = AbstractArray{T,3} where {T}
