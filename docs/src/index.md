@@ -12,9 +12,9 @@ CurrentModule = MakieMaestro
     and functions that generate them. See [Theming and Sizing](@ref).
 
 !!! note "Word of Warning"
-    Some of the features of this package may be opinionated (with theming being the most obvious example). It is
-    made with the with the intent of optimizing __my__ [workflow](), but with the hope and expectation that it will
-    in fact be useful to others as well since the way I use [`Makie.jl`](https://docs.makie.org/stable/) does not
-    differ significantly from others.
+    Some of the features of this package may be opinionated (with theming being the most obvious example). It is made
+    with the intent of optimizing __my__ workflows, but with the hope and expectation that it will in fact be useful
+    to others as well since the way I use [`Makie.jl`](https://docs.makie.org/stable/) does not differ significantly
+    from others.
 
 See also: [MakieExtra.jl](https://github.com/JuliaAPlavin/MakieExtra.jl)
