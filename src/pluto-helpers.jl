@@ -11,7 +11,11 @@
 
 # TODO: Is `inline!(doinline)` used intentionally? Can we get around without it? <18-11-24> 
 
-function with_backend(plots::Dict)
+# FIX: There is no easy way of adding documentation to the functions. Maybe by using the `Base.Docs.getdoc` method on
+# `typeof(_with_backend)`. The only easy way would be to use a macro to define these functions however this would not be
+# as nice interface <17-07-25> 
+
+function with_backend(plots::AbstractDict)
     function _run_backend(stop_first)
         """
         with_backend$(stop_first ? "!" : "")(f, backend, args...)
