@@ -18,7 +18,7 @@
 function with_backend(plots::AbstractDict)
     function _run_backend(stop_first)
         """
-        with_backend$(stop_first ? "!" : "")(f, backend, args...)
+            with_backend$(stop_first ? "!" : "")(f, backend, args...)
 
         Show the output figure of function `f` called with arguments `args` with the backend `backend`
         """
