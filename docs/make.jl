@@ -14,7 +14,7 @@ DocMeta.setdocmeta!(
 
 # NOTE: Links can be explored trough the REPL with `links(query)`
 links = InterLinks(
-    "Unitful" => "https://painterqubits.github.io/Unitful.jl/stable/",
+    "Unitful" => "https://juliaphysics.github.io/Unitful.jl/stable/",
     "Julia" => "https://docs.julialang.org/en/v1/",
     "Documenter" => "https://documenter.juliadocs.org/stable/",
     "Makie" => "https://docs.makie.org/stable/", # NOTE: Makie documentation does not generate an objects.inv file
