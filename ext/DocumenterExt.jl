@@ -52,10 +52,6 @@ function build_path(p::RelativePath, page::Documenter.Page, ::Documenter.Documen
     return build_path
 end
 
-# TODO: Identities of the codeblocks should be merged with the `@example` block identities and the values from them used
-# for the figure function <07-05-25>
-# TODO: There is a plugin retriever that gets the plugin if it exists and therefore the options can be gathered for the
-# exporting of the figure. <07-05-25> 
 """
     MakieCodeBlocks <: Documenter.Plugin
 Documenter plugin that is used for storing the options for the makie code blocks.
@@ -161,17 +157,20 @@ function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
             kwargs,
         )
 
+        # NOTE: `RegexMatch`es can be converted to `NamedTuple` in version >= 1.11 and return nothing for
+        # non-matches. Should be updated when this is supported by the `lts` version of Julia <12-08-25> 
         formats, theme = map(
             m -> begin
                 if isnothing(m)
                     nothing
                 else
-                    m = NamedTuple(m)
-                    if !isnothing(m.vector)
-                        expr = Meta.parse(m.vector)
+                    v, s = m["vector"], m["symbol"]
+                    if !isnothing(v) # vector formats/themes
+                        expr = Meta.parse(v)
                         eval(:($expr))
                     else
-                        expr = Meta.parse(m.symbol)
+                        @assert s != ""
+                        expr = Meta.parse(s)
                         [eval(:($expr))]
                     end
                 end
@@ -181,13 +180,14 @@ function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
             if isnothing(m)
                 nothing
             else
-                m = NamedTuple(m)
-                if !isnothing(m.tuple)
-                    expr = Meta.parse(m.tuple)
+                t, l = m["tuple"], m["length"]
+                if !isnothing(t) # tuple format for size
+                    expr = Meta.parse(t)
                     size = eval(:($expr))
                     size = MakieMaestro.SizeSpec(size)
-                elseif !isnothing(m.length)
-                    expr = Meta.parse(m.length)
+                else
+                    @assert l != ""
+                    expr = Meta.parse(l)
                     size = eval(:($expr))
                     size = MakieMaestro.SizeSpec(size)
                 end
@@ -218,6 +218,7 @@ A Makie block for which the image has already been generated.
 """
 struct GeneratedMakieImage <: Documenter.AbstractDocumenterBlock
     local_image::Documenter.LocalImage
+    options::MakieBlockOptions
 end
 
 # Same as `ExampleBlocks`
@@ -236,7 +237,6 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
 
     options = match(r"@makie(.*)$", block.info)
 
-    # TODO: Options should include a `name` then used for the figure name in the path and `caption` <07-05-25> 
     options = isnothing(options) ? "" : options
     block_options = parse(MakieBlockOptions, options.match)
 
@@ -278,13 +278,22 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
     lines = Documenter.find_block_in_file(makie_block.code, page.source)
     @debug "Evaluating @makie block:\n$(makie_block.code)"
 
+    theme_string = let theme = makie_block.options.theme
+        isnothing(theme) ? "" : "; override_theme=$(theme)"
+    end
+    pathspec_string = "PathSpec(\"$(makie_block.basename)\", $(makie_block.formats), \"$(makie_block.build)\")"
+    size_string = let size = makie_block.options.size
+        isnothing(size) ? "" : ", $(repr(size))"
+    end
+    savefig_string = "savefig($(makie_block.funcname), $pathspec_string $size_string $theme_string)\n"
+
     code =
-        "using MakieMaestro\n" * # TODO: Make this a plugin option similarly to the `@Example` prepare in documenter <07-05-25> 
-        "using MakieMaestro: PathSpec\n" *
+        "using MakieMaestro\n" *
+        "using MakieMaestro: PathSpec, SizeSpec\n" *
         "function $(makie_block.funcname)()\n" *
         makie_block.code *
         "\nend\n" *
-        "savefig($(makie_block.funcname), PathSpec(\"$(makie_block.basename)\", $(makie_block.formats), \"$(makie_block.build)\"))\n"
+        savefig_string
 
     # linenumbernode = Documenter.LineNumberNode(
     #     lines === nothing ? 0 : lines.first, basename(page.source)
@@ -329,7 +338,9 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
     )
 
     @info "Reference of figure `$(makie_block.basename)` at `$(document_path)`"
-    makie_generated = GeneratedMakieImage(Documenter.LocalImage(document_path))
+    makie_generated = GeneratedMakieImage(
+        Documenter.LocalImage(document_path), makie_block.options
+    )
     node.element = makie_generated
 
     return nothing

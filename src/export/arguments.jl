@@ -179,6 +179,10 @@ struct SizeSpec
     end
 end
 
+function Base.repr(s::SizeSpec)
+    return "SizeSpec($(repr(ustrip(s.width)))u\"$(repr(unit(s.width)))\", $(repr(s.hwratio)))"
+end
+
 function Base.show(io::IO, s::SizeSpec)
     hwratio = if s.hwratio == float(2 / (√(5) + 1))
         "2/(√5 + 1)"

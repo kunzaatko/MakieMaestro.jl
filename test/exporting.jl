@@ -78,7 +78,7 @@ end
                 isdir(temp_path) || mkdir(temp_path)
                 cd(temp_path)
                 @test PathSpec("testpdf") isa PathSpec
-                rm(temp_dir; recursive=true)
+                rm(temp_path; recursive=true)
             end
             @test MakieMaestro.Pdf in PathSpec(joinpath(dir, "testpdf")).formats
             @test PathSpec("test", dir) isa PathSpec

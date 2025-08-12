@@ -85,6 +85,9 @@ end
     @test length(filter(Base.Fix{2}(startswith, "makie_A_"), figures)) == 1
     @test length(filter(Base.Fix{2}(startswith, "makie_B_"), figures)) == 0
     @test length(filter(Base.Fix{2}(startswith, "cos"), figures)) == 1
+    @test length(filter(Base.Fix{2}(startswith, "formats"), figures)) == 2
+    @test length(filter(Base.Fix{2}(startswith, "makie_D_"), figures)) == 2
+    @test length(filter(Base.Fix{2}(startswith, "noname"), figures)) == 1
 
     @test length(filter(Base.Fix{2}(startswith, "formats"), figures)) > 0
 
