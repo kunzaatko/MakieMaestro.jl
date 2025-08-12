@@ -10,11 +10,14 @@ CurrentModule = MakieMaestro
 - Enable saving figures for a given physical size to be included in a document. See [Theming and Sizing](@ref).
 - Simplifies overriding the theme for a specific case (e.g. margin figures, offset axes etc.) using _override themes_
     and functions that generate them. See [Theming and Sizing](@ref).
+- Adds some methods for "ensemble" plots for plotting multiple data with a plot function to linked axes. See [Ensemble
+  Plots](@ref).
 
 !!! note "Word of Warning"
     Some of the features of this package may be opinionated (with theming being the most obvious example). It is made
     with the intent of optimizing __my__ workflows, but with the hope and expectation that it will in fact be useful
     to others as well since the way I use [`Makie.jl`](https://docs.makie.org/stable/) does not differ significantly
-    from others.
+    from the way I suspect others do as well.
 
-See also: [MakieExtra.jl](https://github.com/JuliaAPlavin/MakieExtra.jl)
+Some interesting features and overloads of `Makie` features are also found in
+[MakieExtra.jl](https://github.com/JuliaAPlavin/MakieExtra.jl) and I highly encourage you to take a look over there.

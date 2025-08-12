@@ -44,6 +44,7 @@ makedocs(;
             "Publication Figures" => "workflows/savefig.md",
             "Pluto.jl" => "workflows/pluto.md",
             "Documenter.jl" => "workflows/documenter.md",
+            "Ensemble Recipes" => "workflows/ensemble-recipes.md",
         ],
         "Reference" => "reference.md",
         "API Index" => "reference_index.md"
