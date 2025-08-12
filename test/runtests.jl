@@ -1,4 +1,3 @@
-using Base: get_extension
 using MakieMaestro
 using Test, Documenter, CompatHelperLocal
 using Aqua
@@ -35,6 +34,11 @@ macro cond_testset(name, block)
 end
 
 @testset "MakieMaestro.jl" begin
+    if should_test("documenter")
+        @info "Building documenter/make.jl"
+        @eval Main include("documenter/make.jl")
+    end
+
     @testset "Code quality" begin
         @cond_testset "aqua" begin
             Aqua.test_all(
@@ -84,7 +88,7 @@ end
     end
 
     @cond_testset "documenter" begin
-        include("documenter.jl")
+        include("documenter/test.jl")
     end
 
     @cond_testset "recipes" begin

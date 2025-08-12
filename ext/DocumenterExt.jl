@@ -84,7 +84,6 @@ ref_path(p::MakieCodeBlocks, args...) = ref_path(p.figure_dir, args...)
 
 """
     MakieFigureBlocks <: Documenter.Expanders.NestedExpanderPipeline
-
 An expander pipeline for generating Makie figures from code `@makie` code blocks and expanding them into the
 documentation as images.
 
@@ -107,6 +106,8 @@ end
 """
     parse(::Type{MakieBlockOptions}, s)
 Block options that are located after the `@makie` code identifier.
+
+Currently implements parsing of `name`, `formats`, `basename`, `caption`, `alt`, `size`, `theme`
 """
 function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
     matched = match(r"(?:\s+([^\s;]+))?\s*(;.*)?$(?:\s+([^\s;]+))?\s*(;.*)?$", s)
@@ -114,28 +115,97 @@ function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
     name, kwargs = matched.captures
     formats = basename = caption = alt = size = theme = nothing
     if !isnothing(kwargs)
-        # TODO: Test before going forward <08-05-25> 
-        formats_match = match(r".*(?:\s*formats\s*=\s*([^;]+)).*", kwargs)
-        basename_match = match(r".*(?:\s*basename\s*=\s*\"([^\"]+)\").*", kwargs)
-        caption_match = match(r".*(?:\s*caption\s*=\s*\"([^\"]+)\").*", kwargs)
-        formats, basename, caption =
-            map((formats_match, basename_match, caption_match)) do m
-                !isnothing(m) ? string(first(m.captures)) : nothing
+        stringkw_regex(name) = Regex(raw"(?:\s*" * name * raw"\s*=\s*\"([^\"]+)\".*)")
+
+        basename_match = match(stringkw_regex("basename"), kwargs)
+        alt_match = match(stringkw_regex("alt"), kwargs)
+        caption_match = match(stringkw_regex("caption"), kwargs)
+
+        basename, caption, alt = map((basename_match, caption_match, alt_match)) do m
+            !isnothing(m) ? string(first(m.captures)) : nothing
+        end
+
+        symbol_regex = raw"(?<symbol>:[^\s,]+)"
+        vector_regex = raw"(?<vector>\[[^\]]+\])"
+        endofkw_regex = raw"[^,$]*"
+        formats_match = match(
+            Regex(
+                raw"(?:\s*formats\s*=\s*(" *
+                vector_regex *
+                "|" *
+                symbol_regex *
+                ")" *
+                endofkw_regex *
+                ")",
+            ),
+            kwargs,
+        )
+        size_match = match(
+            Regex(
+                raw"(?:\s*size\s*=\s*(?<tuple>\([^\)]+\))|(?<length>\d[\d\.]+u\"[A-Za-z]+\")" *
+                endofkw_regex *
+                ")",
+            ),
+            kwargs,
+        )
+        theme_match = match(
+            Regex(
+                raw"(?:\s*theme\s*=\s*(" *
+                vector_regex *
+                "|" *
+                symbol_regex *
+                ")" *
+                endofkw_regex *
+                ")",
+            ),
+            kwargs,
+        )
+
+        formats, theme = map(
+            m -> begin
+                if isnothing(m)
+                    nothing
+                else
+                    m = NamedTuple(m)
+                    if !isnothing(m.vector)
+                        expr = Meta.parse(m.vector)
+                        eval(:($expr))
+                    else
+                        expr = Meta.parse(m.symbol)
+                        [eval(:($expr))]
+                    end
+                end
+            end, (formats_match, theme_match)
+        )
+        size = let m = size_match
+            if isnothing(m)
+                nothing
+            else
+                m = NamedTuple(m)
+                if !isnothing(m.tuple)
+                    expr = Meta.parse(m.tuple)
+                    size = eval(:($expr))
+                    size = MakieMaestro.SizeSpec(size)
+                elseif !isnothing(m.length)
+                    expr = Meta.parse(m.length)
+                    size = eval(:($expr))
+                    size = MakieMaestro.SizeSpec(size)
+                end
             end
-        @warn "Options for Makie code blocks are not fully implemented yet! Only `name` works reliably."
+        end
     end
 
-    return MakieBlockOptions(; name, basename, caption, alt, size, theme)
+    return MakieBlockOptions(; name, formats, basename, caption, alt, size, theme)
 end
 
 """
     MakieBlock
-
 A block of code that contains a julia script generating a Makie figure which is then added to the documentation.
 """
 struct MakieBlock <: Documenter.AbstractDocumenterBlock
     codeblock::MarkdownAST.CodeBlock # Makie figure code block
     basename::String                 # basename for the export
+    funcname::String                 # name of the function... Cannot collide with a function in the evaluation module
     build::String                    # Dir for the export
     formats::Vector{Symbol}          # Formats for export
     code::String                     # Code of the figure
@@ -177,12 +247,20 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
         isnothing(block_options.formats), plugin.export_format, block_options.formats
     )  # TODO: allow merge with `figure_block_options` <07-05-25> 
 
-    basename = "makie_" * name * string(hash(block.code)) # TODO: allow override with `figure_block_options`
+    basename, funcname = if block_options.basename == nothing
+        name_string = "makie_" * (name != "" ? name * "_" : "") * string(hash(block.code))
+        (name_string, name_string)
+    else
+        name_string = block_options.basename
+        (name_string, name_string * "_" * string(hash(block.code)))
+    end
+
     build = build_path(plugin, page, doc)
 
     makie_block = MakieBlock(
         block,         # codeblock
         basename,      # basename
+        funcname,      # funcname
         build,         # explicit path of the export figure without the name
         formats,       # formats for export
         block.code,    # code
@@ -203,10 +281,10 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
     code =
         "using MakieMaestro\n" * # TODO: Make this a plugin option similarly to the `@Example` prepare in documenter <07-05-25> 
         "using MakieMaestro: PathSpec\n" *
-        "function $(makie_block.basename)()\n" *
+        "function $(makie_block.funcname)()\n" *
         makie_block.code *
         "\nend\n" *
-        "savefig($(makie_block.basename), PathSpec(\"$(makie_block.basename)\", $(makie_block.formats), \"$(makie_block.build)\"))\n"
+        "savefig($(makie_block.funcname), PathSpec(\"$(makie_block.basename)\", $(makie_block.formats), \"$(makie_block.build)\"))\n"
 
     # linenumbernode = Documenter.LineNumberNode(
     #     lines === nothing ? 0 : lines.first, basename(page.source)
