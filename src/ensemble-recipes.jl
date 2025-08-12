@@ -17,8 +17,9 @@ using Makie: Makie
 # mosaic(mat2; axis = (; title = map(string, 1:9)), plt=surface!)
 # mosaic(mat2; axis = (; title = map(string, 1:9)), plt=heatmap!)
 
-# TODO: Should instead take a plotting function that can take any iterable data and plot it into the supplied axis or
-# GridCell or indexed figure <22-07-25> 
+# TODO: The base method should instead take a plotting function that can take any iterable data and plot it into the
+# supplied axis or GridCell or indexed figure if not supplied. This would allow the user to specify the axes or the
+# layout <22-07-25> 
 
 # TODO: Add support for vector like `kwargs` with length of number of data <28-07-25> 
 # TODO: Now there is support for single function multiple data. Add support for multiple functions single data <28-07-25> 
@@ -33,8 +34,6 @@ end
 function mosaic!(axs::AbstractArray{<:Makie.AbstractAxis}, data...)
     return mosaic!(Makie.plot!, axs, data...)
 end
-
-function create_figure(; figure=(;)) end
 
 const FigureLike = Union{Makie.Figure,Makie.GridPosition,Makie.GridSubposition}
 
@@ -133,16 +132,21 @@ function mosaic(
     ax = create_axes!(
         f, length(data); nrows=nrows, ncols=ncols, axis=axis, linkaxes=linkaxes
     )
+    isinteractive() && display(f)
 
     return f, ax, mosaic!(fn, ax, data...; kwargs...)
 end
 
-function mosaic(f::FigureLike, args...; kwargs...)
-    return mosaic(Makie.plot!, f, args...; kwargs...)
-end
-
 function mosaic(args...; figure=(;), kwargs...)
     return mosaic(Makie.Figure(; figure...), args...; kwargs...)
+end
+
+function mosaic(fn::Function, args...; figure=(;), kwargs...)
+    return mosaic(fn, Makie.Figure(; figure...), args...; kwargs...)
+end
+
+function mosaic(f::FigureLike, args...; kwargs...)
+    return mosaic!(Makie.plot!, f, args...; kwargs...)
 end
 
 const Stack = AbstractArray{T,3} where {T}
