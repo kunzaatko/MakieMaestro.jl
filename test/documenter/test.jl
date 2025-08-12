@@ -82,19 +82,19 @@ end
     @test isdir(dir)
     figures = readdir(abspath(dir))
     @test all(f -> any(endswith(f, ext) for ext in [".svg", ".png", ".pdf"]), figures)
-    @test length(filter(Base.Fix{2}(startswith, "makie_A_"), figures)) == 1
-    @test length(filter(Base.Fix{2}(startswith, "makie_B_"), figures)) == 0
-    @test length(filter(Base.Fix{2}(startswith, "cos"), figures)) == 1
-    @test length(filter(Base.Fix{2}(startswith, "formats"), figures)) == 2
-    @test length(filter(Base.Fix{2}(startswith, "makie_D_"), figures)) == 2
-    @test length(filter(Base.Fix{2}(startswith, "noname"), figures)) == 1
+    @test length(filter(Base.Fix2(startswith, "makie_A_"), figures)) == 1
+    @test length(filter(Base.Fix2(startswith, "makie_B_"), figures)) == 0
+    @test length(filter(Base.Fix2(startswith, "cos"), figures)) == 1
+    @test length(filter(Base.Fix2(startswith, "formats"), figures)) == 2
+    @test length(filter(Base.Fix2(startswith, "makie_D_"), figures)) == 2
+    @test length(filter(Base.Fix2(startswith, "noname"), figures)) == 1
 
-    @test length(filter(Base.Fix{2}(startswith, "formats"), figures)) > 0
+    @test length(filter(Base.Fix2(startswith, "formats"), figures)) > 0
 
-    let formats = filter(Base.Fix{2}(startswith, "formats"), figures)
-      @test length(filter(Base.Fix{2}(endswith, ".pdf"), formats)) == 1
-      @test length(filter(Base.Fix{2}(endswith, ".png"), formats)) == 1
-      @test length(filter(Base.Fix{2}(endswith, ".svg"), formats)) == 0
+    let formats = filter(Base.Fix2(startswith, "formats"), figures)
+      @test length(filter(Base.Fix2(endswith, ".pdf"), formats)) == 1
+      @test length(filter(Base.Fix2(endswith, ".png"), formats)) == 1
+      @test length(filter(Base.Fix2(endswith, ".svg"), formats)) == 0
     end
   end
 end
