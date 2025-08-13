@@ -152,14 +152,6 @@ savefig(bessely_fig, "bessely_fig_wide", Themes.A4_WIDTH, 0.4; override_theme = 
 ```
 ![](bessely_fig_wide.svg)
 
-<!-- TODO: Why doesn't this work?! It does not work because of this: issue  <09-01-25> -->
-```@raw html
-<div style="display: flex; justify-content: center; align-items: center;">
-    <img src="../workflows/bessely_fig.svg" alt="Bessel Y figure for main document" style="margin-right: 10px;">
-    <img src="../workflows/bessely_fig_appendix.svg" alt="Bessel Y figure themed for the appendix" style="margin-left: 10px;">
-</div>
-```
-
 # Arguments to the `savefig` function
 The intension of this exporting functionality is such that you do not need to think much about the process of saving the
 output of your research. After some initializations of regarding the setting up of your sizing ([`width!`](@ref
@@ -227,4 +219,5 @@ rm("./alt_dir/lissajous_knot.svg") # hide
 savefig(lissajous_knot, ["pdf"], "alt_dir")                  # lissajous_knot.pdf in alt_dir
 rm("./alt_dir/lissajous_knot.pdf") # hide
 rm("./alt_dir/", recursive=true) # hide
+nothing # hide
 ```
