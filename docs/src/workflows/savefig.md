@@ -44,7 +44,6 @@ width!(Themes.A4_WIDTH/2)
     width!(512u"pt") # about 181 mm
     ```
 
-
 Now that we have a default width, any figure that we will be exporting will assume this width and calculate the height
 based on the set height-width ratio.
 The default is the golden ratio, but it is possible to change this similarly to as we set the width with the function
@@ -54,6 +53,8 @@ The default is the golden ratio, but it is possible to change this similarly to 
 hwratio!(0.8)
 nothing # hide
 ```
+
+<!-- TODO: Add a section about the conversion of the size of the figure when passed to the `savefig` function. <13-08-25> -->
 
 Suppose that we want to use a specific theme for a figure in the appendix.
 We would therefore define a theme and save it under the key `:appendix` into our theme collection with the function
@@ -152,11 +153,10 @@ savefig(bessely_fig, "bessely_fig_wide", Themes.A4_WIDTH, 0.4; override_theme = 
 ![](bessely_fig_wide.svg)
 
 <!-- TODO: Why doesn't this work?! It does not work because of this: issue  <09-01-25> -->
-
 ```@raw html
 <div style="display: flex; justify-content: center; align-items: center;">
-    <img src="workflows/bessely_fig.svg" alt="Bessel Y figure for main document" style="margin-right: 10px;">
-    <img src="workflows/bessely_fig_appendix.svg" alt="Bessel Y figure themed for the appendix" style="margin-left: 10px;">
+    <img src="../workflows/bessely_fig.svg" alt="Bessel Y figure for main document" style="margin-right: 10px;">
+    <img src="../workflows/bessely_fig_appendix.svg" alt="Bessel Y figure themed for the appendix" style="margin-left: 10px;">
 </div>
 ```
 
