@@ -60,7 +60,7 @@ Recipes.mosaic(graphplot!,
 nothing # hide
 ```
 
-```@makie graphs; size=(25u"cm", 0.66)
+```@makie graphs; size=(15u"cm", 25u"cm")
 f,_,_ = Recipes.mosaic(graphplot!,lollipop_graph(2,5), turan_graph(6, 2), cycle_graph(5), binary_tree(5), star_digraph(3), barabasi_albert(10, 2); nrows=2)
 f
 ```
@@ -81,7 +81,7 @@ Recipes.mosaic(polys...; axis=(;aspect=1))
 nothing # hide
 ```
 
-```@makie polygon; size=(25u"cm", 0.5), format=:png
+```@makie polygon; size=(7u"cm", 25u"cm"), format=:png
 f,_,_ = Recipes.mosaic(polys...; axis=(;aspect=1))
 f
 ```
