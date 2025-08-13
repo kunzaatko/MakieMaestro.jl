@@ -52,6 +52,10 @@ function build_path(p::RelativePath, page::Documenter.Page, ::Documenter.Documen
     return build_path
 end
 
+# TODO: Implement a caching for unchanged blocks (same code hash, same options) since the builds are reproducible. It
+# can saved a lot of time for many-figured pages and enable faster turn based development. It should be implemented at
+# the package level and an option should be present that disables it for the block. <13-08-25> 
+
 """
     MakieCodeBlocks <: Documenter.Plugin
 Documenter plugin that is used for storing the options for the makie code blocks.

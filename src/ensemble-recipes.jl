@@ -1,6 +1,6 @@
 using Makie: Makie
 
-# TODO: Add documentation for the `mosaic` and `mosaic!` functions <28-07-25> 
+# FIX: documentation for the `mosaic` and `mosaic!` functions is outdated <28-07-25> 
 
 # TODO: Should return Figure or Axis figure similar to `image!` in this package <17-03-25> 
 
