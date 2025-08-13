@@ -15,9 +15,9 @@ multi_pages = [
 ]
 
 MakieMaestro.Themes.width!(15u"cm")
-makieblocks = MakieDocBlocks(
-  "assets/figures",
-  [:svg]
+makieblocks = MakieDocBlocks(;
+  path="assets/figures",
+  formats=[:svg]
 )
 
 function html_doc(source, build_directory, pages; warnonly=true, kwargs...)

@@ -99,5 +99,7 @@ end
   end
 end
 
+# TODO: Test that the plugin options work correctly. They do not I am afraid. <13-08-25> 
+
 # TODO: Return helpful errors for errors that happen in the blocks instead of just throwing when the plotting does not
 # work <12-08-25> 

@@ -1,5 +1,6 @@
 ```@meta
 CurrentModule = MakieMaestro
+CollapsedDocStrings=true
 ```
 
 # Documenter Integration
@@ -19,10 +20,10 @@ using YourPackage
 MakieMaestro.Themes.width!(15u"cm")
 
 # Create the MakiePlugin with optional customization
-makie_blocks = MakieDocBlocks(
-    figure_dir = "assets/my_figure_dir",  # default is  "assets/figs", 
+makie_blocks = MakieDocBlocks(;
+    path="assets/my_figure_dir",  # default is  "assets/figs", 
     # Optionally specify the export formats (default: [:svg, :pdf])
-    export_format = [:svg, :png, :pdf, :eps],
+    formats=[:svg, :png, :pdf, :eps],
 )
 
 makedocs(
@@ -31,17 +32,21 @@ makedocs(
 )
 ```
 
+```@docs
+MakieMaestro.MakieDocBlocks
+```
+
 !!! tip "Constructing the plugin is not necessary"
     It is not necessary to create the plugin with `MakieDocBlocks`. As long as you do not want to change the default
     settings of the plugin. You only need to load `MakieMaestro` to use the `Documenter` plugin. However, consider
     defining the plugin if you are developing a package with other contributors as it is more explicit and will make it
     easier for them to understand the documentation generation process.
 
-!!! warning "Custom `figure_dir` path"
+!!! warning "Custom `path` path"
     The target figure directory should not be preceded by a slash.
     ```julia 
-    # MakieDocBlocks(figure_dir = "/assets/my_figure_dir") # ⚠️ DOESN'T WORK!!!
-    MakieDocBlocks(figure_dir = "assets/my_figure_dir") # ⬅️ USE THIS
+    # MakieDocBlocks(;path="/assets/my_figure_dir") # ⚠️ DOESN'T WORK!!!
+    MakieDocBlocks(;path="assets/my_figure_dir") # ⬅️ USE THIS
     ```
     For more details about this issue, see the functioning of [`joinpath`](@extref Julia :jl:function:`Base.Filesystem.joinpath`)
 

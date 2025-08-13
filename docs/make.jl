@@ -24,9 +24,9 @@ links = InterLinks(
 )
 
 MakieMaestro.Themes.width!(15u"cm")
-makieblocks = MakieDocBlocks(
-    "assets/figures",
-    [:svg, :png, :pdf]
+makieblocks = MakieDocBlocks(;
+    path="assets/figures",
+    formats=[:svg, :png, :pdf]
 )
 
 makedocs(;

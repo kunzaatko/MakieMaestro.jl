@@ -1,4 +1,4 @@
-# Where I started: problem (⇒ solution)
+# The Problem with `Pluto` + `Makie`
 
 For research and experimenting, I use [`Pluto.jl`](https://github.com/fonsp/Pluto.jl) notebooks. 
 When I need to study a figure/plot with more complex features, I open it with `GLMakie` in a separate window. 
@@ -32,7 +32,8 @@ After a while of living the hell and inconvenience of this, I decided that a cha
 I iterated on some workflows from using only `CairoMakie`s static plots and switching only when necessary or using
    `WGLMakie`s interactive plots. After a while I landed on a solution that made my plotting life a walk in a rose garden.
 You are browsing through the documentation of my solution.
-# My Current Workflow
+
+# The Solution -- `Pluto.jl` Workflow
 When I want to create a figure I write a function that returns a `Makie` figure and run
 ```julia
 with_backend!(GLMakie) do
