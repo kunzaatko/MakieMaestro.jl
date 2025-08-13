@@ -57,3 +57,10 @@ makedocs(;
 )
 
 deploydocs(; repo="github.com/kunzaatko/MakieMaestro.jl", devbranch="trunk")
+
+if !haskey(ENV, "GITHUB_ACTIONS")
+    build_path = joinpath(@__DIR__, "build")
+    cached_path = joinpath(@__DIR__, "cached")
+    @info "Making cached docs at $cached_path"
+    cp(build_path, cached_path; force=true)
+end
