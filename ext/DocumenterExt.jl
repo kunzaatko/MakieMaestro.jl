@@ -329,7 +329,7 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
         end
     end
 
-    @info "Saved figure `$(makie_block.basename)` to `$(makie_block.build)`"
+    @info "MakieCodeBlocks: Saved figure `$(makie_block.basename)` to `$(makie_block.build)`"
 
     prefered_formats = [:svg, :png, :pdf]
     format = prefered_formats[findfirst(x -> x in makie_block.formats, prefered_formats)] # TODO: allow the user to pick a preferred format
@@ -339,7 +339,7 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
         ref_path(plugin, page, doc), makie_block.basename * "." * string(format)
     )
 
-    @info "Reference of figure `$(makie_block.basename)` at `$(document_path)`"
+    @info "MakieCodeBlocks: Reference of figure `$(makie_block.basename)` at `$(document_path)`"
     makie_generated = GeneratedMakieImage(
         Documenter.LocalImage(document_path), makie_block.options
     )
