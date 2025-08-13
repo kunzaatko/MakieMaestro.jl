@@ -146,7 +146,7 @@ function mosaic(fn::Function, args...; figure=(;), kwargs...)
 end
 
 function mosaic(f::FigureLike, args...; kwargs...)
-    return mosaic!(Makie.plot!, f, args...; kwargs...)
+    return mosaic(Makie.plot!, f, args...; kwargs...)
 end
 
 const Stack = AbstractArray{T,3} where {T}
