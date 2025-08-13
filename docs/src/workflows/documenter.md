@@ -189,6 +189,9 @@ x,y = rs .* cos.(θs), rs .* sin.(θs)
 lines(x,y)
 ```
 ````
+!!! warn "`:png` format on a HTML spans the whole width" 
+    If you choose to export to a `png` the figure will span the full width of the documentation page. If you want to
+    enforce the size of the figure exported, you need to use the `:svg` format (which is default).
 
 ```@makie exponential_spiral; formats = [:png, :pdf]
 θs = 0:0.01:4π
