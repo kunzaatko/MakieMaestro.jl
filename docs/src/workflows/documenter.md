@@ -194,9 +194,15 @@ x,y = rs .* cos.(θs), rs .* sin.(θs)
 lines(x,y)
 ```
 ````
+
 !!! warn "`:png` format on a HTML spans the whole width" 
     If you choose to export to a `png` the figure will span the full width of the documentation page. If you want to
     enforce the size of the figure exported, you need to use the `:svg` format (which is default).
+
+!!! tip "Use `:png` for images"
+    If you use images or `GridLike`/`CellLike` plots in your documentation, you should be using them with the `:png`
+    format. It is possible to export these plots to `:svg` but it leads to performance issues in the browser since
+    vector graphics are really not meant for use with _image like_ graphics.
 
 ```@makie exponential_spiral; formats = [:png, :pdf]
 θs = 0:0.01:4π
