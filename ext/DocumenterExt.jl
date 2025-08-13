@@ -205,7 +205,7 @@ A block of code that contains a julia script generating a Makie figure which is 
 struct MakieBlock <: Documenter.AbstractDocumenterBlock
     codeblock::MarkdownAST.CodeBlock # Makie figure code block
     basename::String                 # basename for the export
-    funcname::String                 # name of the function... Cannot collide with a function in the evaluation module
+    funcname::String                 # name of the function... Cannot collide with a function in the evaluation module 
     build::String                    # Dir for the export
     formats::Vector{Symbol}          # Formats for export
     code::String                     # Code of the figure
@@ -247,6 +247,8 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
         isnothing(block_options.formats), plugin.export_format, block_options.formats
     )  # TODO: allow merge with `figure_block_options` <07-05-25> 
 
+    # FIX: `funcname` must be a valid identifier, so we need to filter things that are allowed in the `name` but not in
+    # julia identifiers such as `"-"` <13-08-25> 
     basename, funcname = if block_options.basename == nothing
         name_string = "makie_" * (name != "" ? name * "_" : "") * string(hash(block.code))
         (name_string, name_string)
