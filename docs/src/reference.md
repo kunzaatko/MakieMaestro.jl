@@ -100,11 +100,6 @@ MakieMaestro.Recipes.image!
 MakieMaestro.Recipes.image
 ```
 
-## Plotting functions
-```@docs
-MakieMaestro.Recipes.mosaic
-```
-
 ## Utility / QOL functions 
 
 ```@docs

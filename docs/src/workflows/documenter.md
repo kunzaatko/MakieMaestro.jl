@@ -84,11 +84,11 @@ name, so it will have the global variables at its disposal.
 For example this is possible to have
 
 ````markdown
-```@example sine
-x = 0.01:0.01:10
-y = sin.(x) ./ x .+ x
+```@example wavepocket
+x = -2.2:0.01:2.2
+y = @. exp(-x^2) * cos(5x)
 ```
-```@makie  sine
+```@makie  wavepocket
 lines(x,y)
 ```
 ````
@@ -103,38 +103,40 @@ Here's an example of using the `@makie` code block in documentation:
 This code block
 ````markdown
 ```@makie
-x = 0:0.1:2π
-fig,ax,_ = lines(x, sin.(x) ./ x, linewidth = 2, label = "sin(x)")
+x = -2π:0.01:2π
+fig,ax,_ = lines(x, sin.(x.^2) ./ x, linewidth = 2, label = "chirp(x)")
 axislegend(ax)
 fig
 ```
 ````
 generates the following figure
 ```@makie
-x = 0:0.1:2π
-fig,ax,_ = lines(x, sin.(x) ./ x, linewidth = 2, label = "sin(x)")
+x = -2π:0.01:2π
+fig,ax,_ = lines(x, sin.(x.^2) ./ x, linewidth = 2, label = "chirp(x)")
 axislegend(ax)
 fig
 ```
 
 This `@example` and `@makie` blocks are evaluated in the same module
 ````markdown
-```@example A
-x = 0.01:0.01:10
-y = sin.(x) ./ x .+ x
+```@example besselj
+using SpecialFunctions
+x = 0:0.01:20
+y = besselj0.(x)
 nothing # hide
 ```
-```@makie  A
+```@makie  besselj
 lines(x,y)
 ```
 ````
 and produce 
-```@example A
-x = 0.01:0.01:10
-y = sin.(x) ./ x .+ x
+```@example besselj
+using SpecialFunctions
+x = 0:0.01:20
+y = besselj0.(x)
 nothing # hide
 ```
-```@makie  A
+```@makie  besselj
 lines(x,y)
 ```
 
@@ -147,46 +149,81 @@ The options that can be specified are:
   is`"makie_$(name)_$(hash(code))"`
 
 ````
-```@makie named_figure; basename="my_figure"
-lines(sin.(0:0.1:pi))
+```@makie named_figure; basename="rose"
+θs = 0:0.01:4π
+rs = sin.(4θs)
+x,y = rs .* cos.(θs), rs .* sin.(θs)
+lines(x,y)
 ```
 ````
-```@makie named_figure; basename="my_figure"
-lines(sin.(0:0.1:pi))
-```
-
-- `formats` -- Specify the export formats to use for the figure. The default is determined by the plugin options.
-````
-```@makie pdf_figure; formats = :pdf
-lines(sin.(0:0.1:pi))
-```
-````
-
-```@makie pdf_figure; formats = :pdf
-lines(sin.(0:0.1:pi))
+```@makie named_figure; basename="rose"
+θs = 0:0.01:4π
+rs = sin.(4θs)
+x,y = rs .* cos.(θs), rs .* sin.(θs)
+lines(x,y)
 ```
 
+- `formats` -- Specify the export formats to use for the figure. You can specify a single format as a symbol or a vector
+  of symbols. The default is determined by the plugin options.
 ````
-```@makie multiple_formats; formats = [:png, :pdf]
-lines(sin.(0:0.1:pi))
+```@makie hypotrochoid; formats = :png
+ts = 0:0.01:2π
+x = @. cos(ts) - cos(3ts)
+y = @. sin(ts) - sin(3ts)
+lines(x,y)
 ```
 ````
 
-```@makie multiple_formats; formats = [:png, :pdf]
-lines(sin.(0:0.1:pi))
+```@makie hypotrochoid; formats = :png
+ts = 0:0.01:2π
+x = @. cos(ts) - cos(3ts)
+y = @. sin(ts) - sin(3ts)
+lines(x,y)
+```
+
+````
+```@makie exponential_spiral; formats = [:png, :pdf]
+θs = 0:0.01:4π
+rs = @. exp(0.1θs)
+x,y = rs .* cos.(θs), rs .* sin.(θs)
+lines(x,y)
+```
+````
+
+```@makie exponential_spiral; formats = [:png, :pdf]
+θs = 0:0.01:4π
+rs = @. exp(0.1θs)
+x,y = rs .* cos.(θs), rs .* sin.(θs)
+lines(x,y)
 ```
 
 - `caption` -- Attach a caption under the figure in the documentation. 
 - `size` -- Specify the size of the figure to export. All of the options that can be passed to [`savefig`](@ref) are
   possible
+```@example large_figure
+using GeometryBasics
+struct FitzhughNagumo{T}
+    ϵ::T
+    s::T
+    γ::T
+    β::T
+end
+P = FitzhughNagumo(0.1, 0.0, 1.5, 0.8)
+f(x, P::FitzhughNagumo) = Point2f(
+    (x[1]-x[2]-x[1]^3+P.s)/P.ϵ,
+    P.γ*x[1]-x[2] + P.β
+)
+f(x) = f(x, P)
+```
+
 ````
 ```@makie large_figure; size=25u"cm"
-lines(sin.(0:0.1:pi))
+streamplot(f, -1.5..1.5, -1.5..1.5, colormap = :magma)
 ```
 ````
 
 ```@makie large_figure; size=25u"cm"
-lines(sin.(0:0.1:pi))
+streamplot(f, -1.5..1.5, -1.5..1.5, colormap = :magma)
 ```
 
 - `alt` --  Specify an alternate text to add to the figure in the HTML output. (`alt_figure; alt = "A figure"`)
