@@ -2,6 +2,9 @@
 CurrentModule = MakieMaestro
 ```
 
+```@setup paper-sizes
+using MakieMaestro.Themes
+```
 # Exporting publication figures 
 
 You often want to apply specific themes or export figures in different sizes.
@@ -54,6 +57,12 @@ hwratio!(0.8)
 nothing # hide
 ```
 
+!!! tip "Figure size constants"
+    There are usual paper size constants available in the `Themes` module. For example 
+    ```@example paper-sizes 
+    Themes.A4_WIDTH
+    ```
+    The _A_, _B_ and _C_ series ISO 216 standard paper sizes are defined. See [Paper Sizes](@ref)
 <!-- TODO: Add a section about the conversion of the size of the figure when passed to the `savefig` function. <13-08-25> -->
 
 Suppose that we want to use a specific theme for a figure in the appendix.
@@ -179,7 +188,9 @@ figure_dir!(".")
 width!(Themes.A4_WIDTH)
 export_format!(:svg)
 ```
+
 and figures can then be exported using various argument sets
+
 ```@example argument-cascade
 using MakieMaestro: MakieMaestro as MM
 

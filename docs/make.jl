@@ -33,6 +33,7 @@ makedocs(;
     format=Documenter.HTML(;
         canonical="https://kunzaatko.github.io/MakieMaestro.jl",
         edit_link="trunk",
+        size_threshold=1_000_000,
         assets=String[],
     ),
     pages=[
@@ -50,6 +51,7 @@ makedocs(;
         links,
         makieblocks
     ],
+    warnonly=[:missing_docs],
     doctest=false # tests run in `test/runtests.jl`
 )
 
