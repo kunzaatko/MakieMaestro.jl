@@ -1,4 +1,5 @@
-using InteractiveUtils
+using Revise
+using InteractiveUtils, CodeTracking
 # TODO: Better ways of setting the override_themes. Especially using the `Symbol`s such as `[:appendix]` in the docs.
 # Then workflow docs for publication figures should be changed accordingly <09-01-25> 
 # TODO: Possibility of using `skip` for defining the formats for the save <18-10-24> 
@@ -86,8 +87,16 @@ julia> uniqueids(fspec; axis=(;title="Line"))
 ```
 """
 function uniqueids(fspec::FunctionSpec; kwargs...)
-    lowered_code = string(@code_lowered fspec.fig(fspec.args; kwargs...))
-    return (code=hash(lowered_code), args=hash(fspec.args), kwargs=hash(kwargs))
+    code =  code_string(fspec.fig, typeof.(fspec.args))
+    code_typed = string(@code_typed optimize = false fspec.fig(fspec.args; kwargs...))
+    code_lowered = string(@code_lowered fspec.fig(fspec.args; kwargs...))
+    return (
+        code=hash(code),
+        code_typed=hash(code_typed),
+        code_lowered=hash(code_lowered),
+        args=hash(fspec.args),
+        kwargs=hash(kwargs),
+    )
 end
 
 """
