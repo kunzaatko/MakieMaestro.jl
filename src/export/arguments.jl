@@ -1,3 +1,4 @@
+using InteractiveUtils
 # TODO: Better ways of setting the override_themes. Especially using the `Symbol`s such as `[:appendix]` in the docs.
 # Then workflow docs for publication figures should be changed accordingly <09-01-25> 
 # TODO: Possibility of using `skip` for defining the formats for the save <18-10-24> 
@@ -31,6 +32,63 @@ function (fspec::FunctionSpec)(; kwargs...)
     end
 end
 Base.nameof(fspec::FunctionSpec) = nameof(fspec.fig)
+
+"""
+    uniqueid(fspec::FunctionSpec; kwargs...) 
+Generate a unique ID for the `fspec` when called with `kwargs`.
+
+Useful for caching the figures that do not change their definitions so that they do not have to be re-generated when
+re-exported.
+
+See also [`uniqueids`](@ref).
+```jldoctest; setup=:(using MakieMaestro: uniqueid, FunctionSpec)
+julia> f(args...; kwargs...) = lines(args...; kwargs...)
+f (generic function with 2 methods)
+
+julia> fspec = FunctionSpec(f, (1:10, 1:10))
+FunctionSpec(f, (1:10, 1:10))
+
+julia> uniqueid(fspec)
+0x06009004624a93f3
+
+julia> uniqueid(fspec)
+0x06009004624a93f3
+
+julia> uniqueid(fspec; axis=(;title="Line"))
+0x316cd5fda3a24922
+```
+"""
+function uniqueid(fspec::FunctionSpec; kwargs...)
+    ids = uniqueids(fspec; kwargs...)
+    return hash((ids.code, ids.args, ids.kwargs))
+end
+
+"""
+    uniqueids(fspec::FunctionSpec; kwargs...)
+Returns a named tuple of the unique IDs for the `fspec` when called with `kwargs`.
+
+See also [`uniqueid`](@ref).
+```jldoctest; setup=:(using MakieMaestro: uniqueids, FunctionSpec)
+julia> f(args...; kwargs...) = lines(args...; kwargs...)
+f (generic function with 2 methods)
+
+julia> fspec = FunctionSpec(f, (1:10, 1:10))
+FunctionSpec(f, (1:10, 1:10))
+
+julia> uniqueids(fspec)
+(code = 0x33ecb529c59ef57d, args = 0x555f1488e3455694, kwargs = 0x172af099a2a3a421)
+
+julia> uniqueids(fspec)
+(code = 0x33ecb529c59ef57d, args = 0x555f1488e3455694, kwargs = 0x172af099a2a3a421)
+
+julia> uniqueids(fspec; axis=(;title="Line"))
+(code = 0x33ecb529c59ef57d, args = 0x555f1488e3455694, kwargs = 0xd809c2da14f6387e)
+```
+"""
+function uniqueids(fspec::FunctionSpec; kwargs...)
+    lowered_code = string(@code_lowered fspec.fig(fspec.args; kwargs...))
+    return (code=hash(lowered_code), args=hash(fspec.args), kwargs=hash(kwargs))
+end
 
 """
     PathSpec(basename, [formats], [dirname])
