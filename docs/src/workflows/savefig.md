@@ -67,7 +67,7 @@ nothing # hide
     ```@example paper-sizes 
     Themes.A4_WIDTH
     ```
-    The _A_, _B_ and _C_ series ISO 216 standard paper sizes are defined. See [Paper Sizes](@ref)
+    The _A_, _B_ and _C_ series ISO 216 standard paper sizes are defined. See [Paper Sizes](@ref).
 <!-- TODO: Add a section about the conversion of the size of the figure when passed to the `savefig` function. <13-08-25> -->
 
 Suppose that we want to use a specific theme for a figure in the appendix.
