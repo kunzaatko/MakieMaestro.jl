@@ -18,3 +18,4 @@ docs/src/assets/*
 .tasks
 test/documenter/builds/*
 test/quietly-logs/*
+docs/cached/*
