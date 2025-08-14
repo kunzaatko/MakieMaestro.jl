@@ -10,6 +10,8 @@ end
 
 fig_function(lims::Tuple{Real,Real}=(0, 1)) = fig_function_w_kwargs(lims)
 
+figs_function(lims::Tuple{Real,Real}=(0, 1)) = (fig_function_w_kwargs(lims), fig_function_w_kwargs(lims))
+
 @testset "Caching" begin
     using MakieMaestro: uniqueids, uniqueid, FunctionSpec
     f1(args...; kwargs...) = lines(args...; kwargs...)
@@ -138,11 +140,12 @@ end
 end
 
 @testset "`savefig`" begin
-    # NOTE: Prepare 
+    # setup
     fig_dir = joinpath(tempdir(), "test_fig_dir")
     isdir(fig_dir) || mkdir(fig_dir)
     figure_dir!(fig_dir)
     width!(0.8MakieMaestro.Themes.A4_WIDTH)
+
     @test MakieMaestro.Pdf in export_format!(Set([MakieMaestro.Pdf]))
 
     @testset "utils" begin
@@ -160,128 +163,106 @@ end
     @testset "method availability" begin
         figexists(name) = isfile(joinpath(fig_dir, name))
         rmfig(name) = rm(joinpath(fig_dir, name))
+        # NOTE: Comparison may not be made with `pdf` because the file is not the same even with the same figure <30-01-25> 
         issamefig(a, b) = success(`cmp --quiet $(joinpath(fig_dir, a)) $(joinpath(fig_dir, b))`)
 
         with_logger(NullLogger()) do
-            # Basic methods
-            savefig(fig_function)
-            @test figexists("fig_function.pdf")
-            rmfig("fig_function.pdf")
+            @testset "Basic methods" begin
+                # function without kwargs
+                savefig(fig_function)
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
 
-            savefig(fig_function_w_kwargs)
-            @test figexists("fig_function_w_kwargs.pdf")
-            rmfig("fig_function_w_kwargs.pdf")
+                # function with kwargs
+                savefig(fig_function_w_kwargs)
+                @test figexists("fig_function_w_kwargs.pdf")
+                rmfig("fig_function_w_kwargs.pdf")
 
-            # TODO: Add note to the documentation about the need to add the comma in order for the argument to be
-            # parsed as a tuple and not normal parens <30-01-25> 
-            savefig(fig_function, ((-π, π),))
-            @test figexists("fig_function.pdf")
-            rmfig("fig_function.pdf")
+                # arguments to the figure function
+                savefig(fig_function, ((-π, π),))
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
 
-            if Sys.which("cmp") !== nothing # Check if UNIX system command exists
-                savefig(fig_function, ["svg"])
-                # NOTE: Comparison may not be made with `pdf` because the file is not the same even with the same
-                # figure <30-01-25> 
-                # NOTE: Different `N`. Should not be the same as `fig_function`
-                savefig(fig_function_w_kwargs, ["svg"]; N=300)
-                @test !issamefig("fig_function_w_kwargs.svg", "fig_function.svg")
-                # NOTE: Same `N`. Should be the same as `fig_function`
-                savefig(fig_function_w_kwargs, ["svg"]; N=100)
-                @test issamefig("fig_function_w_kwargs.svg", "fig_function.svg")
-                rmfig.(("fig_function_w_kwargs.svg", "fig_function.svg"))
+                if Sys.which("cmp") !== nothing # Check if UNIX system command exists
+                    savefig(fig_function, ["svg"])
+                    savefig(fig_function_w_kwargs, ["svg"]; N=300)
+
+                    # figure function gets the kwargs
+                    @test !issamefig("fig_function_w_kwargs.svg", "fig_function.svg")
+
+                    rmfig.(("fig_function_w_kwargs.svg", "fig_function.svg"))
+                end
+
+                if Sys.which("inkscape") !== nothing
+                    savefig(fig_function, ["pdf_tex"])
+                    @test figexists("fig_function.pdf_tex")
+                    rmfig("fig_function.pdf_tex")
+                end
             end
 
-            if Sys.which("inkscape") !== nothing
-                savefig(fig_function, ["pdf_tex"])
-                @test figexists("fig_function.pdf_tex")
-                rmfig("fig_function.pdf_tex")
+            @testset "Multiple formats" begin
+                savefig(fig_function, ["svg", MakieMaestro.Pdf])
+                @test all(figexists.(("fig_function.svg", "fig_function.pdf")))
+                rmfig.(("fig_function.svg", "fig_function.pdf"))
+
+                savefig(fig_function, "name.{pdf,png}")
+                @test all(figexists.(("name.pdf", "name.png")))
+                rmfig.(("name.pdf", "name.png"))
+
+                # Specifying a different name
+                savefig(fig_function, "other_name")
+                @test figexists("other_name.pdf")
+                rmfig("other_name.pdf")
+
+                savefig(fig_function, "other_name", ["svg", :pdf])
+                @test all(figexists.(("other_name.pdf", "other_name.svg")))
+                rmfig.(("other_name.pdf", "other_name.svg"))
             end
 
-            # Multiple formats
-            savefig(fig_function, ["svg", MakieMaestro.Pdf])
-            @test all(figexists.(("fig_function.svg", "fig_function.pdf")))
-            rmfig.(("fig_function.svg", "fig_function.pdf"))
+            @testset "Setting the figure directory " begin
+                alt_fig_dir = joinpath(tempdir(), "alt_fig_dir")
+                isdir(alt_fig_dir) || mkdir(alt_fig_dir)
 
-            savefig(fig_function, "name.{pdf,png}")
-            @test all(figexists.(("name.pdf", "name.png")))
-            rmfig.(("name.pdf", "name.png"))
+                savefig(fig_function, "name1", alt_fig_dir)
+                savefig(fig_function, "name2", ["pdf"], alt_fig_dir)
+                savefig(fig_function, joinpath(alt_fig_dir, "name3"), ["pdf"])
+                savefig(fig_function, joinpath(alt_fig_dir, "name4.pdf"))
 
-            # Specifying a different name
-            savefig(fig_function, "other_name")
-            @test figexists("other_name.pdf")
-            rmfig("other_name.pdf")
+                @test all(!figexists, ("name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"))
+                @test all(isfile.((joinpath(alt_fig_dir, n) for n in ["name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"])))
 
-            savefig(fig_function, "other_name", ["svg", :pdf])
-            @test all(figexists.(("other_name.pdf", "other_name.svg")))
-            rmfig.(("other_name.pdf", "other_name.svg"))
+                rm.((joinpath(alt_fig_dir, n) for n in ["name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"]))
+                rm(alt_fig_dir; recursive=true) # cleanup
+            end
 
-            # Specifying the figure directory
-            alt_fig_dir = joinpath(tempdir(), "alt_fig_dir")
-            isdir(alt_fig_dir) || mkdir(alt_fig_dir)
-            savefig(fig_function, "name1", alt_fig_dir)
-            savefig(fig_function, "name2", ["pdf"], alt_fig_dir)
-            savefig(fig_function, joinpath(alt_fig_dir, "name3"), ["pdf"])
-            savefig(fig_function, joinpath(alt_fig_dir, "name4.pdf"))
-            @test any(
-                figexists.(("name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"))
-            ) == false
-            @test all(
-                isfile.(
-                    map(
-                        n -> joinpath(alt_fig_dir, n),
-                        ["name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"],
-                    )
-                ),
-            )
-            rm.(
-                map(
-                    n -> joinpath(alt_fig_dir, n),
-                    ["name1.pdf", "name2.pdf", "name3.pdf", "name4.pdf"],
-                )
-            )
-            rm(alt_fig_dir; recursive=true)
+            @testset "Sizing" begin
+                savefig(fig_function, 100u"cm")
+                @test figexists("fig_function.pdf")
+                rmfig("fig_function.pdf")
 
-            # Sizing 
-            savefig(fig_function, 100u"cm")
-            @test figexists("fig_function.pdf")
-            rmfig("fig_function.pdf")
+                # explicitly using the default values to test whether they are used
+                @testset "Default size values" begin
+                    if Sys.which("cmp") !== nothing # Check if UNIX system command exists
+                        savefig(fig_function, "orig_size.svg")
+                        savefig(fig_function, "relative_size_one.svg", MakieMaestro.RelativeSize(1))
+                        savefig(fig_function, "relative_size_one_notyping.svg", 1)
+                        @test issamefig("orig_size.svg", "relative_size_one.svg")
+                        @test issamefig("orig_size.svg", "relative_size_one_notyping.svg")
 
-            if Sys.which("cmp") !== nothing # Check if UNIX system command exists
-                savefig(fig_function, "orig_size.svg")
+                        savefig(fig_function, "width_same.svg", MakieMaestro.Themes.get_width())
+                        @test issamefig("orig_size.svg", "width_same.svg")
 
-                savefig(
-                    fig_function, "relative_size_one.svg", MakieMaestro.RelativeSize(1)
-                )
-                savefig(fig_function, "relative_size_one_notyping.svg", 1)
-                @test issamefig("orig_size.svg", "relative_size_one.svg")
-                @test issamefig("orig_size.svg", "relative_size_one_notyping.svg")
+                        savefig(fig_function, "hwratio_same.svg", 1, MakieMaestro.Themes.get_hwratio())
+                        @test issamefig("orig_size.svg", "hwratio_same.svg")
 
-                savefig(fig_function, "width_same.svg", MakieMaestro.Themes.get_width())
-                @test issamefig("orig_size.svg", "width_same.svg")
-
-                savefig(
-                    fig_function,
-                    "hwratio_same.svg",
-                    1,
-                    MakieMaestro.Themes.get_hwratio(),
-                )
-                @test issamefig("orig_size.svg", "hwratio_same.svg")
-
-                rmfig.((
-                    "orig_size.svg",
-                    "relative_size_one.svg",
-                    "width_same.svg",
-                    "hwratio_same.svg",
-                ))
+                        rmfig.(("orig_size.svg", "relative_size_one.svg", "width_same.svg", "hwratio_same.svg")) # cleanup
+                    end
+                end
             end
         end
 
-        # NOTE: Warns that the error may be thrown due to SizeSpec arguments being passed to
-        # fig_function <31-01-25> 
-        Logging.disable_logging(Logging.Info) # NOTE: Must enable logging after DocTests
-        # l = TestLogger()
-        # Logging.with_logger(l) do
-        #     try
+        # Warning that the error may be thrown due to SizeSpec arguments being passed to fig_function
+        Logging.disable_logging(Logging.Info) # NOTE: Must enable logging after tests for warn
         @test_logs (:warn,) @test_throws MethodError savefig(
             fig_function, (100u"cm", 0.6)
         )
@@ -289,24 +270,34 @@ end
             fig_function, (0.7, 10u"cm")
         )
         Logging.disable_logging(Logging.Warn)
+
+        # explicit FunctionSpec does not warn
         @test_nowarn savefig(FunctionSpec(fig_function), (10u"cm", 10u"cm"))
         @test figexists("fig_function.pdf")
         rmfig("fig_function.pdf")
 
+        # height + default hwratio
         savefig(fig_function, FigHeight(100u"cm"))
         @test figexists("fig_function.pdf")
         rmfig("fig_function.pdf")
 
+        # width + hwratio
         savefig(fig_function, 100u"cm", 0.6)
         @test figexists("fig_function.pdf")
         rmfig("fig_function.pdf")
 
+        # height + hwratio
         savefig(fig_function, FigHeight(100u"cm"), 0.6)
         @test figexists("fig_function.pdf")
         rmfig("fig_function.pdf")
+
+        # Multiple figures from a single function
+        savefig(figs_function, [:svg])
+        @test figexists("figs_function_1.svg") && figexists("figs_function_2.svg")
+        rmfig.(("figs_function_1.svg", "figs_function_2.svg"))
     end
 
-    # NOTE: Destroy
+    # teardown
     rm(fig_dir; recursive=true)
     export_format!(missing)
     MakieMaestro.Themes.WIDTH_DEFAULT[] = missing
