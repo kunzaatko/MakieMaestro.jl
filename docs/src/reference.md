@@ -39,8 +39,8 @@ MakieMaestro.get_formats
 MakieMaestro.get_export_format
 
 MakieMaestro.FunctionSpec
-Makie.uniqueid
-Makie.uniqueids
+MakieMaestro.uniqueid
+MakieMaestro.uniqueids
 
 MakieMaestro.PathSpec
 
