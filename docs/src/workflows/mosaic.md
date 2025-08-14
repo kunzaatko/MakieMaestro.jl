@@ -76,7 +76,7 @@ function
 
 
 ```@example polygon
-polys = [Polygon([Point(sin(θ), cos(θ)) for θ in range(0; step=2π/N, length=N)]) for N in 3:7]
+polys = [Polygon([Point(sin(θ), cos(θ)) for θ in range(0; step=2π/N, length=N)]) for N in 4:7]
 Recipes.mosaic(polys...; axis=(;aspect=1))
 nothing # hide
 ```
