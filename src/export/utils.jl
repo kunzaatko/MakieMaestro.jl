@@ -18,7 +18,7 @@ end
 Get the figure directory
 
 # Examples
-```jldoctest
+```jldoctest; teardown = :(MakieMaestro.FIGURE_DIR[] = missing)
 julia> figure_dir!("/tmp")
 "/tmp"
 
@@ -28,7 +28,7 @@ julia> MakieMaestro.get_figure_dir()
 """
 function get_figure_dir()
     if ismissing(FIGURE_DIR[])
-        cwd = abspath(".")
+        cwd = pwd()
         @warn "Figure directory not set. Using default value: You may set it by calling `MakieMaestro.figure_dir!(dir)`. Using current working directory \"$cwd\""
         return cwd
     else

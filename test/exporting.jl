@@ -94,13 +94,13 @@ end
             @test_throws ErrorException PathSpec(joinpath(dir, "testpdf")) # no default format set
 
             export_format!(Set([MakieMaestro.Pdf]))
-            if !haskey(ENV, "GITHUB_ACTIONS") # NOTE: tmp directories do not work as expected in the CI <31-01-25> 
-                temp_path = joinpath(tempdir(), "mm_test_dir/")
-                isdir(temp_path) || mkdir(temp_path)
-                cd(temp_path)
-                @test PathSpec("testpdf") isa PathSpec
-                rm(temp_path; recursive=true)
+            MakieMaestro.FIGURE_DIR[] = missing
+            temp_path = joinpath(tempdir(), "mm_test_dir/")
+            isdir(temp_path) || mkdir(temp_path)
+            @test cd(temp_path) do
+                PathSpec("testpdf") isa PathSpec
             end
+            rm(temp_path; recursive=true)
             @test MakieMaestro.Pdf in PathSpec(joinpath(dir, "testpdf")).formats
             @test PathSpec("test", dir) isa PathSpec
 
@@ -310,4 +310,5 @@ end
     rm(fig_dir; recursive=true)
     export_format!(missing)
     MakieMaestro.Themes.WIDTH_DEFAULT[] = missing
+    MakieMaestro.FIGURE_DIR[] = missing
 end
