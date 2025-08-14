@@ -96,11 +96,11 @@ MakieMaestro.Themes.screen_parameters
 
 !!! warning "ISO 216 standard"
     The standard under ISO 216 is to define the paper size of `{A/B/C}{1-X}` paper to be the size when the paper with an
-    index one lower is folded in half. This means that alternatingly with increasing the index in the standard the
-    width/height is larger than the height/width then smaller than larger etc. If you truly want to use the standard, then
-    the constants `{A/B/C}{A-X}_{WIDTH/HEIGHT}_TRUE` are the ones that you should use. If like any other sane person, you
-    view the width as the width of the paper, when oriented _vertically_ you should use the constants
-    `{A/B/C}{A-X}_{WIDTH/HEIGHT}` instead.
+    index one lower is folded in half. This means that with an increasing index we alternate between the width > height
+    and width < height, or, loosely speaking, "landscape" and "portrait" orientation. If you truly want to use the
+    standard, then the constants `{A/B/C}{1-X}_{WIDTH/HEIGHT}_TRUE` are the ones that you should use. If like any other
+    sane person, you view the width as the left to right span of the paper, when oriented _vertically_ you should use
+    the constants `{A/B/C}{1-X}_{WIDTH/HEIGHT}` instead.
     ```@example
     using MakieMaestro # hide
     using MakieMaestro.Themes
