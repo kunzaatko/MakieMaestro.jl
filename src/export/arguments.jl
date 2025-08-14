@@ -55,7 +55,7 @@ ERROR: ArgumentError: `non_existent_dir` is not a valid directory
 [...]
 
 julia> PathSpec("some_file",["pdf", :svg], "..")
-../some_file.{pdf,svg}```
+../some_file.{pdf,svg}
 """
 struct PathSpec
     basename::Function # takes an index integer and returns the name of the figure
@@ -106,6 +106,27 @@ end
 
 """
     PathSpec(fullspec::AbstractString)
+Parses the supplied string as a path of the form `<directories...>/basename.{format1,format2,...}` or `<dirrectories...>/basename.format`.
+
+```jldoctest; setup=:(using MakieMaestro: PathSpec)
+julia> p = PathSpec("../some_file.{pdf,svg}")
+../some_file.{pdf,svg}
+
+julia> p.formats
+Set{MakieMaestro.Format} with 2 elements:
+  MakieMaestro.Pdf
+  MakieMaestro.Svg
+
+julia> p.formats == Set([MakieMaestro.Pdf, MakieMaestro.Svg])
+true
+
+julia> p.basename(1)
+[ Info: Using "_i" name of figure "i" name. To change this, see documentation of MakieMaestro.PathSpec.
+"some_file_1"
+
+julia> p.basename(0)
+"some_file"
+```
 """
 function PathSpec(fullspec::AbstractString) # 1B -> 1A -> 0
     fullpath, ext_string = splitext(fullspec)
