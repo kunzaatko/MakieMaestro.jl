@@ -14,11 +14,40 @@ for (series, base_hw, count) in (
             i % 2 + 1, (i + 1) % 2 + 1
         ]]
         ph_true, pw_true = map(a -> Symbol(a, "_TRUE"), (ph, pw))
-        @eval const $ph_true = $h_true
-        @eval const $pw_true = $w_true
+
+        @eval begin
+            """
+                const $($(string(ph_true))) = $($(h_true))
+            Height of the $($(series))$($(i)) paper under the ISO 216 standard.
+
+            See also [`$($(string(ph_true)))`](@ref), [`$($(string(ph)))`](@ref)
+            """
+            const $ph_true = $h_true
+            """
+                const $($(string(pw_true))) = $($(w_true))
+            Width of the $($(series))$($(i)) paper under the ISO 216 standard.
+
+            See also [`$($(string(pw_true)))`](@ref), [`$($(string(pw)))`](@ref)
+            """
+            const $pw_true = $w_true
+        end
 
         h_standard, w_standard = floor.(Unitful.mm, (h_true, w_true))
-        @eval const $ph = $h_standard
-        @eval const $pw = $w_standard
+        @eval begin
+            """
+                const $($(string(ph))) = $($(h_standard))
+            Height of the $($series)$($i) paper as it is usually though of (unlike the ISO 216 standard defines it).
+
+            See also [`$($(string(ph_true)))`](@ref), [`$($(string(pw)))`](@ref)
+             """
+            const $ph = $h_standard
+            """
+                const $($(string(pw))) = $($(w_standard))
+            Width of the $($series)$($i) paper as it is usually though of (unlike the ISO 216 standard defines it).
+
+            See also [`$($(string(pw_true)))`](@ref), [`$($(string(ph)))`](@ref)
+             """
+            const $pw = $w_standard
+        end
     end
 end
