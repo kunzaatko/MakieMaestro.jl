@@ -1,4 +1,3 @@
-using Revise
 using InteractiveUtils, CodeTracking
 # TODO: Better ways of setting the override_themes. Especially using the `Symbol`s such as `[:appendix]` in the docs.
 # Then workflow docs for publication figures should be changed accordingly <09-01-25> 
@@ -43,20 +42,19 @@ re-exported.
 
 See also [`uniqueids`](@ref).
 ```jldoctest; setup=:(using MakieMaestro: uniqueid, FunctionSpec)
-julia> f(args...; kwargs...) = lines(args...; kwargs...)
-f (generic function with 2 methods)
+julia> f(args...; kwargs...) = lines(args...; kwargs...);
 
-julia> fspec = FunctionSpec(f, (1:10, 1:10))
-FunctionSpec(f, (1:10, 1:10))
+julia> fspec1 = FunctionSpec(f, (1:10, 1:10));
 
-julia> uniqueid(fspec)
-0x06009004624a93f3
+julia> fspec2 = FunctionSpec(f, (1:10, 1:10));
 
-julia> uniqueid(fspec)
-0x06009004624a93f3
+julia> fspec3 = FunctionSpec(f, (1:20, 1:20));
 
-julia> uniqueid(fspec; axis=(;title="Line"))
-0x316cd5fda3a24922
+julia> @assert uniqueid(fspec1) == uniqueid(fspec2)
+
+julia> @assert uniqueid(fspec1) != uniqueid(fspec1; axis=(;title="Line")) 
+
+julia> @assert uniqueid(fspec1) != uniqueid(fspec3)
 ```
 """
 function uniqueid(fspec::FunctionSpec; kwargs...)
@@ -70,32 +68,42 @@ Returns a named tuple of the unique IDs for the `fspec` when called with `kwargs
 
 See also [`uniqueid`](@ref).
 ```jldoctest; setup=:(using MakieMaestro: uniqueids, FunctionSpec)
-julia> f(args...; kwargs...) = lines(args...; kwargs...)
-f (generic function with 2 methods)
+julia> f(args...; kwargs...) = lines(args...; kwargs...);
 
-julia> fspec = FunctionSpec(f, (1:10, 1:10))
-FunctionSpec(f, (1:10, 1:10))
+julia> fspec1 = FunctionSpec(f, (1:10, 1:10));
 
-julia> uniqueids(fspec)
-(code = 0x33ecb529c59ef57d, args = 0x555f1488e3455694, kwargs = 0x172af099a2a3a421)
+julia> fspec2 = FunctionSpec(f, (1:10, 1:10));
 
-julia> uniqueids(fspec)
-(code = 0x33ecb529c59ef57d, args = 0x555f1488e3455694, kwargs = 0x172af099a2a3a421)
+julia> @assert uniqueids(fspec1).code == uniqueids(fspec2).code
 
-julia> uniqueids(fspec; axis=(;title="Line"))
-(code = 0x33ecb529c59ef57d, args = 0x555f1488e3455694, kwargs = 0xd809c2da14f6387e)
+julia> @assert uniqueids(fspec1; axis=(;title="Line")).kwargs != uniqueids(fspec2).kwargs
+
+julia> fspec3 = FunctionSpec(f, (1:20, 1:20));
+
+julia> @assert uniqueids(fspec1).code == uniqueids(fspec3).code
+
+julia> @assert uniqueids(fspec1).args != uniqueids(fspec3).args
 ```
 """
 function uniqueids(fspec::FunctionSpec; kwargs...)
-    code =  code_string(fspec.fig, typeof.(fspec.args))
-    code_typed = string(@code_typed optimize = false fspec.fig(fspec.args; kwargs...))
+    code_string = CodeTracking.code_string(fspec.fig, typeof.(fspec.args))
+    code_typed = hash(string(@code_typed optimize = false fspec.fig(fspec.args; kwargs...)))
     code_lowered = string(@code_lowered fspec.fig(fspec.args; kwargs...))
-    return (
-        code=hash(code),
-        code_typed=hash(code_typed),
-        code_lowered=hash(code_lowered),
-        args=hash(fspec.args),
-        kwargs=hash(kwargs),
+
+    code_string_id = hash(code_string)
+    code_typed_id = hash(code_typed)
+    code_lowered_id = hash(code_lowered)
+
+    code_id = !isnothing(code_string) ? code_string_id : code_typed_id
+    args_id = hash(fspec.args)
+    kwargs_id = hash(kwargs)
+    return (;
+        code=code_id,
+        code_string=code_string_id,
+        code_typed=code_typed_id,
+        code_lowered=code_lowered_id,
+        args=args_id,
+        kwargs=kwargs_id,
     )
 end
 
@@ -179,16 +187,10 @@ Parses the supplied string as a path of the form `<directories...>/basename.{for
 julia> p = PathSpec("../some_file.{pdf,svg}")
 ../some_file.{pdf,svg}
 
-julia> p.formats
-Set{MakieMaestro.Format} with 2 elements:
-  MakieMaestro.Pdf
-  MakieMaestro.Svg
-
 julia> p.formats == Set([MakieMaestro.Pdf, MakieMaestro.Svg])
 true
 
 julia> p.basename(1)
-[ Info: Using "_i" name of figure "i" name. To change this, see documentation of MakieMaestro.PathSpec.
 "some_file_1"
 
 julia> p.basename(0)

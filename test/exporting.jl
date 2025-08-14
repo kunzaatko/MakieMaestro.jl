@@ -10,6 +10,27 @@ end
 
 fig_function(lims::Tuple{Real,Real}=(0, 1)) = fig_function_w_kwargs(lims)
 
+@testset "Caching" begin
+    using MakieMaestro: uniqueids, uniqueid, FunctionSpec
+    f1(args...; kwargs...) = lines(args...; kwargs...)
+    fspec1 = FunctionSpec(f1, (1:10, 1:10))
+    @test uniqueid(fspec1) == uniqueid(fspec1)
+    @test uniqueid(fspec1; axis=(; title="Line")) != uniqueid(fspec1)
+    @test uniqueids(fspec1; axis=(; title="Line")).args == uniqueids(fspec1).args
+    @test uniqueids(fspec1; axis=(; title="Line")).code_lowered == uniqueids(fspec1).code_lowered
+    @test uniqueids(fspec1; axis=(; title="Line")).code_typed != uniqueids(fspec1).code_typed
+    @test uniqueids(fspec1; axis=(; title="Line")).kwargs != uniqueids(fspec1).kwargs
+    @test uniqueid(fspec1) == 0x2f12f969fb9de155
+
+    f2(args...; kwargs...) = lines(args...; kwargs...)
+    fspec2 = FunctionSpec(f2, (1:10, 1:10))
+    @test uniqueid(fspec1) != uniqueid(fspec2)
+
+    f3(args...; kwargs...) = scatter(args...; kwargs...)
+    fspec3 = FunctionSpec(f3, (1:10, 1:10))
+    @test uniqueid(fspec1) != uniqueid(fspec3)
+end
+
 @testset "format" begin
     using MakieMaestro: Format, extension
 
