@@ -5,6 +5,11 @@ CurrentModule = MakieMaestro
 ```@setup paper-sizes
 using MakieMaestro.Themes
 ```
+
+```@setup argument-cascade
+using Logging
+```
+
 # Exporting publication figures 
 
 You often want to apply specific themes or export figures in different sizes.
@@ -201,6 +206,7 @@ function lissajous_knot(a=3, b=4, δ=3π/4; A=1, B=1, N=1000)
     return lines(xs, ys)
 end
 
+with_logger(NullLogger()) do # hide
 savefig(lissajous_knot)                                      # lissajous_knot.svg
 rm("lissajous_knot.svg") # hide
 savefig(lissajous_knot, (8, 3))                              # lissajous_knot.svg with a=8 and b=3
@@ -230,5 +236,6 @@ rm("./alt_dir/lissajous_knot.svg") # hide
 savefig(lissajous_knot, ["pdf"], "alt_dir")                  # lissajous_knot.pdf in alt_dir
 rm("./alt_dir/lissajous_knot.pdf") # hide
 rm("./alt_dir/", recursive=true) # hide
+end # hide
 nothing # hide
 ```
