@@ -56,7 +56,7 @@ Recipes.mosaic(graphplot!,
   cycle_graph(5), 
   binary_tree(5), 
   star_digraph(3),
-  barabasi_albert(10, 2); nrows=2)
+  barabasi_albert(10, 2); nrows=2, linkaxes=false) # axes are linked by default
 nothing # hide
 ```
 
