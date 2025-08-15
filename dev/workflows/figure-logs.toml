@@ -6,7 +6,7 @@ formats = ["Svg"]
     Svg = "CairoMakie"
 
     [bessely_fig.exportduration]
-    Svg = 7.19
+    Svg = 6.98
 
     [bessely_fig.figure]
     nargs = 0
@@ -17,7 +17,7 @@ formats = ["Svg"]
 
     [bessely_fig.modified]
     date = 2025-08-15
-    time = 13:08:58.038
+    time = 13:32:54.056
 
     [bessely_fig.size]
     final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
@@ -35,7 +35,7 @@ formats = ["Svg"]
     Svg = "CairoMakie"
 
     [bessely_fig_appendix.exportduration]
-    Svg = 0.452
+    Svg = 0.435
 
     [bessely_fig_appendix.figure]
     nargs = 0
@@ -45,7 +45,7 @@ formats = ["Svg"]
 
     [bessely_fig_appendix.modified]
     date = 2025-08-15
-    time = 13:08:58.798
+    time = 13:32:54.798
 
     [bessely_fig_appendix.size]
     final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
@@ -63,7 +63,7 @@ formats = ["Svg"]
     Svg = "CairoMakie"
 
     [bessely_fig_large.exportduration]
-    Svg = 0.138
+    Svg = 0.202
 
     [bessely_fig_large.figure]
     nargs = 0
@@ -73,7 +73,7 @@ formats = ["Svg"]
 
     [bessely_fig_large.modified]
     date = 2025-08-15
-    time = 13:08:59.537
+    time = 13:32:55.587
 
     [bessely_fig_large.size]
     final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
@@ -100,7 +100,7 @@ formats = ["Svg"]
 
     [bessely_fig_wide.modified]
     date = 2025-08-15
-    time = 13:08:59.708
+    time = 13:32:55.761
 
     [bessely_fig_wide.size]
     final = "w×h: 210.0 mm × 84.0 mm [h/w: 0.4]"
@@ -112,9 +112,9 @@ formats = ["Svg"]
 [lissajous_knot]
 backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.0218}
+exportduration = {Svg = 0.0198}
 formats = ["Svg"]
-modified = {date = 2025-08-15, time = 13:09:01.677}
+modified = {date = 2025-08-15, time = 13:32:57.613}
 
     [lissajous_knot.figure]
     kwargs = {}
@@ -135,9 +135,9 @@ formats = ["Png", "Eps"]
     Png = "CairoMakie"
 
     [not_a_knot.exportduration]
-    Eps = 0.5
-    Png = 0.0548
-    total = 0.554
+    Eps = 0.481
+    Png = 0.0502
+    total = 0.531
 
     [not_a_knot.figure]
     nargs = 0
@@ -147,7 +147,7 @@ formats = ["Png", "Eps"]
 
     [not_a_knot.modified]
     date = 2025-08-15
-    time = 13:09:01.348
+    time = 13:32:57.293
 
     [not_a_knot.size]
     final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
