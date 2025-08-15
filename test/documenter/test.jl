@@ -70,9 +70,11 @@ figdir(doc) = joinpath(builds_directory, doc, "assets/figures")
 @testset "simple" begin
   let dir = figdir("makie-maestro-simple")
     @test isdir(dir)
-    figures = readdir(abspath(dir))
-    @test length(figures) == 1
-    @test endswith(figures[1], ".svg")
+    files = readdir(abspath(dir))
+    @test length(files) == 2 # figure and the logs
+    @test all(f -> any(endswith(f, ext) for ext in [".svg", ".toml"]), files)
+    figures = filter(Base.Fix2(endswith, ".svg"), files)
+    @test length(figures) == 1 # figures
     @test startswith(figures[1], "makie_")
   end
 end
@@ -81,7 +83,7 @@ end
   let dir = figdir("makie-maestro-multi")
     @test isdir(dir)
     figures = readdir(abspath(dir))
-    @test all(f -> any(endswith(f, ext) for ext in [".svg", ".png", ".pdf"]), figures)
+    @test all(f -> any(endswith(f, ext) for ext in [".svg", ".png", ".pdf", ".toml"]), figures)
     @test length(filter(Base.Fix2(startswith, "makie_A_"), figures)) == 1
     @test length(filter(Base.Fix2(startswith, "makie_B_"), figures)) == 0
     @test length(filter(Base.Fix2(startswith, "cos"), figures)) == 1

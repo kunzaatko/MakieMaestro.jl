@@ -1,12 +1,40 @@
 # TODO: At the end of the arguments cascade should be themes that are passed in the override instead of it being
 # a keyword argument. <29-01-25> 
-using CairoMakie, GLMakie
+using CairoMakie, GLMakie, Dates
 
 # Helpers for setting the directory, specifying formats for export and selecting the theme
 include("utils.jl")
 
 # Argument formation cascade for the final function
 include("arguments.jl")
+include("logger.jl")
+
+"""
+    create_logger(logger, figdir)
+Create a logger based on the `logger` argument and the figure directory `figdir`.
+
+If logger is `true`, a default logger is created, if `logger` is an `AbstractString`, a `TOMLLogger` at that path. If
+`logger` is `false` the `NullLogger` is created.
+"""
+function create_logger(logger, path)
+    if logger == true
+        return TOMLLogger(; dir=path)
+    elseif logger isa FigureLogger
+        return logger
+    elseif logger isa AbstractString
+        dirname, basename = Base.Filesystem.dirname(logger),
+        Base.Filesystem.basename(logger)
+        if isempty(dirname)
+            return TOMLLogger(; basename)
+        elseif isempty(basename)
+            return TOMLLogger(; dir=dirname)
+        else
+            return TOMLLogger(dirname, basename)
+        end
+    else
+        logger = NullLogger()
+    end
+end
 
 """
     savefig(fig, [path], [size]; <keyword arguments>)
@@ -61,18 +89,42 @@ function savefig(
     size::SizeSpec;
     backends=CairoMakie,
     override_theme=Theme(),
+    log=true,
     update=missing,
     kwargs...,
 )
+    # TODO: Add logfilter kwarg that is passed to the logger <15-08-25> 
+    # TODO: Cache dir should be a path set and if it is the same as the figure dir, there should be an option to use the
+    # same logger to add the unique IDs <15-08-25> 
+
     override_theme = override_theme isa Theme ? [override_theme] : override_theme
     backends = backends isa Module ? [backends] : backends
+    logger = create_logger(log, path.dirname)
+
+    logging_data = Dict{String,Any}()
+
+    # TODO: Logging for PathSpec <15-08-25> 
+    # TODO: Log the figure name and the lines it is defined at if they exist <15-08-25> 
 
     formats = get_formats(backends, path.formats) # from backends and wanted, ordered in the export order
 
+    logging_data["cwd"] = pwd()
+    logging_data["figure"] = logs(fig)
+    logging_data["formats"] = string.(formats)
+    logging_data["size"] = Dict{String,Any}("final" => string(size))
+    merge!(logging_data["size"], logs(size))
+    logging_data["backends"] = InlineDict{String,Any}()
+    logging_data["exportduration"] = InlineDict{String,Any}()
+
     for fmt in formats
         b = choose_backend(backends, fmt)
+
+        logging_data["backends"][string(fmt)] = string(b)
+
+        # TODO: Log the themes <15-08-25> 
         export_theme = get_export_theme(b, fmt, size.width, size.hwratio, override_theme...)
-        with_theme(export_theme) do
+
+        time = @timed with_theme(export_theme) do
             export_fig = fig(; kwargs...) # NOTE: Figure function must be called with the theme defined for theming to work <08-01-25> 
             if export_fig isa Vector || export_fig isa Tuple
                 for (i, fig) in enumerate(export_fig)
@@ -82,7 +134,26 @@ function savefig(
                 _savefig(export_fig, path.basename(0), fmt, b, path.dirname; update)
             end
         end
+
+        logging_data["exportduration"][string(fmt)] = time.time
+
+        # TODO: If first created, add "created" instead of modified. There should be a method that retrieves the entry
+        # by the format and basename from the current log <15-08-25> 
+        # TODO: There should be a "lastsaved" that should be updated with every cached retrieval as well as the
+        # modification <15-08-25> 
+
+        logging_data["modified"] = InlineDict(
+            "date" => Dates.Date(now()), "time" => Dates.Time(now())
+        )
     end
+    if length(logging_data["exportduration"]) > 1
+        logging_data["exportduration"]["total"] = sum(
+            values(logging_data["exportduration"])
+        )
+    end
+    map!(x -> round(x; sigdigits=3), values(logging_data["exportduration"]))
+
+    return add_entry(logger, path.basename(0), logging_data)
 end
 
 # TODO: Add a type and conversion for the output type of `mosaic` <14-08-25> 
