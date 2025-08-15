@@ -83,6 +83,10 @@ end
         include("theming.jl")
     end
 
+    @cond_testset "logging" begin
+        include("logging.jl")
+    end
+
     @cond_testset "exporting" begin
         include("exporting.jl")
     end
