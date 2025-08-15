@@ -1,4 +1,5 @@
 using MakieMaestro: InlineDict
+using Base: IdSet
 
 @testset "unwrap_inline" begin 
     b_inline = InlineDict("c" => 1)

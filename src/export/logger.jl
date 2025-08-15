@@ -1,4 +1,5 @@
 using TOML, InterfaceFunctions
+using Base: IdSet
 
 """
     InlineDict{K,V}
@@ -66,7 +67,7 @@ logs_path(l::TOMLLogger) = joinpath(l.dir, l.basename * ".toml")
 
 """
     inlineids(d::AbstractDict)
-Collect the `InlineDict` into an `IdSet`.
+Collect the [`InlineDict`](@ref) into an [`IdSet`](@extref Julia `Base.IdSet`).
 """
 inlineids(d::AbstractDict) = inlineids!(d)
 function inlineids!(d, inline=IdSet{InlineDict}())
