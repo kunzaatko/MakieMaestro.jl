@@ -109,7 +109,11 @@ function add_entry(
 
     try
         open(log, "w") do io
-            TOML.print(io, log_data; sorted=true, inline_tables=inlineids(log_data))
+            if VERSION >= v"1.11"
+                TOML.print(io, log_data; sorted=true, inline_tables=inlineids(log_data))
+            else
+                TOML.print(io, log_data; sorted=true)
+            end
         end
     catch e
         @error "An error while writing the TOML log at $log" exception = e
