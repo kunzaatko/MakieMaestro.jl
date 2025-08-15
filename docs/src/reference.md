@@ -55,6 +55,30 @@ MakieMaestro._savepdftex
 </details>
 ```
 
+## Logging
+
+```@raw html
+<details><summary>Internals</summary>
+```
+```@docs
+MakieMaestro.create_logger
+
+MakieMaestro.FigureLogger
+MakieMaestro.add_entry(::FigureLogger, ::String, ::AbstractDict; kwargs...)
+
+MakieMaestro.TOMLLogger
+MakieMaestro.add_entry(::TOMLLogger, ::String, ::AbstractDict; kwargs...)
+MakieMaestro.logs_path(::TOMLLogger)
+MakieMaestro.inlineids
+
+MakieMaestro.NullLogger
+
+MakieMaestro.InlineDict
+```
+```@raw html
+</details>
+```
+
 # Theming
 
 ```@docs
