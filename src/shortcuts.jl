@@ -1,4 +1,4 @@
-"""
+@doc raw"""
     L(s::String)
 
 Shortcut for `latexstring(raw"\text{" * s * "}")`.
