@@ -42,18 +42,23 @@ MakieMaestro.MakieDocBlocks
     defining the plugin if you are developing a package with other contributors as it is more explicit and will make it
     easier for them to understand the documentation generation process.
 
-!!! warning "Custom `path` path"
+!!! warning "Custom `path`"
     The target figure directory should not be preceded by a slash.
     ```julia 
     # MakieDocBlocks(;path="/assets/my_figure_dir") # ⚠️ DOESN'T WORK!!!
     MakieDocBlocks(;path="assets/my_figure_dir") # ⬅️ USE THIS
     ```
-    For more details about this issue, see the functioning of [`joinpath`](@extref Julia :jl:function:`Base.Filesystem.joinpath`)
+    For more details about this issue, see the functioning of [`joinpath`](@extref Julia
+    :jl:function:`Base.Filesystem.joinpath`).
 
 !!! info "CI setup"
     For the CI to be able to build figures using `GLMakie` you need to set up a screen in the CI environment. You can do
-    this by prepending the command with `DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24' --`. For example to build the
-    documentation, you will run the command
+    this by prepending the command with 
+    ```bash
+
+    DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24' --
+    ```
+    For example to build the documentation, you will run the command
     ```bash
     DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24' -- julia --project --color=yes make.jl
     ```
@@ -74,9 +79,24 @@ fig # Return the figure at the end of the block
 The code will be executed during the documentation build, and the resulting figure will be saved and inserted into your
 documentation as an image (specifically the [Documenter `LocalImage`](@extref `Documenter.LocalImage`)).
 
-The code in the block must return a `Figure` in order to work. 
+The code in the block must return a [`Figure`](@extref Makie `Makie.Figure`) or `FigureAxis` or `FigureAxisPlot` in
+order to work.
 
-!!! tip
+!!! note "Types that can be exported"
+    There are other types that can be exported and used in the documentation. The guiding criterium is that the
+    `function` that is defined by wrapping the code block in a function definition must be a function that is savable
+    using [`savefig`](@ref).  See [Exporting publication figures](@ref).
+
+!!! warning "What is allowed in the block"
+    Not all code is allowed in the `@makie` block. Most notably the definition of a struct is not allowed. The
+    limitation arises from the fact that not all code is allowed to be placed inside a function. You can bypass this
+    limitation in two ways: 
+    1. You can define the struct or call `using ...` in an `@example` block or `@setup` block with the same ID and use
+       it in the `@makie` block that follows.
+    2. You can wrap the disallowed expression in an `@eval begin ... end` block to evaluate it in the top level from
+       within the function that the `@makie` block defines.
+
+!!! tip "No need to add `using MakieMaestro`"
     ```
     using MakieMaestro   
     ```
