@@ -12,9 +12,7 @@ deps/usr/
 docs/build/
 docs/site/
 docs/src/assets/logo.xcf
-
 **/.claude/settings.local.json
-docs/src/assets/*
 .tasks
 test/documenter/builds/*
 test/quietly-logs/*
