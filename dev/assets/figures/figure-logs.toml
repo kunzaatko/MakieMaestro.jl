@@ -8,10 +8,10 @@ formats = ["Svg", "Png", "Pdf"]
     Svg = "CairoMakie"
 
     [makie_5804720877718349375.exportduration]
-    Pdf = 0.693
-    Png = 0.668
-    Svg = 3.15
-    total = 4.51
+    Pdf = 0.714
+    Png = 0.685
+    Svg = 3.26
+    total = 4.65
 
     [makie_5804720877718349375.figure]
     nargs = 0
@@ -20,8 +20,8 @@ formats = ["Svg", "Png", "Pdf"]
         [makie_5804720877718349375.figure.kwargs]
 
     [makie_5804720877718349375.modified]
-    date = 2025-08-18
-    time = 08:46:58.818
+    date = 2025-08-21
+    time = 09:14:55.286
 
     [makie_5804720877718349375.size]
     final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
@@ -41,10 +41,10 @@ formats = ["Svg", "Png", "Pdf"]
     Svg = "CairoMakie"
 
     [makie_besselj_7367087167345386888.exportduration]
-    Pdf = 0.0688
-    Png = 0.0746
-    Svg = 0.133
-    total = 0.276
+    Pdf = 0.0725
+    Png = 0.112
+    Svg = 0.186
+    total = 0.371
 
     [makie_besselj_7367087167345386888.figure]
     nargs = 0
@@ -53,8 +53,8 @@ formats = ["Svg", "Png", "Pdf"]
         [makie_besselj_7367087167345386888.figure.kwargs]
 
     [makie_besselj_7367087167345386888.modified]
-    date = 2025-08-18
-    time = 08:47:00.119
+    date = 2025-08-21
+    time = 09:14:56.632
 
     [makie_besselj_7367087167345386888.size]
     final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
@@ -73,9 +73,9 @@ formats = ["Png", "Pdf"]
     Png = "CairoMakie"
 
     [makie_exponential_spiral_831077430981351777.exportduration]
-    Pdf = 0.0686
-    Png = 0.173
-    total = 0.241
+    Pdf = 0.0227
+    Png = 0.132
+    total = 0.154
 
     [makie_exponential_spiral_831077430981351777.figure]
     nargs = 0
@@ -84,8 +84,8 @@ formats = ["Png", "Pdf"]
         [makie_exponential_spiral_831077430981351777.figure.kwargs]
 
     [makie_exponential_spiral_831077430981351777.modified]
-    date = 2025-08-18
-    time = 08:47:00.814
+    date = 2025-08-21
+    time = 09:14:57.249
 
     [makie_exponential_spiral_831077430981351777.size]
     final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
@@ -105,10 +105,10 @@ formats = ["Svg", "Png", "Pdf"]
     Svg = "CairoMakie"
 
     [makie_graphs_9898450401429293877.exportduration]
-    Pdf = 0.125
-    Png = 0.204
-    Svg = 3.46
-    total = 3.79
+    Pdf = 0.2
+    Png = 0.16
+    Svg = 3.55
+    total = 3.91
 
     [makie_graphs_9898450401429293877.figure]
     nargs = 0
@@ -117,8 +117,8 @@ formats = ["Svg", "Png", "Pdf"]
         [makie_graphs_9898450401429293877.figure.kwargs]
 
     [makie_graphs_9898450401429293877.modified]
-    date = 2025-08-18
-    time = 08:47:30.245
+    date = 2025-08-21
+    time = 09:15:27.870
 
     [makie_graphs_9898450401429293877.size]
     final = "w×h: 25.0 cm × 15.0 cm [h/w: 0.6]"
@@ -144,8 +144,8 @@ formats = ["Png"]
         [makie_hypotrochoid_10856261964834093899.figure.kwargs]
 
     [makie_hypotrochoid_10856261964834093899.modified]
-    date = 2025-08-18
-    time = 08:47:00.566
+    date = 2025-08-21
+    time = 09:14:57.088
 
     [makie_hypotrochoid_10856261964834093899.size]
     final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
@@ -163,7 +163,7 @@ formats = ["Png"]
     Png = "CairoMakie"
 
     [makie_images_10816941791705355087.exportduration]
-    Png = 1.98
+    Png = 2.07
 
     [makie_images_10816941791705355087.figure]
     nargs = 0
@@ -172,8 +172,8 @@ formats = ["Png"]
         [makie_images_10816941791705355087.figure.kwargs]
 
     [makie_images_10816941791705355087.modified]
-    date = 2025-08-18
-    time = 08:47:16.340
+    date = 2025-08-21
+    time = 09:15:13.615
 
     [makie_images_10816941791705355087.size]
     final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
@@ -193,10 +193,10 @@ formats = ["Svg", "Png", "Pdf"]
     Svg = "CairoMakie"
 
     [makie_large_figure_16195763608884739850.exportduration]
-    Pdf = 0.676
+    Pdf = 0.887
     Png = 0.204
-    Svg = 6.4
-    total = 7.28
+    Svg = 6.79
+    total = 7.89
 
     [makie_large_figure_16195763608884739850.figure]
     nargs = 0
@@ -205,8 +205,8 @@ formats = ["Svg", "Png", "Pdf"]
         [makie_large_figure_16195763608884739850.figure.kwargs]
 
     [makie_large_figure_16195763608884739850.modified]
-    date = 2025-08-18
-    time = 08:47:08.309
+    date = 2025-08-21
+    time = 09:15:05.351
 
     [makie_large_figure_16195763608884739850.size]
     final = "w×h: 25.0 cm × 15.45 cm [h/w: 2/(√5 + 1)]"
@@ -218,9 +218,9 @@ formats = ["Svg", "Png", "Pdf"]
 [makie_polygon_6407064529024661695]
 backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Pdf = 0.278, Png = 0.18, Svg = 0.316, total = 0.774}
+exportduration = {Pdf = 0.18, Png = 0.097, Svg = 0.337, total = 0.614}
 formats = ["Svg", "Png", "Pdf"]
-modified = {date = 2025-08-18, time = 08:47:31.641}
+modified = {date = 2025-08-21, time = 09:15:29.217}
 
     [makie_polygon_6407064529024661695.figure]
     kwargs = {}
@@ -241,10 +241,10 @@ formats = ["Svg", "Png", "Pdf"]
     Svg = "CairoMakie"
 
     [rose.exportduration]
-    Pdf = 0.0229
-    Png = 0.0363
-    Svg = 0.182
-    total = 0.241
+    Pdf = 0.024
+    Png = 0.037
+    Svg = 0.187
+    total = 0.248
 
     [rose.figure]
     nargs = 0
@@ -253,8 +253,8 @@ formats = ["Svg", "Png", "Pdf"]
         [rose.figure.kwargs]
 
     [rose.modified]
-    date = 2025-08-18
-    time = 08:47:00.398
+    date = 2025-08-21
+    time = 09:14:56.920
 
     [rose.size]
     final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"

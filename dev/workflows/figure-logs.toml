@@ -6,7 +6,7 @@ formats = ["Svg"]
     Svg = "CairoMakie"
 
     [bessely_fig.exportduration]
-    Svg = 7.02
+    Svg = 7.0
 
     [bessely_fig.figure]
     nargs = 0
@@ -16,8 +16,8 @@ formats = ["Svg"]
         [bessely_fig.figure.kwargs]
 
     [bessely_fig.modified]
-    date = 2025-08-18
-    time = 08:47:40.168
+    date = 2025-08-21
+    time = 09:15:37.884
 
     [bessely_fig.size]
     final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
@@ -35,7 +35,7 @@ formats = ["Svg"]
     Svg = "CairoMakie"
 
     [bessely_fig_appendix.exportduration]
-    Svg = 0.428
+    Svg = 0.442
 
     [bessely_fig_appendix.figure]
     nargs = 0
@@ -44,8 +44,8 @@ formats = ["Svg"]
         [bessely_fig_appendix.figure.kwargs]
 
     [bessely_fig_appendix.modified]
-    date = 2025-08-18
-    time = 08:47:40.910
+    date = 2025-08-21
+    time = 09:15:38.697
 
     [bessely_fig_appendix.size]
     final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
@@ -63,7 +63,7 @@ formats = ["Svg"]
     Svg = "CairoMakie"
 
     [bessely_fig_large.exportduration]
-    Svg = 0.132
+    Svg = 0.136
 
     [bessely_fig_large.figure]
     nargs = 0
@@ -72,8 +72,8 @@ formats = ["Svg"]
         [bessely_fig_large.figure.kwargs]
 
     [bessely_fig_large.modified]
-    date = 2025-08-18
-    time = 08:47:41.619
+    date = 2025-08-21
+    time = 09:15:39.421
 
     [bessely_fig_large.size]
     final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
@@ -90,7 +90,7 @@ formats = ["Svg"]
     Svg = "CairoMakie"
 
     [bessely_fig_wide.exportduration]
-    Svg = 0.131
+    Svg = 0.136
 
     [bessely_fig_wide.figure]
     nargs = 0
@@ -99,8 +99,8 @@ formats = ["Svg"]
         [bessely_fig_wide.figure.kwargs]
 
     [bessely_fig_wide.modified]
-    date = 2025-08-18
-    time = 08:47:41.783
+    date = 2025-08-21
+    time = 09:15:39.591
 
     [bessely_fig_wide.size]
     final = "w×h: 210.0 mm × 84.0 mm [h/w: 0.4]"
@@ -112,9 +112,9 @@ formats = ["Svg"]
 [lissajous_knot]
 backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.0192}
+exportduration = {Svg = 0.0212}
 formats = ["Svg"]
-modified = {date = 2025-08-18, time = 08:47:43.671}
+modified = {date = 2025-08-21, time = 09:15:41.543}
 
     [lissajous_knot.figure]
     kwargs = {}
@@ -135,9 +135,9 @@ formats = ["Png", "Eps"]
     Png = "CairoMakie"
 
     [not_a_knot.exportduration]
-    Eps = 0.476
-    Png = 0.0518
-    total = 0.528
+    Eps = 0.487
+    Png = 0.0544
+    total = 0.541
 
     [not_a_knot.figure]
     nargs = 0
@@ -146,8 +146,8 @@ formats = ["Png", "Eps"]
         [not_a_knot.figure.kwargs]
 
     [not_a_knot.modified]
-    date = 2025-08-18
-    time = 08:47:43.361
+    date = 2025-08-21
+    time = 09:15:41.222
 
     [not_a_knot.size]
     final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
