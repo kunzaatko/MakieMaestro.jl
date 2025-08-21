@@ -34,7 +34,7 @@ makedocs(;
         canonical="https://kunzaatko.github.io/MakieMaestro.jl",
         edit_link="trunk",
         size_threshold=1_000_000,
-        assets=String[],
+        assets=["assets/favicon.ico"],
     ),
     pages=[
         "Home" => "index.md",
