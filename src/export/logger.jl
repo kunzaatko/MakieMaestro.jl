@@ -80,7 +80,6 @@ function inlineids!(d, inline=IdSet{InlineDict}())
     return inline
 end
 
-# FIX: Inline is not preserved: https://github.com/JuliaLang/TOML.jl/issues/56 <15-08-25> 
 """
     add_entry(logger::TOMLLogger, key::String, data::AbstractDict; update=true, merge=true)
 Add the entry `data` under the `key` in the log file.
@@ -93,8 +92,9 @@ function add_entry(
 )
     log = logs_path(logger)
     !isfile(log) && touch(log)
+    p = TOML.Parser()
     log_data = try
-        TOML.tryparsefile(log)
+        TOML.tryparsefile(p, log)
     catch e
         @error "An error while parsing the TOML log at $log" exception = e
         rethrow(e)
@@ -107,10 +107,14 @@ function add_entry(
         log_data[key] = data
     end
 
+    if VERSION >= v"1.11"
+        inline_tables = union(inlineids(log_data), p._p.inline_tables)
+    end
+
     try
         open(log, "w") do io
             if VERSION >= v"1.11"
-                TOML.print(io, log_data; sorted=true, inline_tables=inlineids(log_data))
+                TOML.print(io, log_data; sorted=true, inline_tables)
             else
                 TOML.print(io, log_data; sorted=true)
             end
