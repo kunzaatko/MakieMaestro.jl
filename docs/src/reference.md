@@ -5,7 +5,7 @@ CollapsedDocStrings=true
 
 # Public Documentation
 
-Documentation for `MakieMaestro.jl`'s public interface.
+Documentation for `MakieMaestro`'s public interface.
 
 ## Contents
 

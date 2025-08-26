@@ -5,7 +5,7 @@ CollapsedDocStrings=true
 
 # Documenter Integration
 
-MakieMaestro.jl includes a plugin for [Documenter.jl](@extref Documenter :std:doc:`index`) that allows you to
+`MakieMaestro` includes a plugin for [Documenter.jl](@extref Documenter :std:doc:`index`) that allows you to
 embed Makie figures directly into your documentation using code blocks.
 
 ## Setup
