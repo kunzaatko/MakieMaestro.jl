@@ -1,120 +1,74 @@
 [bessely_fig]
+backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 7.13}
 formats = ["Svg"]
-
-    [bessely_fig.backends]
-    Svg = "CairoMakie"
-
-    [bessely_fig.exportduration]
-    Svg = 7.0
+modified = {date = 2025-08-26, time = 20:27:26.360}
 
     [bessely_fig.figure]
+    kwargs = {}
     nargs = 0
     nkwargs = 0
     usednameof = true
 
-        [bessely_fig.figure.kwargs]
-
-    [bessely_fig.modified]
-    date = 2025-08-21
-    time = 09:15:37.884
-
     [bessely_fig.size]
+    args = {default_hwratio = true, default_width = true, width = "512 pt"}
     final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
-
-        [bessely_fig.size.args]
-        default_hwratio = true
-        default_width = true
-        width = "512 pt"
 
 [bessely_fig_appendix]
+backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.458}
 formats = ["Svg"]
-
-    [bessely_fig_appendix.backends]
-    Svg = "CairoMakie"
-
-    [bessely_fig_appendix.exportduration]
-    Svg = 0.442
+modified = {date = 2025-08-26, time = 20:27:27.135}
 
     [bessely_fig_appendix.figure]
+    kwargs = {}
     nargs = 0
     nkwargs = 0
-
-        [bessely_fig_appendix.figure.kwargs]
-
-    [bessely_fig_appendix.modified]
-    date = 2025-08-21
-    time = 09:15:38.697
 
     [bessely_fig_appendix.size]
+    args = {default_hwratio = true, default_width = true, width = "512 pt"}
     final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
 
-        [bessely_fig_appendix.size.args]
-        default_hwratio = true
-        default_width = true
-        width = "512 pt"
-
 [bessely_fig_large]
+backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.137}
 formats = ["Svg"]
-
-    [bessely_fig_large.backends]
-    Svg = "CairoMakie"
-
-    [bessely_fig_large.exportduration]
-    Svg = 0.136
+modified = {date = 2025-08-26, time = 20:27:27.876}
 
     [bessely_fig_large.figure]
+    kwargs = {}
     nargs = 0
     nkwargs = 0
-
-        [bessely_fig_large.figure.kwargs]
-
-    [bessely_fig_large.modified]
-    date = 2025-08-21
-    time = 09:15:39.421
 
     [bessely_fig_large.size]
+    args = {default_hwratio = true, width = "210.0 mm"}
     final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
 
-        [bessely_fig_large.size.args]
-        default_hwratio = true
-        width = "210.0 mm"
-
 [bessely_fig_wide]
+backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.135}
 formats = ["Svg"]
-
-    [bessely_fig_wide.backends]
-    Svg = "CairoMakie"
-
-    [bessely_fig_wide.exportduration]
-    Svg = 0.136
+modified = {date = 2025-08-26, time = 20:27:28.045}
 
     [bessely_fig_wide.figure]
+    kwargs = {}
     nargs = 0
     nkwargs = 0
 
-        [bessely_fig_wide.figure.kwargs]
-
-    [bessely_fig_wide.modified]
-    date = 2025-08-21
-    time = 09:15:39.591
-
     [bessely_fig_wide.size]
+    args = {hwratio = 0.4, width = "210.0 mm"}
     final = "w×h: 210.0 mm × 84.0 mm [h/w: 0.4]"
-
-        [bessely_fig_wide.size.args]
-        hwratio = 0.4
-        width = "210.0 mm"
 
 [lissajous_knot]
 backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.0212}
+exportduration = {Svg = 0.0206}
 formats = ["Svg"]
-modified = {date = 2025-08-21, time = 09:15:41.543}
+modified = {date = 2025-08-26, time = 20:27:29.976}
 
     [lissajous_knot.figure]
     kwargs = {}
@@ -127,32 +81,17 @@ modified = {date = 2025-08-21, time = 09:15:41.543}
     final = "w×h: 20.0 cm × 10.0 cm [h/w: 0.5]"
 
 [not_a_knot]
+backends = {Eps = "CairoMakie", Png = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Eps = 0.481, Png = 0.0523, total = 0.533}
 formats = ["Png", "Eps"]
-
-    [not_a_knot.backends]
-    Eps = "CairoMakie"
-    Png = "CairoMakie"
-
-    [not_a_knot.exportduration]
-    Eps = 0.487
-    Png = 0.0544
-    total = 0.541
+modified = {date = 2025-08-26, time = 20:27:29.656}
 
     [not_a_knot.figure]
+    kwargs = {}
     nargs = 0
     nkwargs = 0
 
-        [not_a_knot.figure.kwargs]
-
-    [not_a_knot.modified]
-    date = 2025-08-21
-    time = 09:15:41.222
-
     [not_a_knot.size]
+    args = {default_hwratio = true, default_width = true, width = "210.0 mm"}
     final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
-
-        [not_a_knot.size.args]
-        default_hwratio = true
-        default_width = true
-        width = "210.0 mm"
