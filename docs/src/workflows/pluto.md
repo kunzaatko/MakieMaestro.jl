@@ -87,7 +87,7 @@ This makes the initial run in a resumed session a lot faster.
     Pluto.run(; auto_reload_from_file=true)
     ```
     If you prefer, you may add this to your
-    [`startup.jl`](@extref Julia :std:label:`Startup-file`) file so that you do not
+    [`startup.jl`](@extref Julia Startup-file) file so that you do not
     need to remember next time:
     ```julia
     """

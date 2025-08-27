@@ -18,6 +18,7 @@ links = InterLinks(
     "Julia" => "https://docs.julialang.org/en/v1/",
     "Documenter" => "https://documenter.juliadocs.org/stable/",
     "Makie" => "https://docs.makie.org/stable/",
+    "Literate" => "https://fredrikekre.github.io/Literate.jl/v2/"
 )
 
 MakieMaestro.Themes.width!(15u"cm")

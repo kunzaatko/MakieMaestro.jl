@@ -5,8 +5,14 @@ CollapsedDocStrings=true
 
 # Documenter Integration
 
-`MakieMaestro` includes a plugin for [Documenter.jl](@extref Documenter :std:doc:`index`) that allows you to
+`MakieMaestro` includes a plugin for [Documenter.jl](@extref Documenter index) that allows you to
 embed Makie figures directly into your documentation using code blocks.
+
+!!! note "Other packages with similar purpose"
+    A package that can be used for example pages in you documentation is [`Literate.jl`](@extref Literate index). It can
+    be similarly efficient in producing figures in your documentation. When choosing between `MakieMaestro` and
+    `Literate`, you should consider, whether the markdown in the pages is more important than the code (e.g. in the
+    `@examples` blocks) or the other way around. If code is the main focus `Literate` might be a better choice.
 
 ## Setup
 
@@ -55,7 +61,6 @@ MakieMaestro.MakieDocBlocks
     For the CI to be able to build figures using `GLMakie` you need to set up a screen in the CI environment. You can do
     this by prepending the command with 
     ```bash
-
     DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24' --
     ```
     For example to build the documentation, you will run the command
@@ -103,8 +108,8 @@ order to work.
     is already included at the top of the block for convenience so there is no need to add it yourself.
 
 You can also use named blocks with the same format as for the documenter [`@example` block](@extref Documenter
-:std:label:`reference-at-example`). The code will be evaluated in the same module as the `@example` blocks with this
-name, so it will have the global variables at its disposal. 
+reference-at-example). The code will be evaluated in the same module as the `@example` blocks with this name, so it will
+have the global variables at its disposal. 
 
 For example this is possible to have
 
@@ -211,9 +216,10 @@ lines(x,y)
     enforce the size of the figure exported, you need to use the `:svg` format (which is default).
 
 !!! tip "Use `:png` for images"
-    If you use images or `GridLike`/`CellLike` plots in your documentation, you should be using them with the `:png`
-    format. It is possible to export these plots to `:svg` but it leads to performance issues in the browser since
-    vector graphics are really not meant for use with _image like_ graphics.
+    If you use images or [`CellGrid`](@extref Makie `Makie.CellGrid`))/[`ImageLike`](@extref Makie `Makie.ImageLike`)
+    plots in your documentation, you should be using them with the `:png` format. It is possible to export these plots
+    to `:svg` but it leads to performance issues in the browser since vector graphics are really not meant for use with
+    _image like_ graphics.
 
 ````
 ```@makie exponential_spiral; formats = [:png, :pdf]
