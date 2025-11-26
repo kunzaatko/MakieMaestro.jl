@@ -1,0 +1,97 @@
+[bessely_fig]
+backends = {Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 12.2}
+formats = ["Svg"]
+modified = {date = 2025-11-26, time = 19:13:35.546}
+
+    [bessely_fig.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+    usednameof = true
+
+    [bessely_fig.size]
+    args = {default_hwratio = true, default_width = true, width = "512 pt"}
+    final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
+
+[bessely_fig_appendix]
+backends = {Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.685}
+formats = ["Svg"]
+modified = {date = 2025-11-26, time = 19:13:36.583}
+
+    [bessely_fig_appendix.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [bessely_fig_appendix.size]
+    args = {default_hwratio = true, default_width = true, width = "512 pt"}
+    final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
+
+[bessely_fig_large]
+backends = {Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.126}
+formats = ["Svg"]
+modified = {date = 2025-11-26, time = 19:13:37.132}
+
+    [bessely_fig_large.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [bessely_fig_large.size]
+    args = {default_hwratio = true, width = "210.0 mm"}
+    final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
+
+[bessely_fig_wide]
+backends = {Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.125}
+formats = ["Svg"]
+modified = {date = 2025-11-26, time = 19:13:37.293}
+
+    [bessely_fig_wide.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [bessely_fig_wide.size]
+    args = {hwratio = 0.4, width = "210.0 mm"}
+    final = "w×h: 210.0 mm × 84.0 mm [h/w: 0.4]"
+
+[lissajous_knot]
+backends = {Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.0177}
+formats = ["Svg"]
+modified = {date = 2025-11-26, time = 19:13:39.416}
+
+    [lissajous_knot.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+    usednameof = true
+
+    [lissajous_knot.size]
+    args = {height = "10 cm", width = "20 cm"}
+    final = "w×h: 20.0 cm × 10.0 cm [h/w: 0.5]"
+
+[not_a_knot]
+backends = {Eps = "CairoMakie", Png = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Eps = 0.503, Png = 0.0491, total = 0.552}
+formats = ["Png", "Eps"]
+modified = {date = 2025-11-26, time = 19:13:39.130}
+
+    [not_a_knot.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [not_a_knot.size]
+    args = {default_hwratio = true, default_width = true, width = "210.0 mm"}
+    final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
