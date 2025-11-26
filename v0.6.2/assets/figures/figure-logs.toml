@@ -1,0 +1,143 @@
+[makie_5804720877718349375]
+backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Pdf = 0.743, Png = 1.33, Svg = 12.5, total = 14.6}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2025-11-26, time = 19:11:11.985}
+
+    [makie_5804720877718349375.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [makie_5804720877718349375.size]
+    args = {default_hwratio = true, default_width = true, width = "15 cm"}
+    final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
+
+[makie_besselj_7367087167345386888]
+backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Pdf = 0.0653, Png = 0.0821, Svg = 0.163, total = 0.31}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2025-11-26, time = 19:11:13.300}
+
+    [makie_besselj_7367087167345386888.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [makie_besselj_7367087167345386888.size]
+    args = {default_hwratio = true, default_width = true, width = "15 cm"}
+    final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
+
+[makie_exponential_spiral_831077430981351777]
+backends = {Pdf = "CairoMakie", Png = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Pdf = 0.0204, Png = 0.123, total = 0.144}
+formats = ["Png", "Pdf"]
+modified = {date = 2025-11-26, time = 19:11:14.117}
+
+    [makie_exponential_spiral_831077430981351777.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [makie_exponential_spiral_831077430981351777.size]
+    args = {default_hwratio = true, default_width = true, width = "15 cm"}
+    final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
+
+[makie_graphs_9898450401429293877]
+backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Pdf = 0.465, Png = 0.271, Svg = 4.75, total = 5.48}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2025-11-26, time = 19:11:58.662}
+
+    [makie_graphs_9898450401429293877.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [makie_graphs_9898450401429293877.size]
+    args = {hwratio = 0.6, width = "25 cm"}
+    final = "w×h: 25.0 cm × 15.0 cm [h/w: 0.6]"
+
+[makie_hypotrochoid_10856261964834093899]
+backends = {Png = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Png = 0.128}
+formats = ["Png"]
+modified = {date = 2025-11-26, time = 19:11:13.967}
+
+    [makie_hypotrochoid_10856261964834093899.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [makie_hypotrochoid_10856261964834093899.size]
+    args = {default_hwratio = true, default_width = true, width = "15 cm"}
+    final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
+
+[makie_images_10816941791705355087]
+backends = {Png = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Png = 3.0}
+formats = ["Png"]
+modified = {date = 2025-11-26, time = 19:11:41.858}
+
+    [makie_images_10816941791705355087.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [makie_images_10816941791705355087.size]
+    args = {default_hwratio = true, default_width = true, width = "15 cm"}
+    final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
+
+[makie_large_figure_16195763608884739850]
+backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Pdf = 0.894, Png = 0.262, Svg = 7.57, total = 8.73}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2025-11-26, time = 19:11:23.033}
+
+    [makie_large_figure_16195763608884739850.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [makie_large_figure_16195763608884739850.size]
+    args = {hwratio = 0.6180339887498948, width = "25 cm"}
+    final = "w×h: 25.0 cm × 15.45 cm [h/w: 2/(√5 + 1)]"
+
+[makie_polygon_6407064529024661695]
+backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Pdf = 0.319, Png = 0.81, Svg = 0.381, total = 1.51}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2025-11-26, time = 19:12:01.469}
+
+    [makie_polygon_6407064529024661695.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [makie_polygon_6407064529024661695.size]
+    args = {hwratio = 0.28, width = "25 cm"}
+    final = "w×h: 25.0 cm × 7.0 cm [h/w: 0.28]"
+
+[rose]
+backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Pdf = 0.022, Png = 0.13, Svg = 0.294, total = 0.446}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2025-11-26, time = 19:11:13.799}
+
+    [rose.figure]
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [rose.size]
+    args = {default_hwratio = true, default_width = true, width = "15 cm"}
+    final = "w×h: 15.0 cm × 9.27 cm [h/w: 2/(√5 + 1)]"
