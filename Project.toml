@@ -28,7 +28,7 @@ DocumenterExt = "Documenter"
 
 [compat]
 CairoMakie = "0.15"
-CodeTracking = "2.0.0"
+CodeTracking = "2.0.0, 3.0.0"
 ColorSchemes = "^3.26"
 ColorTypes = "^0.7,^0.8,^0.9,^0.10,^0.11,^0.12"
 Dates = "1.11.0,1.10.0,1.9.0"
