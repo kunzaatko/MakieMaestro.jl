@@ -1,6 +1,7 @@
 """
     MakieDocBlocks(;path=@__DIR__ * "assets/figs/", formats=[:svg, :pdf])
-Create the plugin for generating Documenter figures from blocks of code in the documentation pages.
+Create the plugin for generating [`Documenter`](@extref Documenter :doc:`index`) figures from blocks of code in the
+documentation pages.
 """
 function MakieDocBlocks(; path=eval(@__DIR__) * "assets/figs/", formats=[:svg, :pdf])
     DocumenterExt = Base.get_extension(@__MODULE__, :DocumenterExt)

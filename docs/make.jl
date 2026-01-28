@@ -9,10 +9,11 @@ DocMeta.setdocmeta!(
         include(joinpath(@__DIR__, "..", "test/doctestsetup.jl"));
         using MakieMaestro;
         using Logging; # NOTE: This does not need to be in the `make.jl` of docs. We want `@warn ` to function there <19-12-24> 
-        Logging.disable_logging(Logging.Warn)); recursive=true
+        Logging.disable_logging(Logging.Warn)
+    ); recursive=true
 )
 
-# NOTE: Links can be explored trough the REPL with `links(query)`
+# NOTE: Links can be explored through the REPL with `links(query)`
 links = InterLinks(
     "Unitful" => "https://juliaphysics.github.io/Unitful.jl/stable/",
     "Julia" => "https://docs.julialang.org/en/v1/",

@@ -1,6 +1,9 @@
 using ColorTypes
 module Recipes
 
+# TODO: Add a macro that accepts modifiers for `Axis` and `Figure` and generates functions that are compatible with the
+# recipe that are modified with the macro but affect the `Axis` and the `Figure` with the modifiers <04-09-25> 
+
 include("ensemble-recipes.jl")
 
 # TODO: Add these tests <16-10-24> 
