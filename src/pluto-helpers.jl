@@ -4,6 +4,7 @@
 # TODO: `with_backend` should accept theme as a kwarg <18-10-24> 
 # TODO: Think about how should I use themes for the with_backend. Probably should handle the interactive theme more
 # intensionally <18-10-24> 
+# FIX: This should be probably implemented by a macro since it could also be used to generate the documentation <29-01-26> 
 
 # IDEA: A way to name these figures and UI element constructor that has buttons to show these figures.. This could be
 # called somewhere in the Pluto notebook to list the particular figures and internal Pluto.jl API could be used to

@@ -2,12 +2,10 @@
 # a keyword argument. <29-01-25> 
 using CairoMakie, GLMakie, Dates
 
-# Helpers for setting the directory, specifying formats for export and selecting the theme
-include("utils.jl")
+include("utils.jl") # Helpers for setting the directory, specifying formats for export and selecting the theme
 
-# Argument formation cascade for the final function
-include("arguments.jl")
-include("logger.jl")
+include("arguments.jl") # Argument formation cascade for the final function
+include("logger.jl") # Logging of the exported figures and options
 
 """
     create_logger(logger, figdir)

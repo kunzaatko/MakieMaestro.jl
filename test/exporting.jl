@@ -22,7 +22,7 @@ figs_function(lims::Tuple{Real,Real}=(0, 1)) = (fig_function_w_kwargs(lims), fig
     @test uniqueids(fspec1; axis=(; title="Line")).code_lowered == uniqueids(fspec1).code_lowered
     @test uniqueids(fspec1; axis=(; title="Line")).code_typed != uniqueids(fspec1).code_typed
     @test uniqueids(fspec1; axis=(; title="Line")).kwargs != uniqueids(fspec1).kwargs
-    if VERSION <= v"1.12"
+    if VERSION <= v"1.12" # NOTE: Within the minor version, these should not vary
         @test uniqueid(fspec1) == 0x2f12f969fb9de155
     else
         @test uniqueid(fspec1) == 0x32d83d3c1e749a14

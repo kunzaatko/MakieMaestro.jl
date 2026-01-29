@@ -132,7 +132,7 @@ function mosaic(
     ax = create_axes!(
         f, length(data); nrows=nrows, ncols=ncols, axis=axis, linkaxes=linkaxes
     )
-    isinteractive() && display(f)
+    isinteractive() && display(f) # normal recipes return a `Figure` which displays it in interactive contexts
 
     return f, ax, mosaic!(fn, ax, data...; kwargs...)
 end

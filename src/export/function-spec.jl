@@ -36,10 +36,14 @@ function (fspec::FunctionSpec)(; kwargs...)
         return fig
     catch e
         # NOTE: An error that may occur with the argument cascade is that we call the function with arguments that were
-        # passed for the SizeSpec. Warn the user about that the errors indicate that this may be the case. <31-01-25>  
+        # passed for the SizeSpec. Warn the user about that the errors indicate that this may be the case. <31-01-25>
         if (e isa Unitful.DimensionError || e isa MethodError) &&
             (fspec.args[1] isa Length || fspec.args[2] isa Length)
-            @warn "An error occured when calling the figure function. You may have passed arguments intended for the `SizeSpec` to the figure function. You may need to pass the first argument explicitely as `MakieMaestro.FunctionSpec(fig_function)`."
+            @warn """\
+            An error occured when calling the figure function. You may have passed arguments intended for the \
+            `SizeSpec` to the figure function. You may need to pass the first argument explicitely as \
+            `MakieMaestro.FunctionSpec(fig_function)`.
+            """
         end
         rethrow()
     end
