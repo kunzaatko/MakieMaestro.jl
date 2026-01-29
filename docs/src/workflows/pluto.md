@@ -1,4 +1,4 @@
-# The Problem with `Pluto` + `Makie`
+# [The Problem with `Pluto` + `Makie`](@id pluto_workflow)
 
 For research and experimenting, I use [`Pluto.jl`](https://github.com/fonsp/Pluto.jl) notebooks. 
 When I need to study a figure/plot with more complex features, I open it with `GLMakie` in a separate window. 
@@ -50,19 +50,20 @@ and I see inspect the figure to get the information from it.
     ```
 
 Next I decide whether I want to keep, modify or discard the figure.
-If I decide to keep the figure for reference, I would 
-If I decide to add the finishing touches to the figure such as adding axis labels etc., I will typically want to save it
-    as well in the future. 
+If I decide to keep the figure for reference, I would add the finishing touches to the figure such as adding axis labels
+    etc., I will typically want to save it for the future for including it in a blog post, article, documentation, ...
+    (fill-in your own use case).
 Because of this, I will create a named function for the figure.
-Since I do not need to create so many figure function names, it does not diverge to a fast numbered naming scheme as
+Since I do not need come up with too many figure function names, it does not diverge to a fast numbered naming scheme as
     `fig1`, `fig2` etc. but instead, I think of a descriptive name such as `fig_very_nice_beautiful`.
-This also enables me to define the figure with some parameter (e.g. indices of singular functions to plot, temperature
+This also enables me to define the figure with some parameters (e.g. indices of singular functions to plot, temperature
     parameter of the heat equation, etc.) and do some basic experimenting without too much effort with `Makie` sliders
     or similar stuff.
-Then I add both a static `CairoMakie` (or `WGLMakie`) and an interactive `GLMakie` figure in separate blocks
+Then I add both a static `CairoMakie` (or `WGLMakie`) 
 ```julia
-with_backend(fig_very_nice_beautiful, CairoMakie, very_nice_args...)
+with_backend(fig_very_nice_beautiful, CairoMakie, very_nice_args...) # shows the figure in the notebook
 ```
+and/or an interactive `GLMakie` figure in separate blocks
 ```julia
 with_backend(fig_very_nice_beautiful, GLMakie, very_nice_args...) # notice the missing `!`
 ```
@@ -79,7 +80,7 @@ This makes the initial run in a resumed session a lot faster.
     There is a global dictionary that stores the figures and the figure is shown only if the dictionary already contains
     this figure.
 
-!!! tip "Edit notebook code in your editor"
+!!! tip "TIP: Edit notebook code in your editor"
     If you would like to have the notebook code watch the content of the notebook file so that you can directly edit
     that file and see the outcome, this is possible in __Pluto.jl__ by specifying the `Pluto.ServerSession` prior to
     launching it like so:
@@ -102,3 +103,5 @@ This makes the initial run in a resumed session a lot faster.
         end
     end
     ```
+    Now you can use your editor goodies (Language server, highlighting, VIM bindings (😉),...) even for your notebook
+    code.

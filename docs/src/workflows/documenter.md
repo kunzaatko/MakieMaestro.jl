@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = MakieMaestro
+CurrentModule=MakieMaestro
 CollapsedDocStrings=true
 ```
 
-# Documenter Integration
+# [Documenter Integration](@id workflows-documenter)
 
 `MakieMaestro` includes a plugin for [Documenter.jl](@extref Documenter index) that allows you to
 embed Makie figures directly into your documentation using code blocks.
 
-!!! note "Other packages with similar purpose"
+!!! note "Other packages with a similar purpose"
     A package that can be used for example pages in you documentation is [`Literate.jl`](@extref Literate index). It can
     be similarly efficient in producing figures in your documentation. When choosing between `MakieMaestro` and
     `Literate`, you should consider, whether the markdown in the pages is more important than the code (e.g. in the
@@ -38,7 +38,7 @@ makedocs(
 )
 ```
 
-```@docs
+```@docs; canonical=false
 MakieMaestro.MakieDocBlocks
 ```
 
@@ -90,7 +90,7 @@ order to work.
 !!! note "Types that can be exported"
     There are other types that can be exported and used in the documentation. The guiding criterium is that the
     `function` that is defined by wrapping the code block in a function definition must be a function that is savable
-    using [`savefig`](@ref).  See [Exporting publication figures](@ref).
+    using [`savefig`](@ref).  See [Exporting publication figures](@ref exporting_figures).
 
 !!! warning "What is allowed in the block"
     Not all code is allowed in the `@makie` block. Most notably the definition of a struct is not allowed. The

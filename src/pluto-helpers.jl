@@ -15,6 +15,25 @@
 # `typeof(_with_backend)`. The only easy way would be to use a macro to define these functions however this would not be
 # as nice interface <17-07-25> 
 
+"""
+    with_backend(plots)
+Create functions `with_backend`, `with_backend!` intended to be used in Pluto notebooks for showing figure outputs on
+demand.
+
+It is intended to be used in the following way:
+```julia
+# In a Pluto notebook
+using MakieMaestro
+plots = Dict()
+with_backend!, with_backend = MakieMaestro.with_backend(plots)
+```
+and later in the notebook
+```julia
+with_backend!(GLMakie, [1, 2, 3], [1, 2, 3]) do xs, ys
+    lines(xs, ys)
+end
+```
+"""
 function with_backend(plots::AbstractDict)
     function _run_backend(stop_first)
         """

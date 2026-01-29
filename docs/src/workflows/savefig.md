@@ -10,7 +10,7 @@ using MakieMaestro.Themes
 using Logging
 ```
 
-# Exporting publication figures 
+# [Exporting publication figures](@id exporting_figures)
 
 You often want to apply specific themes or export figures in different sizes.
 For instance a margin figure size and a full `\textwidth` size. 

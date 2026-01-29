@@ -3,18 +3,19 @@ CurrentModule=MakieMaestro
 CollapsedDocStrings=true
 ```
 
-# Public Documentation
+# User Public API Documentation
 
 Documentation for `MakieMaestro`'s public interface.
 
-## Contents
-
 ```@contents
 Pages = ["reference.md"]
-Depth = 2:2
+Depth = 1:2
 ```
 
 # Exporting
+
+For a deeper overview of how to export figures while ensuring consistent style and sizing, see the section on [Exporting
+    publication figures](@ref exporting_figures).
 
 ```@docs
 savefig
@@ -77,6 +78,22 @@ MakieMaestro.InlineDict
 ```
 ```@raw html
 </details>
+```
+
+# Workflows
+
+## `Documenter.jl` Plugin
+For an extensive overview of how you can use the `Documenter.jl` plugin and the documentation workflow, take a look at
+    the [dedicated workflow page](@ref workflows-documenter).
+```@docs
+MakieMaestro.MakieDocBlocks
+```
+
+## `Pluto.jl`
+For an extensive overview of how to use this, see the [Pluto.jl workflow page](@ref pluto_workflow).
+
+```@docs
+MakieMaestro.with_backend
 ```
 
 # Theming
