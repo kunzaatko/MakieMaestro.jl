@@ -47,7 +47,10 @@ makedocs(;
             "Ensemble Recipes" => "workflows/mosaic.md",
         ],
         "Reference" => "reference.md",
-        "API Index" => "reference_index.md"
+        "API Index" => "reference_index.md",
+        "Dev" => [
+            "devdocs.md"
+        ]
     ],
     plugins=[
         links,

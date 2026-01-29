@@ -7,6 +7,10 @@ CurrentModule = MakieMaestro
 - Simplify theming consistency. This includes using different themes across different back-ends. See [Theming and Sizing](@ref).
 - Make it easy to save-figures in different formats using different themes and with various back-ends to a given output
     directory. This also includes saving figures in all selected formats with one command. See [Exporting figures](@ref).
+- Creates a plugin for [`Documenter.jl`](@extref Documenter :doc:index) that allows you to add `@makie` blocks to add
+    figures to your documentation. See [Documenter Integration](@ref workflows-documenter).
+- Makes it easier to use `Makie` with [`Pluto.jl`](https://github.com/fonsp/Pluto.jl). See [Pluto.jl Integration](@ref
+  pluto_workflow).
 - Enable saving figures for a given physical size to be included in a document. See [Theming and Sizing](@ref).
 - Simplifies overriding the theme for a specific case (e.g. margin figures, offset axes etc.) using _override themes_
     and functions that generate them. See [Theming and Sizing](@ref).
