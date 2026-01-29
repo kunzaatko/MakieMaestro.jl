@@ -1,4 +1,3 @@
-
 """
     PathSpec(basename, [formats], [dirname])
     PathSpec(fullpath, [formats])

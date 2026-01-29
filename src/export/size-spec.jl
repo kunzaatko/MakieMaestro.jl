@@ -1,5 +1,6 @@
 # FIX: Unintuitive order of width and height. Also width and height in printing is not aligned with width and height in
 # arguments (tuple). <30-01-25> 
+
 """
     MakieMaestro.SizeSpec(width::Length, hwratio::Real)
 Specification of the physical size of the exported image.
@@ -177,4 +178,4 @@ function SizeSpec(h::FigHeight, w::RelativeSize, logs::Dict=Dict{String,Any}()) 
     return SizeSpec(h, w.ratio * Themes.get_width(); logwidth=false) # 2B
 end
 
-Base.:(==)(s1::SizeSpec, s2::SizeSpec) = s1.width == s2.width && s1.hwratio == s2.hwratio
+Base.:(==)(s1::SizeSpec, s2::SizeSpec) = s1.width == s2.width && s1.hwratio == s2.hwratio # do not compare logs

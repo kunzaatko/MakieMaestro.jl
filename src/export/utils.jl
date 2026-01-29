@@ -1,4 +1,5 @@
 const FIGURE_DIR = Ref{Union{Missing,String}}(missing)
+
 """
     figure_dir!(dir)
 Set the figure directory
@@ -52,6 +53,7 @@ Base.convert(f::Type{Format}, s::AbstractString) = parse(f, s)
 Base.convert(f::Type{Format}, s::Symbol) = convert(f, string(s))
 
 const FORMATS_DEFAULT = Ref{Union{Set{Format},Missing}}(missing)
+
 """
     export_format!(formats)
 Set the default formats to export.
@@ -91,8 +93,9 @@ julia> export_format!(missing);
 function get_export_format()
     ismissing(FORMATS_DEFAULT[]) && throw(
         ErrorException(
-            """
-            DEFAULT_FORMATS not set! Use MakieMaestro.export_format!(formats) to set the default formats for exporting before saving a figure.
+            """\
+            `DEFAULT_FORMATS` not set! Use `MakieMaestro.export_format!(formats)` to set the default formats for \
+            exporting before saving a figure.\
             """,
         ),
     )
