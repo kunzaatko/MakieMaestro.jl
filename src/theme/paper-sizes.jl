@@ -13,7 +13,7 @@ for (series, base_hw, count) in (
         h_true, w_true = (base_hw ./ (2^((1 + i) ÷ 2), 2^(i ÷ 2)))[[
             i % 2 + 1, (i + 1) % 2 + 1
         ]]
-        ph_true, pw_true = map(a -> Symbol(a, "_TRUE"), (ph, pw))
+        ph_true, pw_true = map(a -> Symbol(a, "_ISO216"), (ph, pw))
 
         @eval begin
             """
