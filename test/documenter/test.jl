@@ -50,6 +50,9 @@ end
   # better parsing solution should be implemented overall <30-01-26> 
   @testset "MakieBlockOptions option parsing $(join([kw[2] for kw in c], ","))" for c in first(Random.shuffle(arg_combs), 40)
     try
+      if isempty(c)
+        continue
+      end
       Random.shuffle!(c)
       arg_string = " A; " * join([kw[2] for kw in c], ",")
       correct_opts = merge(merge((kw[1] for kw in c)...), (; name="A"))
