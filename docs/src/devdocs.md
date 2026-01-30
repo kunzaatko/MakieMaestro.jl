@@ -19,9 +19,10 @@ These are:
 - [`export_format!`](@ref).
 
 ## [`savefig`](@ref)
+
 !!! note
-  You should take a look at what are the possible input arguments to [`savefig`](@ref) and how composable it is in the
-  [section about exporting figures](@ref exporting_figures) to understand what is being solved here.
+    You should take a look at what are the possible input arguments to [`savefig`](@ref) and how composable it is in the
+    [section about exporting figures](@ref exporting_figures) to understand what is being solved here.
 
 The root implementation is in `src/export/savefig.jl` which calls the appropriate exporting functions based on the
   preprocessed arguments. 
