@@ -6,7 +6,7 @@ CurrentModule=MakieMaestro
 Features provided by `MakieMaestro` are: 
 - _Exporting_: uses _Theming_ and _Sizing_
 - _Documenter plugin_: uses _Exporting_
-- _Pluto.jl ([`with_backend!`](@ref))_: decoupled from anything else
+- *Pluto.jl* ([`with_backend!`](@ref)): decoupled from anything else
 - _Ensemble plots_: decoupled from anything else
 
 # Exporting Figures
