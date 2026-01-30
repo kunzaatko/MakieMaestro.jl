@@ -12,7 +12,7 @@ ext = get_extension(MakieMaestro, :DocumenterExt)
   @test ext.MakieBlockOptions(name="name2", basename="basename1") == parse(ext.MakieBlockOptions, " name2; basename=\"basename1\"")
 end
 
-@testset "MakieBlockOptoins parsing" begin
+@testset "MakieBlockOptions parsing" begin
   using MakieMaestro.Themes
   Themes.width!(Themes.A4_WIDTH)
   Themes.hwratio!(2 / (√(5) + 1))
@@ -45,14 +45,22 @@ end
     all(g -> length(intersect(c, g)) <= 1, (FORMAT_KW, THEME_KW, ALT_KW, BASENAME_KW, CAPTION_KW, SIZE_KW))
   end
 
+  # FIX: Something is failing here with some combinations of the options. The `try/catch` block is added here when to
+  # see when a combination of arguments is failing for the manual implementation of the option parsing, but really a 
+  # better parsing solution should be implemented overall <30-01-26> 
   @testset "MakieBlockOptions option parsing $(join([kw[2] for kw in c], ","))" for c in first(Random.shuffle(arg_combs), 40)
-    Random.shuffle!(c)
-    arg_string = " A; " * join([kw[2] for kw in c], ",")
-    correct_opts = merge(merge((kw[1] for kw in c)...), (; name="A"))
-    correct_out = ext.MakieBlockOptions(; correct_opts...)
-    parsed_out = parse(ext.MakieBlockOptions, arg_string)
-    for f in fieldnames(typeof(parsed_out))
-      @test getfield(parsed_out, f) == getfield(correct_out, f)
+    try
+      Random.shuffle!(c)
+      arg_string = " A; " * join([kw[2] for kw in c], ",")
+      correct_opts = merge(merge((kw[1] for kw in c)...), (; name="A"))
+      correct_out = ext.MakieBlockOptions(; correct_opts...)
+      parsed_out = parse(ext.MakieBlockOptions, arg_string)
+      for f in fieldnames(typeof(parsed_out))
+        @test getfield(parsed_out, f) == getfield(correct_out, f)
+      end
+    catch e
+      println("Failed with `c`=$c")
+      rethrow(e)
     end
   end
 end
