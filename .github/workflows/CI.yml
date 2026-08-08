@@ -39,7 +39,7 @@ jobs:
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
-      - uses: julia-actions/cache@v2
+      - uses: julia-actions/cache@v3
       - uses: julia-actions/julia-buildpkg@latest
       - uses: julia-actions/julia-runtest@latest
         with:
@@ -61,7 +61,7 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1'
-      - uses: julia-actions/cache@v2
+      - uses: julia-actions/cache@v3
       - name: Setup docs julia project
         run: >
             DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24' -- julia --project=docs --color=yes --eval "using Pkg; Pkg.develop(PackageSpec(path=abspath(\".\"))); Pkg.instantiate()"; # NOTE: compilation of Makie also needs a screen 
