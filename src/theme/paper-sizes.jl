@@ -1,8 +1,8 @@
-# TODO: Add a note of these constants existence into the documentation <05-02-25> 
-# NOTE: There are many conventions to what to refer to as the "width" and what to refer to as the "height". This defines
-# the dimensions in the usual portrait orientation, hence the longer side is always the height contrary to the ISO 216
-# standard where the "height" (and "width") are alternatingly shorter and longer. This means that in the ISO standard,
-# A4's dimensions would be height=210mm and width=297mm and in ours it would be width=210mm and height=297mm. <05-02-25> 
+# NOTE: There are many conventions to which to refer to as the "width" and what to refer to as the "height". This
+# defines the dimensions in the usual portrait orientation, hence the longer side is always the height contrary to the
+# ISO 216 standard where the "height" (and "width") are alternatingly shorter and longer. This means that in the ISO
+# standard, A4's dimensions would be height=210mm and width=297mm and in ours it would be width=210mm and height=297mm.
+
 for (series, base_hw, count) in (
     ("A", (1189u"mm", 841u"mm"), 13),
     ("B", (1414u"mm", 1000u"mm"), 13),

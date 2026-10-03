@@ -25,6 +25,7 @@ Base.haskey(d::InlineDict, args...) = haskey(parent(d), args...)
 Base.length(d::InlineDict) = length(parent(d))
 Base.iterate(d::InlineDict, args...) = iterate(parent(d), args...)
 
+# TODO: Should function with an AbstractDict interface <29-01-26> 
 """
     FigureLogger
 An abstract type that can log the figures that are created in a directory.
@@ -38,6 +39,19 @@ Add the entry `data` under the `key` in the log file.
 @interface add_entry(
     logger::FigureLogger, key::String, data::AbstractDict; update=true, keep=true
 )
+
+"""
+    has_entry(logger::FigureLogger, key::String)::Bool
+Indicate whether the entry `key` is stored in the logger.
+"""
+@interface has_entry(logger::FigureLogger, ::String) = false
+
+# Only needs to be implemented if the logger stores entries, i.e. if `has_entry` can be evaluated to `true`
+"""
+    get_entry(logger::FigureLogger, key::String)::AbstractDict
+Get the entry Dict for `key`
+"""
+@interface get_entry(logger::FigureLogger, ::String)::AbstractDict
 
 """
     NullLogger
@@ -123,4 +137,8 @@ function add_entry(
         @error "An error while writing the TOML log at $log" exception = e
         rethrow(e)
     end
+end
+
+function has_entry(logger::TOMLLogger, key::String)
+    return isfile(logs_path(logger)) && haskey(TOML.tryparsefile(logs_path(logger)), key)
 end
