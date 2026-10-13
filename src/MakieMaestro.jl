@@ -30,12 +30,12 @@ include("documentation.jl")
 function __init__()
     if ccall(:jl_generating_output, Cint, ()) == 0   # if we're not precompiling...
         Unitful.register(Units)
-    end
 
-    if @isdefined PlutoRunner  # running inside Pluto
-        WGLMakie.activate!()
-    elseif isinteractive() # running in REPL
-        GLMakie.activate!()
+        if @isdefined PlutoRunner  # running inside Pluto
+            WGLMakie.activate!()
+        elseif isinteractive() # running in REPL
+            GLMakie.activate!()
+        end
     end
 
     return nothing
