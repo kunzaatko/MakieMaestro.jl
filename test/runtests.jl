@@ -43,6 +43,7 @@ end
             Aqua.test_all(
                 MakieMaestro;
                 ambiguities=false,
+                persistent_tasks=VERSION >= v"1.11",
             )
         end
 
