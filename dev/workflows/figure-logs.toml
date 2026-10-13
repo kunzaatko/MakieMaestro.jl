@@ -1,9 +1,9 @@
 [bessely_fig]
 backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 9.14}
+exportduration = {Svg = 9.5}
 formats = ["Svg"]
-modified = {date = 2026-10-13, time = 09:54:59.531}
+modified = {date = 2026-10-13, time = 18:46:39.394}
 
     [bessely_fig.figure]
     kwargs = {}
@@ -18,9 +18,9 @@ modified = {date = 2026-10-13, time = 09:54:59.531}
 [bessely_fig_appendix]
 backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.353}
+exportduration = {Svg = 0.392}
 formats = ["Svg"]
-modified = {date = 2026-10-13, time = 09:55:00.151}
+modified = {date = 2026-10-13, time = 18:46:40.060}
 
     [bessely_fig_appendix.figure]
     kwargs = {}
@@ -34,9 +34,9 @@ modified = {date = 2026-10-13, time = 09:55:00.151}
 [bessely_fig_large]
 backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.05}
+exportduration = {Svg = 0.0564}
 formats = ["Svg"]
-modified = {date = 2026-10-13, time = 09:55:00.710}
+modified = {date = 2026-10-13, time = 18:46:40.768}
 
     [bessely_fig_large.figure]
     kwargs = {}
@@ -50,9 +50,9 @@ modified = {date = 2026-10-13, time = 09:55:00.710}
 [bessely_fig_wide]
 backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.0499}
+exportduration = {Svg = 0.0561}
 formats = ["Svg"]
-modified = {date = 2026-10-13, time = 09:55:00.794}
+modified = {date = 2026-10-13, time = 18:46:40.857}
 
     [bessely_fig_wide.figure]
     kwargs = {}
@@ -66,9 +66,9 @@ modified = {date = 2026-10-13, time = 09:55:00.794}
 [lissajous_knot]
 backends = {Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.0164}
+exportduration = {Svg = 0.0189}
 formats = ["Svg"]
-modified = {date = 2026-10-13, time = 09:55:02.653}
+modified = {date = 2026-10-13, time = 18:46:42.772}
 
     [lissajous_knot.figure]
     kwargs = {}
@@ -83,9 +83,9 @@ modified = {date = 2026-10-13, time = 09:55:02.653}
 [not_a_knot]
 backends = {Eps = "CairoMakie", Png = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Eps = 0.455, Png = 0.0413, total = 0.496}
+exportduration = {Eps = 0.501, Png = 0.0518, total = 0.552}
 formats = ["Png", "Eps"]
-modified = {date = 2026-10-13, time = 09:55:02.399}
+modified = {date = 2026-10-13, time = 18:46:42.472}
 
     [not_a_knot.figure]
     kwargs = {}
