@@ -28,7 +28,9 @@ include("pluto-helpers.jl")
 include("documentation.jl")
 
 function __init__()
-    Unitful.register(Units)
+    if ccall(:jl_generating_output, Cint, ()) == 0   # if we're not precompiling...
+        Unitful.register(Units)
+    end
 
     if @isdefined PlutoRunner  # running inside Pluto
         WGLMakie.activate!()
