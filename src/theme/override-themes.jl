@@ -1,7 +1,7 @@
 # TODO: Add an override theme for Title. It is useful in the interactive setting. Also a override theme for title not
 # visible which is useful for a figure with multiple axes but I do not want to save them with the axis titles. <22-10-24> 
 # TODO: fix the notebooks and the scripts that are already done with the old system <18-10-24> 
-using OffsetArrays, LaTeXStrings
+using LaTeXStrings, OffsetArrays
 
 # TODO: Should instead be in an Ext module that is loaded when OffsetArrays are used. <13-12-24> 
 function format_ticks(ticks)

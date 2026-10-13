@@ -8,11 +8,11 @@ using Unitful: Length
 @reexport using LaTeXStrings
 @reexport using Makie
 # not reexported of type with MakieExtra <07-03-25> 
-@reexport using Makie: lift, width, Text, @lift
+@reexport using Makie: @lift, Text, lift, width
 
 # NOTE: We cannot reexport since there would be overlapping definitions with Makie re-exported from MakieExtra <22-10-24> 
-using GLMakie, CairoMakie, WGLMakie
-export GLMakie, CairoMakie, WGLMakie
+using CairoMakie, GLMakie, WGLMakie
+export CairoMakie, GLMakie, WGLMakie
 
 module Units
     using Unitful

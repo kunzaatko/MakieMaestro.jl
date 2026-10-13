@@ -19,7 +19,7 @@ easier by allowing you to define all the connected attributes in one theme, regi
 process and when saving.
 """
 module Themes
-using ColorTypes, Makie, ColorSchemes, Unitful
+using ColorSchemes, ColorTypes, Makie, Unitful
 using Makie: Theme
 
 # TODO: Perhaps these should all be only a dictionary that has the keys for the particular theme types. Such
