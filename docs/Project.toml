@@ -7,6 +7,3 @@ Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 MakieMaestro = "c922e6f1-a74a-406e-9215-09b2647b2648"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
-
-[sources]
-MakieMaestro = {path = ".."}

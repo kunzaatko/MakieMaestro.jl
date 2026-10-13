@@ -20,6 +20,9 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 
+[workspace]
+projects = ["docs", "test"]
+
 [weakdeps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 
@@ -43,4 +46,4 @@ Reexport = "1.2"
 TOML = "1.0.3"
 Unitful = "1.21"
 WGLMakie = "0.13"
-julia = "1.10, 1.11, 1.12"
+julia = "1.10, 1.11, 1.12, 1.13"

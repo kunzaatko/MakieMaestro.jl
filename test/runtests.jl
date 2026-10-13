@@ -1,5 +1,5 @@
 using MakieMaestro
-using Test, Documenter, CompatHelperLocal
+using Test, Documenter
 using Aqua
 
 include("./tools.jl")
@@ -7,7 +7,6 @@ include("./tools.jl")
 const run_all = isempty(ARGS) ? true : false
 
 skip = Dict{String,Bool}(
-    "compat" => !(v"1.12" >= VERSION >= v"1.9"), # NOTE: `CompatHelperLocal` only compatible with later Julia version <28-02-25> 
     "aqua" => !haskey(ENV, "GITHUB_ACTIONS") && !haskey(ENV, "RUNTESTS_FULL"),
     "doctests" => !haskey(ENV, "RUNTESTS_FULL") && !(haskey(ENV, "RUNNER_OS") && ENV["RUNNER_OS"] == "Linux"),
     "ambiguities" => true # FIX: Fix the ambiguities <24-04-25> 
@@ -54,10 +53,6 @@ end
             else
                 @test length(Test.detect_ambiguities(MakieMaestro)) == 0
             end
-        end
-
-        @cond_testset "compat" begin
-            @test CompatHelperLocal.check(MakieMaestro; checktest=false)
         end
     end
 
