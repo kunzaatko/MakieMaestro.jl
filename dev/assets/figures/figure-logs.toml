@@ -1,9 +1,9 @@
 [makie_7915942675829825618]
 backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Pdf = 0.687, Png = 0.944, Svg = 10.3, total = 12.0}
-formats = ["Svg", "Pdf", "Png"]
-modified = {date = 2026-10-13, time = 19:38:25.873}
+exportduration = {Pdf = 0.645, Png = 0.98, Svg = 10.1, total = 11.8}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2026-10-13, time = 19:46:52.991}
 
     [makie_7915942675829825618.figure]
     kwargs = {}
@@ -17,9 +17,9 @@ modified = {date = 2026-10-13, time = 19:38:25.873}
 [makie_besselj_1421712164630867983]
 backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Pdf = 0.0548, Png = 0.0694, Svg = 0.137, total = 0.261}
-formats = ["Svg", "Pdf", "Png"]
-modified = {date = 2026-10-13, time = 19:38:26.896}
+exportduration = {Pdf = 0.0521, Png = 0.0641, Svg = 0.132, total = 0.249}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2026-10-13, time = 19:46:53.829}
 
     [makie_besselj_1421712164630867983.figure]
     kwargs = {}
@@ -33,9 +33,9 @@ modified = {date = 2026-10-13, time = 19:38:26.896}
 [makie_exponential_spiral_11816099445050716677]
 backends = {Pdf = "CairoMakie", Png = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Pdf = 0.0978, Png = 0.0266, total = 0.124}
-formats = ["Pdf", "Png"]
-modified = {date = 2026-10-13, time = 19:38:27.441}
+exportduration = {Pdf = 0.0174, Png = 0.096, total = 0.113}
+formats = ["Png", "Pdf"]
+modified = {date = 2026-10-13, time = 19:46:54.468}
 
     [makie_exponential_spiral_11816099445050716677.figure]
     kwargs = {}
@@ -49,9 +49,9 @@ modified = {date = 2026-10-13, time = 19:38:27.441}
 [makie_graphs_17199969565544982089]
 backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Pdf = 0.43, Png = 0.26, Svg = 3.74, total = 4.43}
-formats = ["Svg", "Pdf", "Png"]
-modified = {date = 2026-10-13, time = 19:39:03.442}
+exportduration = {Pdf = 0.467, Png = 0.225, Svg = 3.52, total = 4.22}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2026-10-13, time = 19:47:27.625}
 
     [makie_graphs_17199969565544982089.figure]
     kwargs = {}
@@ -65,9 +65,9 @@ modified = {date = 2026-10-13, time = 19:39:03.442}
 [makie_hypotrochoid_14233316459172618930]
 backends = {Png = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Png = 0.104}
+exportduration = {Png = 0.0962}
 formats = ["Png"]
-modified = {date = 2026-10-13, time = 19:38:27.309}
+modified = {date = 2026-10-13, time = 19:46:54.350}
 
     [makie_hypotrochoid_14233316459172618930.figure]
     kwargs = {}
@@ -81,9 +81,9 @@ modified = {date = 2026-10-13, time = 19:38:27.309}
 [makie_images_34881227733210569]
 backends = {Png = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Png = 2.4}
+exportduration = {Png = 2.22}
 formats = ["Png"]
-modified = {date = 2026-10-13, time = 19:38:49.372}
+modified = {date = 2026-10-13, time = 19:47:14.687}
 
     [makie_images_34881227733210569.figure]
     kwargs = {}
@@ -97,9 +97,9 @@ modified = {date = 2026-10-13, time = 19:38:49.372}
 [makie_large_figure_18069850163719880298]
 backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Pdf = 0.737, Png = 0.198, Svg = 5.08, total = 6.02}
-formats = ["Svg", "Pdf", "Png"]
-modified = {date = 2026-10-13, time = 19:38:33.617}
+exportduration = {Pdf = 0.7, Png = 0.196, Svg = 4.68, total = 5.58}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2026-10-13, time = 19:47:00.187}
 
     [makie_large_figure_18069850163719880298.figure]
     kwargs = {}
@@ -113,9 +113,9 @@ modified = {date = 2026-10-13, time = 19:38:33.617}
 [makie_polygon_6075160213165447174]
 backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Pdf = 0.187, Png = 0.141, Svg = 0.4, total = 0.728}
-formats = ["Svg", "Pdf", "Png"]
-modified = {date = 2026-10-13, time = 19:39:05.191}
+exportduration = {Pdf = 0.169, Png = 0.123, Svg = 0.366, total = 0.658}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2026-10-13, time = 19:47:29.115}
 
     [makie_polygon_6075160213165447174.figure]
     kwargs = {}
@@ -129,9 +129,9 @@ modified = {date = 2026-10-13, time = 19:39:05.191}
 [rose]
 backends = {Pdf = "CairoMakie", Png = "CairoMakie", Svg = "CairoMakie"}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Pdf = 0.0195, Png = 0.0278, Svg = 0.184, total = 0.232}
-formats = ["Svg", "Pdf", "Png"]
-modified = {date = 2026-10-13, time = 19:38:27.179}
+exportduration = {Pdf = 0.0201, Png = 0.0984, Svg = 0.235, total = 0.354}
+formats = ["Svg", "Png", "Pdf"]
+modified = {date = 2026-10-13, time = 19:46:54.230}
 
     [rose.figure]
     kwargs = {}
