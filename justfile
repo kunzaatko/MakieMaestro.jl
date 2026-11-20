@@ -1,7 +1,7 @@
 set shell := ["bash", "-cu"]
 set dotenv-load
 
-# hint := BLUE + "" + NORMAL
+hint := BLUE + "" + NORMAL
 progress := CYAN + "●" + NORMAL
 ok := GREEN + "✓" + NORMAL
 # warn := YELLOW + "⚠" + NORMAL
@@ -73,3 +73,74 @@ pkg-resolve:
     julia --project=docs -e 'try; using Pkg; Pkg.resolve(); println("{{ ok }} Resolved."); catch e; println(stderr, "{{ fail }} Resolving failed."); exit(1); end'
     echo "{{ progress }} Resolving test packages..."
     julia --project=test -e 'try; using Pkg; Pkg.resolve(); println("{{ ok }} Resolved."); catch e; println(stderr, "{{ fail }} Resolving failed."); exit(1); end'
+
+[doc("""
+Internal: ensure a GitHub token is available for remote metadata.
+Priority:
+1. GITHUB_TOKEN environment variable
+2. gh CLI (via `gh auth token`)
+""")]
+[group("release")]
+[private]
+[script("fish")]
+_gh-authenticated:
+    if not type -q gh
+        echo "{{ fail }} GITHUB_TOKEN is not set and gh CLI is not installed." >&2
+        echo "{{ hint }} Install gh and run: gh auth login" >&2
+        exit 1
+    end
+    if not gh auth status &>/dev/null
+        echo "{{ fail }} gh CLI is not authenticated. Run: gh auth login" >&2
+        exit 1
+    end
+
+[doc("Regenerate CHANGELOG.md with enriched GitHub metadata.")]
+[group("release")]
+[script("fish")]
+changelog: _gh-authenticated
+    if not set -q GITHUB_TOKEN
+        set -gx GITHUB_TOKEN (gh auth token)
+    end
+    git-cliff -o CHANGELOG.md
+    if test $status -eq 0
+        echo "{{ ok }} CHANGELOG.md generated." >&2
+        echo "{{ hint }} Review the changes, then stage and commit if needed." >&2
+    else
+        echo "{{ fail }} CHANGELOG.md generation failed." >&2
+    end
+
+[arg("semantic-bump", pattern="patch|minor|major")]
+[doc("Bump version, update changelog, tag, and open a Registrator.jl issue")]
+[group("release")]
+[script("fish")]
+[working-directory(root-dir)]
+register semantic-bump="patch": _gh-authenticated
+    if not set -q GITHUB_TOKEN
+        set -gx GITHUB_TOKEN (gh auth token)
+    end
+
+    set tag_version (git-cliff --bumped-version --bump {{ semantic-bump }})
+    set pkg_version (string replace -r '^v' '' -- $tag_version)
+    set branch (git branch --show-current)
+
+    echo "{{ progress }} Bumping Project.toml version to $version ($tag_version)..."
+    sed -i -E "s/^version = \".*\"/version = \"$pkg_version\"/" Project.toml
+    echo "{{ ok }} Project.toml updated to $pkg_version."
+
+    echo "{{ progress }} Generating CHANGELOG.md..."
+    git-cliff --bump {{ semantic-bump }} -o CHANGELOG.md
+    echo "{{ ok }} CHANGELOG.md updated."
+
+    set release_notes (git-cliff --bump {{ semantic-bump }} --unreleased | string collect)
+
+    echo "{{ progress }} Committing and tagging $tag_version..."
+    git add Project.toml CHANGELOG.md
+    git commit -m "chore(release): prepare for $tag_version"
+    git tag --sign -a $tag_version -m "Release $tag_version"
+    git push origin $branch --follow-tags
+    echo "{{ ok }} Pushed commit and tag $tag_version to $branch."
+
+    echo "{{ progress }} Creating GitHub registration issue..."
+    set issue_body (printf "@JuliaRegistrator register branch=%s\n\nRelease notes:\n\n%s\n" "$branch" "$release_notes" | string collect)
+    gh issue create --title "Register $tag_version" --body "$issue_body"
+    echo "{{ ok }} Registration issue created for $tag_version."
