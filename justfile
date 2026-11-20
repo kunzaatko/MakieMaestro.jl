@@ -123,7 +123,7 @@ register semantic-bump="patch": _gh-authenticated
     set pkg_version (string replace -r '^v' '' -- $tag_version)
     set branch (git branch --show-current)
 
-    echo "{{ progress }} Bumping Project.toml version to $version ($tag_version)..."
+    echo "{{ progress }} Bumping Project.toml version to $pkg_version ($tag_version)..."
     sed -i -E "s/^version = \".*\"/version = \"$pkg_version\"/" Project.toml
     echo "{{ ok }} Project.toml updated to $pkg_version."
 
