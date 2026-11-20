@@ -142,3 +142,17 @@ end
 function has_entry(logger::TOMLLogger, key::String)
     return isfile(logs_path(logger)) && haskey(TOML.tryparsefile(logs_path(logger)), key)
 end
+
+"""
+    get_entry(logger::TOMLLogger, key::String)
+Get the entry `Dict` for `key` from the log file of `logger`, or `nothing` if the log file does not exist or does not
+contain the key.
+"""
+function get_entry(logger::TOMLLogger, key::String)
+    log = logs_path(logger)
+    isfile(log) || return nothing
+    log_data = TOML.tryparsefile(log)
+    log_data isa TOML.ParserError &&
+        error("An error while parsing the TOML log at $log: $(log_data)")
+    return get(log_data, key, nothing)
+end

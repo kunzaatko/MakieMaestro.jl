@@ -6,6 +6,7 @@ include("utils.jl") # Helpers for setting the directory, specifying formats for 
 
 include("arguments.jl") # Argument formation cascade for the final function
 include("logger.jl") # Logging of the exported figures and options
+include("cache.jl") # Digest computation and content-addressed caching of the exported figures
 
 """
     create_logger(logger, figdir)
@@ -25,7 +26,7 @@ function create_logger(logger, path)
         if isempty(dirname)
             return TOMLLogger(; basename)
         elseif isempty(basename)
-            return TOMLLogger(; dir=dirname)
+            return TOMLLogger(dirname, basename)
         else
             return TOMLLogger(dirname, basename)
         end
@@ -79,7 +80,21 @@ arguments should work granted that they are in the correct order.
 * `backends=CairoMakie` -- Backend used for exporting
 * `override_theme=Theme()` -- Theme(s) that will be used to style  the figure
 * `[update]` -- _(default: determine by the backend)_
+* `cache=true` -- Reuse previously rendered figures from a content-addressed cache store
+  ([`FigureCacheStore`](@ref)) whenever the digest of the figure-producing inputs (function source, arguments,
+  keyword arguments) and the resolved export options (basename, backend, format, size, themes) is unchanged. `false`
+  disables the cache and an `AbstractString` selects the store directory. The default store directory is the hidden
+  `.figurecache` directory inside the figure directory, unless set globally with [`figure_cache_dir!`](@ref). When all
+  requested formats are cached, the figure function is not called at all.
+* `figdigest` -- Digest of the figure-producing inputs. When provided (e.g. by the `@makie` Documenter block expander,
+  which owns the block code text), it is used instead of computing the digest from the function source.
 * `kwargs...` -- Any additional keyword arguments are supplied to the figure function as keyword arguments.
+
+!!! warning
+    The cache digest covers the figure code, its arguments and the resolved export options. Changes to the
+    _environment_ (Julia, Makie or backend versions), to global state that the figure function reads, or to the
+    contents of data files that it opens are _not_ detected. Pass `cache=false` for such figures, or delete the cache
+    store to force a re-render.
 """
 function savefig(
     fig::FunctionSpec,
@@ -89,15 +104,18 @@ function savefig(
     override_theme=Theme(),
     log=true,
     update=missing,
+    cache=true,
+    figdigest=missing,
     kwargs...,
 )
     # TODO: Add logfilter kwarg that is passed to the logger <15-08-25> 
-    # TODO: Cache dir should be a path set and if it is the same as the figure dir, there should be an option to use the
-    # same logger to add the unique IDs <15-08-25> 
+    # NOTE: The cache store directory can be set with the `cache` keyword (or globally with `figure_cache_dir!`). The
+    # digests of the figures are logged in the figure entry under `figure.digest` and `backends.<format>.digest`.
 
     override_theme = override_theme isa Theme ? [override_theme] : override_theme
     backends = backends isa Module ? [backends] : backends
     logger = create_logger(log, path.dirname)
+    store = figure_cache_store(cache, path.dirname)
 
     logging_data = Dict{String,Any}()
 
@@ -106,43 +124,97 @@ function savefig(
 
     formats = get_formats(backends, path.formats) # from backends and wanted, ordered in the export order
 
+    # Digest of the figure-producing inputs. A provided `figdigest` (e.g. from the `@makie` block expander, which owns
+    # the block code text) takes precedence; otherwise the digest is computed from the function source.
+    digest_info = Dict{String,Any}()
+    fig_digest = nothing
+    if !isnothing(store) || figdigest isa AbstractString
+        digest_pair = if figdigest isa AbstractString
+            (digest=String(figdigest), info=Dict{String,Any}("code_source" => "provided"))
+        else
+            figure_digest(fig; kwargs...)
+        end
+        fig_digest, digest_info = digest_pair.digest, digest_pair.info
+    end
+
     logging_data["cwd"] = pwd()
     logging_data["figure"] = logs(fig)
+    merge!(logging_data["figure"], digest_info)
+    isnothing(fig_digest) || (logging_data["figure"]["digest"] = fig_digest)
     logging_data["formats"] = string.(formats)
     logging_data["size"] = Dict{String,Any}("final" => string(size))
     merge!(logging_data["size"], logs(size))
     logging_data["backends"] = InlineDict{String,Any}()
     logging_data["exportduration"] = InlineDict{String,Any}()
+    logging_data["reused"] = false
+
+    fsize = Themes.figsize(size.width, size.hwratio)
+
+    # Per-format digests of the rendered output and cache lookups for the base (index 0) figure. When every requested
+    # format is already in the cache store, the figure function is not called at all. Figures at indices > 0 (a
+    # `Vector` or `Tuple` of figures) are looked up lazily once their number is known.
+    digests = Dict{Format,String}()
+    themes = Dict{Format,Vector{String}}()
+    reused = Dict{Format,Bool}()
+    for fmt in formats
+        b = choose_backend(backends, fmt)
+        themes[fmt] = theme_tags(b, fmt, override_theme)
+        digests[fmt] = isnothing(fig_digest) ? "" :
+            renderdigest(fig_digest, path.basename(0), b, fmt, fsize, themes[fmt])
+        reused[fmt] = false
+        if !isnothing(store)
+            target = joinpath(path.dirname, path.basename(0) * extension(fmt))
+            reused[fmt] = cache_lookup!(store, digests[fmt], target)
+        end
+    end
+    logging_data["reused"] = !isempty(formats) && all(values(reused))
 
     for fmt in formats
         b = choose_backend(backends, fmt)
 
-        logging_data["backends"][string(fmt)] = string(b)
-
-        # TODO: Log the themes <15-08-25> 
-        export_theme = get_export_theme(b, fmt, size.width, size.hwratio, override_theme...)
-
-        time = @timed with_theme(export_theme) do
-            export_fig = fig(; kwargs...) # NOTE: Figure function must be called with the theme defined for theming to work <08-01-25> 
-            if export_fig isa Vector || export_fig isa Tuple
-                for (i, fig) in enumerate(export_fig)
-                    _savefig(fig, path.basename(i), fmt, b, path.dirname; update)
-                end
-            else
-                _savefig(export_fig, path.basename(0), fmt, b, path.dirname; update)
-            end
-        end
-
-        logging_data["exportduration"][string(fmt)] = time.time
-
-        # TODO: If first created, add "created" instead of modified. There should be a method that retrieves the entry
-        # by the format and basename from the current log <15-08-25> 
-        # TODO: There should be a "lastsaved" that should be updated with every cached retrieval as well as the
-        # modification <15-08-25> 
+        logging_data["backends"][string(fmt)] = InlineDict{String,Any}(
+            "backend" => string(b), "reused" => reused[fmt], "digest" => digests[fmt]
+        )
 
         logging_data["modified"] = InlineDict(
             "date" => Dates.Date(now()), "time" => Dates.Time(now())
         )
+
+        if reused[fmt]
+            @info "Reusing cached figure `$(path.basename(0) * extension(fmt))` in $(path.dirname)"
+            continue
+        end
+
+        export_theme = get_export_theme(b, fmt, size.width, size.hwratio, override_theme...)
+
+        time = @timed with_theme(export_theme) do
+            export_fig = fig(; kwargs...) # NOTE: Figure function must be called with the theme defined for theming to work <08-01-25> 
+            figures =
+                export_fig isa Vector || export_fig isa Tuple ?
+                enumerate(export_fig) : ((0, export_fig),)
+            for (i, subfig) in figures
+                name = path.basename(i)
+                target = joinpath(path.dirname, name * extension(fmt))
+                digest = isnothing(fig_digest) ? "" :
+                    renderdigest(fig_digest, name, b, fmt, fsize, themes[fmt])
+                # NOTE: The index-0 entry has already been looked up before the figure function was called.
+                if !isnothing(store) && i != 0 && cache_lookup!(store, digest, target)
+                    @info "Reusing cached figure `$(basename(target))` in $(path.dirname)"
+                    continue
+                end
+                _savefig(subfig, name, fmt, b, path.dirname; update)
+                if !isnothing(store)
+                    cache_store!(
+                        store, digest, target,
+                        cache_entry_info(
+                            fig_digest, digest_info, name, b, fmt, fsize, themes[fmt]
+                        ),
+                    )
+                end
+            end
+        end
+
+        logging_data["exportduration"][string(fmt)] = time.time
     end
     if length(logging_data["exportduration"]) > 1
         logging_data["exportduration"]["total"] = sum(
@@ -151,6 +223,8 @@ function savefig(
     end
     map!(x -> round(x; sigdigits=3), values(logging_data["exportduration"]))
 
+    # NOTE: Cached retrievals are recorded in the store index (`lastsaved` timestamps) and in this figure log via the
+    # `reused` flags.
     return add_entry(logger, path.basename(0), logging_data)
 end
 
@@ -204,4 +278,4 @@ function _savepdftex(svgpath, outputpath; wait=true)
     return run(inkscape_cmd; wait)
 end
 
-export savefig, figure_dir!, export_format!
+export savefig, figure_dir!, export_format!, figure_cache_dir!

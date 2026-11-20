@@ -112,6 +112,23 @@ end
   end
 end
 
+@testset "simple rebuild reuses cached figures" begin
+    # NOTE: The second build of the same source must restore the figures from the cache store (which lives outside of
+    # the wiped build directory) instead of re-rendering them. The figure log records the reuse via the `reused` flag.
+    # <20-11-26> 
+    using TOML
+    dir = figdir("makie-maestro-simple")
+    log_path = joinpath(dir, "figure-logs.toml")
+    @test isfile(log_path)
+    html_doc("src.simple", "makie-maestro-simple", simple_pages)
+    @test isfile(log_path)
+    log = TOML.parsefile(log_path)
+    @test !isempty(log)
+    for (basename, entry) in log
+        @test get(entry, "reused", false) === true
+    end
+end
+
 # TODO: Test that the plugin options work correctly. They do not I am afraid. <13-08-25> 
 
 # TODO: Return helpful errors for errors that happen in the blocks instead of just throwing when the plotting does not

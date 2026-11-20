@@ -54,29 +54,39 @@ end
 
 # TODO: Throw an error on bad option parsed. This should eliminate typos as I have made in TransferFunctions "fomats" :) <13-08-25> 
 
-# TODO: Implement a caching for unchanged blocks (same code hash, same options) since the builds are reproducible. It
-# can saved a lot of time for many-figured pages and enable faster turn based development. It should be implemented at
-# the package level and an option should be present that disables it for the block. <13-08-25> 
+# NOTE: Caching for unchanged blocks (same code and options) is implemented at the `savefig` level -- the expander
+# passes the digest of the block code to `savefig` together with a cache store outside of the build directory (which
+# Documenter wipes on every build). It can be disabled per block with the `cache=false` option or entirely with
+# `MakieCodeBlocks(...; cache=false)`.
 
 """
     MakieCodeBlocks <: Documenter.Plugin
 Documenter plugin that is used for storing the options for the makie code blocks.
+
+The rendered figures are cached in a content-addressed store outside of the build directory (by default
+`<docs>/cached/figures`), so that unchanged `@makie` blocks are not re-rendered on repeated builds. Set `cache=false`
+to disable caching or pass a directory path to select the store location.
 """
 struct MakieCodeBlocks <: Documenter.Plugin
     figure_dir::MakieExportPath
     export_format::Vector{Symbol}
+    cache::Union{Bool,String}
 
     # TODO: Format spec should be used <07-05-25> 
-    function MakieCodeBlocks(figure_dir::MakieExportPath, export_format::Vector{Symbol})
+    function MakieCodeBlocks(
+        figure_dir::MakieExportPath,
+        export_format::Vector{Symbol},
+        cache::Union{Bool,AbstractString}=true,
+    )
         isempty(export_format) &&
             throw(ArgumentError("At least one export format must be specified"))
-        return new(figure_dir, export_format)
+        return new(figure_dir, export_format, cache isa AbstractString ? String(cache) : cache)
     end
 end
 function MakieCodeBlocks(
-    figure_dir::String="assets/figs", export_format::Vector{Symbol}=[:svg, :pdf]
+    figure_dir::String="assets/figs", export_format::Vector{Symbol}=[:svg, :pdf]; cache=true
 )
-    return MakieCodeBlocks(DirectPath(figure_dir), export_format)
+    return MakieCodeBlocks(DirectPath(figure_dir), export_format, cache)
 end
 
 build_path(p::MakieCodeBlocks, args...) = build_path(p.figure_dir, args...)
@@ -103,19 +113,20 @@ const Option{T} = Union{Nothing,T}
     alt::Option{String} = nothing
     size::Option{MakieMaestro.SizeSpec} = nothing
     theme::Option{Vector{Symbol}} = nothing
+    cache::Option{Bool} = nothing
 end
 
 """
     parse(::Type{MakieBlockOptions}, s)
 Block options that are located after the `@makie` code identifier.
 
-Currently implements parsing of `name`, `formats`, `basename`, `caption`, `alt`, `size`, `theme`
+Currently implements parsing of `name`, `formats`, `basename`, `caption`, `alt`, `size`, `theme`, `cache`
 """
 function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
     matched = match(r"(?:\s+([^\s;]+))?\s*(;.*)?$(?:\s+([^\s;]+))?\s*(;.*)?$", s)
     isnothing(matched) && throw(error("Invalid `@makie` options syntax"))
     name, kwargs = matched.captures
-    formats = basename = caption = alt = size = theme = nothing
+    formats = basename = caption = alt = size = theme = cache = nothing
     if !isnothing(kwargs)
         stringkw_regex(name) = Regex(raw"(?:\s*" * name * raw"\s*=\s*\"([^\"]+)\".*)")
 
@@ -163,6 +174,11 @@ function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
             kwargs,
         )
 
+        cache_match = match(
+            Regex(raw"(?:\s*cache\s*=\s*(?<value>true|false).*)"), kwargs
+        )
+        cache = isnothing(cache_match) ? nothing : parse(Bool, cache_match["value"])
+
         # NOTE: `RegexMatch`es can be converted to `NamedTuple` in version >= 1.11 and return nothing for
         # non-matches. Should be updated when this is supported by the `lts` version of Julia <12-08-25> 
         formats, theme = map(
@@ -201,7 +217,7 @@ function Base.parse(::Type{MakieBlockOptions}, s::AbstractString)
         end
     end
 
-    return MakieBlockOptions(; name, formats, basename, caption, alt, size, theme)
+    return MakieBlockOptions(; name, formats, basename, caption, alt, size, theme, cache)
 end
 
 """
@@ -255,12 +271,15 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
 
     # FIX: `funcname` must be a valid identifier, so we need to filter things that are allowed in the `name` but not in
     # julia identifiers such as `"-"` <13-08-25> 
+    # NOTE: Unnamed blocks use a prefix of the stable code digest in their basename (instead of `hash`, which is not
+    # stable across sessions), so that the output paths and the cache digests do not churn between builds.
+    code_digest = MakieMaestro.figure_digest_code(block.code)
     basename, funcname = if block_options.basename == nothing
-        name_string = "makie_" * (name != "" ? name * "_" : "") * string(hash(block.code))
+        name_string = "makie_" * (name != "" ? name * "_" : "") * first(code_digest, 12)
         (name_string, name_string)
     else
         name_string = block_options.basename
-        (name_string, name_string * "_" * string(hash(block.code)))
+        (name_string, name_string * "_" * first(code_digest, 12))
     end
 
     build = build_path(plugin, page, doc)
@@ -274,7 +293,7 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
         block.code,    # code
         block_options, # code block options
     )
-    identifier = name == "" ? string(hash(block.code)) : name
+    identifier = name == "" ? code_digest : name
     # The sandboxed module -- either a new one or a cached one from this page.
     mod = Documenter.get_sandbox_module!(
         page.globals.meta,
@@ -286,14 +305,33 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
     lines = Documenter.find_block_in_file(makie_block.code, page.source)
     @debug "Evaluating @makie block:\n$(makie_block.code)"
 
-    theme_string = let theme = makie_block.options.theme
-        isnothing(theme) ? "" : "; override_theme=$(theme)"
+    kwarg_parts = String[]
+    isnothing(makie_block.options.theme) ||
+        push!(kwarg_parts, "override_theme=$(makie_block.options.theme)")
+    cache_setting = isnothing(block_options.cache) ? plugin.cache : block_options.cache
+    if cache_setting === false
+        push!(kwarg_parts, "cache=false")
+    else
+        # NOTE: The cache store must live outside of the Documenter build directory, since it is wiped on every build.
+        cache_dir = cache_setting isa String ?
+            cache_setting :
+            joinpath(dirname(abspath(joinpath(pwd(), doc.user.build))), "cached", "figures")
+        push!(kwarg_parts, "cache=$(repr(cache_dir))")
+        # NOTE: The digest is computed from the block code text; the sandboxed function that wraps it has no
+        # trackable source, so `savefig` could not compute a stable digest on its own.
+        push!(
+            kwarg_parts,
+            "figdigest=\"$(MakieMaestro.figure_digest_code(makie_block.code))\"",
+        )
     end
+    kwargs_string = isempty(kwarg_parts) ? "" : "; " * join(kwarg_parts, ", ")
+
     pathspec_string = "PathSpec(\"$(makie_block.basename)\", $(makie_block.formats), \"$(makie_block.build)\")"
     size_string = let size = makie_block.options.size
         isnothing(size) ? "" : ", $(repr(size))"
     end
-    savefig_string = "savefig($(makie_block.funcname), $pathspec_string $size_string $theme_string)\n"
+    savefig_string =
+        "savefig($(makie_block.funcname), $pathspec_string $size_string$(kwargs_string))\n"
 
     code =
         "using MakieMaestro\n" *

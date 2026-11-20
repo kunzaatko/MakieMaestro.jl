@@ -176,7 +176,7 @@ documentation.
 
 The options that can be specified are: 
 - `basename` -- Changes the figure path name. By default the basename to save the figure as
-  is`"makie_$(name)_$(hash(code))"`
+  is`"makie_$(name)_$(first(figure_digest_code(code), 12))"`, where the digest prefix is stable across builds.
 
 ````
 ```@makie named_figure; basename="rose"
@@ -267,3 +267,7 @@ streamplot(f, -1.5..1.5, -1.5..1.5, colormap = :magma)
 ```
 
 - `alt` --  Specify an alternate text to add to the figure in the HTML output. (`alt_figure; alt = "A figure"`)
+- `cache` -- Enable or disable the figure cache for this block (`cache = false`). The rendered figures are cached in a
+  content-addressed store outside of the build directory (by default `<docs>/cached/figures`), so that unchanged
+  blocks are not re-rendered on repeated builds. The store default can be changed with the `cache` keyword of
+  [`MakieDocBlocks`](@ref) and disabled entirely with `MakieDocBlocks(; cache=false)`.

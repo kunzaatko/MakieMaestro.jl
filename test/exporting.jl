@@ -16,21 +16,21 @@ figs_function(lims::Tuple{Real,Real}=(0, 1)) = (fig_function_w_kwargs(lims), fig
     using MakieMaestro: uniqueids, uniqueid, FunctionSpec
     f1(args...; kwargs...) = lines(args...; kwargs...)
     fspec1 = FunctionSpec(f1, (1:10, 1:10))
-    @test uniqueid(fspec1) == uniqueid(fspec1)
+    @test uniqueid(fspec1) == uniqueid(fspec1) # NOTE: Digests are stable across calls <20-11-26> 
     @test uniqueid(fspec1; axis=(; title="Line")) != uniqueid(fspec1)
     @test uniqueids(fspec1; axis=(; title="Line")).args == uniqueids(fspec1).args
-    @test uniqueids(fspec1; axis=(; title="Line")).code_lowered == uniqueids(fspec1).code_lowered
-    @test uniqueids(fspec1; axis=(; title="Line")).code_typed != uniqueids(fspec1).code_typed
     @test uniqueids(fspec1; axis=(; title="Line")).kwargs != uniqueids(fspec1).kwargs
-    if VERSION <= v"1.12" # NOTE: Within the minor version, these should not vary
-        @test uniqueid(fspec1) == 0x2f12f969fb9de155
-    else
-        @test uniqueid(fspec1) == 0x32d83d3c1e749a14
-    end
+    # NOTE: The digests are stable SHA-256 hex strings (no exact-value pin is needed: the payload carries a cache
+    # version prefix, so changes to the digest format are intentional invalidations).
+    @test uniqueid(fspec1) isa String
+    @test length(uniqueid(fspec1)) == 64
+    @test all(c -> c in "0123456789abcdef", uniqueid(fspec1))
 
+    # NOTE: Functions with the same source text and arguments produce the same figures, so they digest identically
+    # (content-based, not identity-based).
     f2(args...; kwargs...) = lines(args...; kwargs...)
     fspec2 = FunctionSpec(f2, (1:10, 1:10))
-    @test uniqueid(fspec1) != uniqueid(fspec2)
+    @test uniqueid(fspec1) == uniqueid(fspec2)
 
     f3(args...; kwargs...) = scatter(args...; kwargs...)
     fspec3 = FunctionSpec(f3, (1:10, 1:10))
@@ -299,6 +299,59 @@ end
         savefig(figs_function, [:svg])
         @test figexists("figs_function_1.svg") && figexists("figs_function_2.svg")
         rmfig.(("figs_function_1.svg", "figs_function_2.svg"))
+
+        @testset "figure cache" begin
+            figexists(name) = isfile(joinpath(fig_dir, name))
+            rmfig(name) = rm(joinpath(fig_dir, name))
+            cache_dir = joinpath(tempdir(), "test_fig_cache_store")
+            counter = Ref(0)
+            function cached_fig() # NOTE: A named function so that the digest has source text available <20-11-26> 
+                counter[] += 1
+                return fig_function_w_kwargs()
+            end
+
+            # first call renders, second call is a cache hit and does not render again
+            savefig(cached_fig, "cached", ["svg"]; log=false, cache=cache_dir)
+            @test counter[] == 1
+            @test figexists("cached.svg")
+            savefig(cached_fig, "cached", ["svg"]; log=false, cache=cache_dir)
+            @test counter[] == 1
+            @test figexists("cached.svg")
+
+            # a deleted output file is restored from the store without rendering
+            rmfig("cached.svg")
+            savefig(cached_fig, "cached", ["svg"]; log=false, cache=cache_dir)
+            @test counter[] == 1
+            @test figexists("cached.svg")
+
+            # changed keyword arguments invalidate the digest
+            savefig(cached_fig, "cached_kw", ["svg"]; log=false, cache=cache_dir, N=50)
+            @test counter[] == 2
+            savefig(cached_fig, "cached_kw", ["svg"]; log=false, cache=cache_dir, N=50)
+            @test counter[] == 2
+
+            # changed size invalidates the digest
+            savefig(cached_fig, "cached_size", ["svg"], 20u"cm"; log=false, cache=cache_dir)
+            @test counter[] == 3
+            savefig(cached_fig, "cached_size", ["svg"], 20u"cm"; log=false, cache=cache_dir)
+            @test counter[] == 3
+
+            # a different basename does not collide with the cached figure of another basename
+            savefig(cached_fig, "cached_other", ["svg"]; log=false, cache=cache_dir)
+            @test counter[] == 4
+
+            # cache=false renders again
+            savefig(cached_fig, "cached", ["svg"]; log=false, cache=false)
+            @test counter[] == 5
+
+            # the store index records the digests
+            using TOML
+            entries = TOML.parsefile(joinpath(cache_dir, "cache-entries.toml"))
+            @test length(entries) >= 4
+            @test all(e -> haskey(e.second, "figdigest"), entries)
+
+            rm(cache_dir; recursive=true)
+        end
     end
 
     # teardown
@@ -306,4 +359,5 @@ end
     export_format!(missing)
     MakieMaestro.Themes.WIDTH_DEFAULT[] = missing
     MakieMaestro.FIGURE_DIR[] = missing
+    MakieMaestro.FIGURE_CACHE_DIR[] = missing
 end

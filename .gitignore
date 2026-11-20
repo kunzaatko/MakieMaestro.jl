@@ -17,3 +17,4 @@ docs/src/assets/logo.xcf
 test/documenter/builds/*
 test/quietly-logs/*
 docs/cached/*
+.figurecache/

@@ -1,4 +1,4 @@
-using InteractiveUtils, CodeTracking
+using CodeTracking
 
 """
     FunctionSpec(fig, args)
@@ -57,7 +57,12 @@ logs(fspec::FunctionSpec) = fspec.logs
 
 """
     uniqueid(fspec::FunctionSpec; kwargs...) 
-Generate a unique ID for the `fspec` when called with `kwargs`.
+Generate a unique content digest for the `fspec` when called with `kwargs`.
+
+The digest is a stable SHA-256 hex `String` computed from the source code of the figure function (via `CodeTracking`),
+its positional arguments and the `kwargs`. It only changes when the figure-producing inputs change and it is stable
+across Julia sessions, so it can be persisted as a cache key. Functions defined in different places but with the same
+source text and arguments digest identically.
 
 Useful for caching the figures that do not change their definitions so that they do not have to be re-generated when
 re-exported.
@@ -80,13 +85,14 @@ julia> @assert uniqueid(fspec1) != uniqueid(fspec3)
 ```
 """
 function uniqueid(fspec::FunctionSpec; kwargs...)
-    ids = uniqueids(fspec; kwargs...)
-    return hash((ids.code, ids.args, ids.kwargs))
+    return figure_digest(fspec; kwargs...).digest
 end
 
 """
     uniqueids(fspec::FunctionSpec; kwargs...)
-Returns a named tuple of the unique IDs for the `fspec` when called with `kwargs`.
+Returns a named tuple of the component digests (the figure code, the source text digest, the positional arguments and
+the `kwargs`) for the `fspec` when called with `kwargs`. The `code` digest falls back to the function name and
+argument types when no source text is available for the function (in which case `code_string` is `nothing`).
 
 See also [`uniqueid`](@ref).
 ```jldoctest; setup=:(using MakieMaestro: uniqueids, FunctionSpec)
@@ -109,23 +115,26 @@ julia> @assert uniqueids(fspec1).args != uniqueids(fspec3).args
 """
 function uniqueids(fspec::FunctionSpec; kwargs...)
     code_string = CodeTracking.code_string(fspec.fig, typeof.(fspec.args))
-    code_typed = hash(string(@code_typed optimize = false fspec.fig(fspec.args; kwargs...)))
-    code_lowered = string(@code_lowered fspec.fig(fspec.args; kwargs...))
-
-    code_string_id = hash(code_string)
-    code_typed_id = hash(code_typed)
-    code_lowered_id = hash(code_lowered)
-
-    code_id = !isnothing(code_string) ? code_string_id : code_typed_id
-    args_id = hash(fspec.args)
-    kwargs_id = hash(kwargs)
-    return (;
+    code_string_id = isnothing(code_string) ? nothing : sha256hex(code_string)
+    code_id = something(
+        code_string_id,
+        sha256hex(
+            string(nameof(fspec.fig), "::", join(string.(typeof.(fspec.args)), "::"))
+        ),
+    )
+    args_io = IOBuffer()
+    for (i, arg) in enumerate(fspec.args)
+        digest_value!(args_io, "arg$i", arg)
+    end
+    kwargs_io = IOBuffer()
+    for k in sort(collect(keys(kwargs)))
+        digest_value!(kwargs_io, string(k), getfield(kwargs, k))
+    end
+    return (
         code=code_id,
         code_string=code_string_id,
-        code_typed=code_typed_id,
-        code_lowered=code_lowered_id,
-        args=args_id,
-        kwargs=kwargs_id,
+        args=bytes2hex(sha256(take!(args_io))),
+        kwargs=bytes2hex(sha256(take!(kwargs_io))),
     )
 end
 

@@ -239,3 +239,21 @@ rm("./alt_dir/", recursive=true) # hide
 end # hide
 nothing # hide
 ```
+
+## Figure cache
+
+[`savefig`](@ref) caches rendered figures in a content-addressed store, so that repeated exports of an unchanged
+figure are nearly instant: when the digest of the figure-producing inputs (the source code of the figure function, its
+arguments and keyword arguments) and of the resolved export options (basename, backend, format, size, themes) is
+unchanged, the stored files are reused instead of re-rendering, and the figure function is not called at all when
+every requested format is already cached.
+
+The store is a directory (by default the hidden `.figurecache` directory inside the figure directory, or whatever was
+set with [`figure_cache_dir!`](@ref)) that can be deleted at any time to force a full re-render. Pass `cache=false`
+to disable caching for a call, or a directory path to select a custom store location.
+
+!!! warning
+    The digest intentionally covers only the code, the arguments and the export options (mirroring the trade-off made
+    by e.g. `Sphinx-Gallery`). Changes to the environment (Julia, Makie or backend versions), to global state that the
+    figure function reads, or to the contents of data files that it opens are not detected. Use `cache=false` for such
+    figures or delete the store after such changes.

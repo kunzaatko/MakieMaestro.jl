@@ -21,6 +21,7 @@ For a deeper overview of how to export figures while ensuring consistent style a
 savefig
 figure_dir!
 export_format!
+figure_cache_dir!
 ```
 
 ```@raw html
@@ -42,6 +43,19 @@ MakieMaestro.get_export_format
 MakieMaestro.FunctionSpec
 MakieMaestro.uniqueid
 MakieMaestro.uniqueids
+
+MakieMaestro.FigureCacheStore
+MakieMaestro.figure_cache_store
+MakieMaestro.figure_digest
+MakieMaestro.figure_digest_code
+MakieMaestro.renderdigest
+MakieMaestro.theme_tags
+MakieMaestro.cache_entry_info
+MakieMaestro.cache_environment_info
+MakieMaestro.cache_lookup!
+MakieMaestro.cache_store!
+MakieMaestro.canonical_repr
+MakieMaestro.get_figure_cache_dir
 
 MakieMaestro.PathSpec
 
