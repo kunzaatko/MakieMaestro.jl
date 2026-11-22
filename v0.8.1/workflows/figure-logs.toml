@@ -1,0 +1,121 @@
+[bessely_fig]
+backends = {Svg = {backend = "CairoMakie", digest = "7ffb78a8ec17b0995386bb1242347b43b81dbe8e79deb638a2284499717502a3", reused = false}}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 12.9}
+formats = ["Svg"]
+modified = {date = 2026-11-22, time = 15:50:50.987}
+reused = false
+
+    [bessely_fig.figure]
+    code_sha256 = "bce29a7840d5c3e2dc19467232440ba98131d4c039f19d2947c63c355ec25edc"
+    code_source = "name"
+    digest = "bc3b0f2ae1f239b3b6662bd7b4c2a42664af647f68e39c9ad4e079060206889c"
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+    usednameof = true
+
+    [bessely_fig.size]
+    args = {default_hwratio = true, default_width = true, width = "512 pt"}
+    final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
+
+[bessely_fig_appendix]
+backends = {Svg = {backend = "CairoMakie", digest = "f9873839dbd1100264bc9e5da5eea4028af381575e26e1ac9202fc99c453314e", reused = false}}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.624}
+formats = ["Svg"]
+modified = {date = 2026-11-22, time = 15:51:04.590}
+reused = false
+
+    [bessely_fig_appendix.figure]
+    code_sha256 = "bce29a7840d5c3e2dc19467232440ba98131d4c039f19d2947c63c355ec25edc"
+    code_source = "name"
+    digest = "bc3b0f2ae1f239b3b6662bd7b4c2a42664af647f68e39c9ad4e079060206889c"
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [bessely_fig_appendix.size]
+    args = {default_hwratio = true, default_width = true, width = "512 pt"}
+    final = "w×h: 512.0 pt × 409.6 pt [h/w: 0.8]"
+
+[bessely_fig_large]
+backends = {Svg = {backend = "CairoMakie", digest = "52386447f29186c02b3b1d7cde1adde69bd1aad3385c1abd7ce8acb5bf418672", reused = false}}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.0646}
+formats = ["Svg"]
+modified = {date = 2026-11-22, time = 15:51:06.148}
+reused = false
+
+    [bessely_fig_large.figure]
+    code_sha256 = "bce29a7840d5c3e2dc19467232440ba98131d4c039f19d2947c63c355ec25edc"
+    code_source = "name"
+    digest = "bc3b0f2ae1f239b3b6662bd7b4c2a42664af647f68e39c9ad4e079060206889c"
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [bessely_fig_large.size]
+    args = {default_hwratio = true, width = "210.0 mm"}
+    final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
+
+[bessely_fig_wide]
+backends = {Svg = {backend = "CairoMakie", digest = "17e51aca7158fee5932745e4e5174bf6b9691c2cf2b45163e8449f529fcf4d1a", reused = false}}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.0653}
+formats = ["Svg"]
+modified = {date = 2026-11-22, time = 15:51:06.275}
+reused = false
+
+    [bessely_fig_wide.figure]
+    code_sha256 = "bce29a7840d5c3e2dc19467232440ba98131d4c039f19d2947c63c355ec25edc"
+    code_source = "name"
+    digest = "bc3b0f2ae1f239b3b6662bd7b4c2a42664af647f68e39c9ad4e079060206889c"
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [bessely_fig_wide.size]
+    args = {hwratio = 0.4, width = "210.0 mm"}
+    final = "w×h: 210.0 mm × 84.0 mm [h/w: 0.4]"
+
+[lissajous_knot]
+backends = {Svg = {backend = "CairoMakie", digest = "092626ecc378a65475860f3af6fc0d8a53d6149df45cfb7f096aa04bcda66d6e", reused = false}}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Svg = 0.0229}
+formats = ["Svg"]
+modified = {date = 2026-11-22, time = 15:51:10.618}
+reused = false
+
+    [lissajous_knot.figure]
+    code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+    code_source = "name"
+    digest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+    usednameof = true
+
+    [lissajous_knot.size]
+    args = {height = "10 cm", width = "20 cm"}
+    final = "w×h: 20.0 cm × 10.0 cm [h/w: 0.5]"
+
+[not_a_knot]
+backends = {Eps = {backend = "CairoMakie", digest = "e28770b3b63bf53e21123226deb8868471dfde7eb6ede61b4213e174782b9dd0", reused = false}, Png = {backend = "CairoMakie", digest = "3fc2e9dfec6c0440c665e74c3f7df28ef119a1b7ce93491d7d0ee7eeb9fff175", reused = false}}
+cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
+exportduration = {Eps = 0.543, Png = 0.0548, total = 0.598}
+formats = ["Eps", "Png"]
+modified = {date = 2026-11-22, time = 15:51:10.111}
+reused = false
+
+    [not_a_knot.figure]
+    code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+    code_source = "name"
+    digest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+    kwargs = {}
+    nargs = 0
+    nkwargs = 0
+
+    [not_a_knot.size]
+    args = {default_hwratio = true, default_width = true, width = "210.0 mm"}
+    final = "w×h: 210.0 mm × 168.0 mm [h/w: 0.8]"
