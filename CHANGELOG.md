@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.1] - 2026-11-22
+
+### 🐛 Bug Fixes
+
+- *(release)* Correct version in bump status message by @kunzaatko
+
+- *(export)* [**breaking**] Correct cache digests and logger dispatch by @kunzaatko
+
+
 ## [0.8.0] - 2026-11-20
 
 ### 🚀 Features
@@ -67,7 +76,7 @@
 
 - Add just recipes for Julia project workflows by @kunzaatko
 
-- *(release)* Add changelog and registration recipes
+- *(release)* Add changelog and registration recipes by @kunzaatko
 
 
 ## [0.7.0] - 2025-11-26
