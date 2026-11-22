@@ -8,7 +8,9 @@ using Unitful: Length
 @reexport using LaTeXStrings
 @reexport using Makie
 # not reexported of type with MakieExtra <07-03-25> 
-@reexport using Makie: @lift, Text, lift, width
+# NOTE: `update!` is added to the explicit import below because the `SHA` dependency (used by the figure cache) also
+# exports `update!`, which would otherwise make the reexported `Makie.update!` binding ambiguous. <20-11-26> 
+using Makie: @lift, Text, lift, width, update!
 
 # NOTE: We cannot reexport since there would be overlapping definitions with Makie re-exported from MakieExtra <22-10-24> 
 using CairoMakie, GLMakie, WGLMakie

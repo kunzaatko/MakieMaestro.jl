@@ -81,7 +81,14 @@ See also [`figure_digest_code`](@ref), [`uniqueid`](@ref).
 function figure_digest(fspec::FunctionSpec; kwargs...)
     io = IOBuffer()
     print(io, CACHE_VERSION, '\n')
-    code_string = CodeTracking.code_string(fspec.fig, typeof.(fspec.args))
+    code_string = try
+        CodeTracking.code_string(fspec.fig, typeof.(fspec.args))
+    catch
+        # NOTE: `code_string` throws when the method does not exist for the given argument types (e.g. when the
+        # arguments cascade is about to produce a `MethodError` anyway). The digest must never break the export, so
+        # fall back to the name-based digest. <20-11-26> 
+        nothing
+    end
     code, code_source = if isnothing(code_string)
         fallback = string(
             nameof(fspec.fig), "::", join(string.(typeof.(fspec.args)), "::")
@@ -95,7 +102,9 @@ function figure_digest(fspec::FunctionSpec; kwargs...)
         digest_value!(io, "arg$i", arg)
     end
     for k in sort(collect(keys(kwargs)))
-        digest_value!(io, "kwarg_$k", getfield(kwargs, k))
+        # NOTE: Indexing (instead of `getfield`) works both for `NamedTuple` kwargs (Julia < 1.13) and for the
+        # `Base.Pairs` that kwargs are bound to on Julia >= 1.13. <20-11-26> 
+        digest_value!(io, "kwarg_$k", kwargs[k])
     end
     digest = bytes2hex(sha256(take!(io)))
     info = Dict{String,Any}("code_source" => code_source, "code_sha256" => sha256hex(code))

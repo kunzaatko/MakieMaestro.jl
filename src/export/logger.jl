@@ -59,6 +59,8 @@ A logger that does nothing.
 """
 struct NullLogger <: FigureLogger end
 add_entry(logger::NullLogger, args...; kwargs...) = nothing
+# NOTE: Disambiguates with the `@interface add_entry(::FigureLogger, ::String, ::AbstractDict)` method. <20-11-26> 
+add_entry(::NullLogger, ::String, ::AbstractDict; kwargs...) = nothing
 
 """
     TOMLLogger

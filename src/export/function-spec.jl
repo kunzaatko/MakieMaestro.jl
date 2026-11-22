@@ -37,8 +37,7 @@ function (fspec::FunctionSpec)(; kwargs...)
     catch e
         # NOTE: An error that may occur with the argument cascade is that we call the function with arguments that were
         # passed for the SizeSpec. Warn the user about that the errors indicate that this may be the case. <31-01-25>
-        if (e isa Unitful.DimensionError || e isa MethodError) &&
-            (fspec.args[1] isa Length || fspec.args[2] isa Length)
+        if (e isa Unitful.DimensionError || e isa MethodError) && any(a -> a isa Length, fspec.args)
             @warn """\
             An error occured when calling the figure function. You may have passed arguments intended for the \
             `SizeSpec` to the figure function. You may need to pass the first argument explicitely as \
@@ -114,7 +113,11 @@ julia> @assert uniqueids(fspec1).args != uniqueids(fspec3).args
 ```
 """
 function uniqueids(fspec::FunctionSpec; kwargs...)
-    code_string = CodeTracking.code_string(fspec.fig, typeof.(fspec.args))
+    code_string = try
+        CodeTracking.code_string(fspec.fig, typeof.(fspec.args))
+    catch
+        nothing
+    end
     code_string_id = isnothing(code_string) ? nothing : sha256hex(code_string)
     code_id = something(
         code_string_id,
@@ -128,7 +131,7 @@ function uniqueids(fspec::FunctionSpec; kwargs...)
     end
     kwargs_io = IOBuffer()
     for k in sort(collect(keys(kwargs)))
-        digest_value!(kwargs_io, string(k), getfield(kwargs, k))
+        digest_value!(kwargs_io, string(k), kwargs[k])
     end
     return (
         code=code_id,

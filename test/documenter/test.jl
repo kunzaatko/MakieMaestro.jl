@@ -115,8 +115,10 @@ end
 @testset "simple rebuild reuses cached figures" begin
     # NOTE: The second build of the same source must restore the figures from the cache store (which lives outside of
     # the wiped build directory) instead of re-rendering them. The figure log records the reuse via the `reused` flag.
-    # <20-11-26> 
+    # The width default is restored first, because the option-parsing testset above changes it -- the digest covers the
+    # effective figure size, so with a different width a re-render is the correct behavior.
     using TOML
+    MakieMaestro.Themes.width!(15u"cm")
     dir = figdir("makie-maestro-simple")
     log_path = joinpath(dir, "figure-logs.toml")
     @test isfile(log_path)

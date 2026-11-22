@@ -26,11 +26,11 @@ figs_function(lims::Tuple{Real,Real}=(0, 1)) = (fig_function_w_kwargs(lims), fig
     @test length(uniqueid(fspec1)) == 64
     @test all(c -> c in "0123456789abcdef", uniqueid(fspec1))
 
-    # NOTE: Functions with the same source text and arguments produce the same figures, so they digest identically
-    # (content-based, not identity-based).
+    # NOTE: The digest covers the full source text of the method (including the function name), so functions with
+    # identical bodies but different names digest differently.
     f2(args...; kwargs...) = lines(args...; kwargs...)
     fspec2 = FunctionSpec(f2, (1:10, 1:10))
-    @test uniqueid(fspec1) == uniqueid(fspec2)
+    @test uniqueid(fspec1) != uniqueid(fspec2)
 
     f3(args...; kwargs...) = scatter(args...; kwargs...)
     fspec3 = FunctionSpec(f3, (1:10, 1:10))
@@ -303,11 +303,11 @@ end
         @testset "figure cache" begin
             figexists(name) = isfile(joinpath(fig_dir, name))
             rmfig(name) = rm(joinpath(fig_dir, name))
-            cache_dir = joinpath(tempdir(), "test_fig_cache_store")
+            cache_dir = mktempdir() # NOTE: A fresh store per run, so that previous runs cannot serve cache hits <20-11-26> 
             counter = Ref(0)
-            function cached_fig() # NOTE: A named function so that the digest has source text available <20-11-26> 
+            function cached_fig(; N=100) # NOTE: A named function so that the digest has source text available <20-11-26> 
                 counter[] += 1
-                return fig_function_w_kwargs()
+                return fig_function_w_kwargs(; N)
             end
 
             # first call renders, second call is a cache hit and does not render again

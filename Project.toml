@@ -48,4 +48,9 @@ SHA = "0.7"
 TOML = "1.0.3"
 Unitful = "1.21"
 WGLMakie = "0.13"
-julia = "1.10, 1.11, 1.12, 1.13"
+# NOTE: Julia 1.10.0-1.10.8 and 1.11.0-1.11.3 ship a `libopenlibm.so` that requests an executable stack and fails to
+# load under glibc >= 2.41 (e.g. the ubuntu-26.04 CI runners and current Arch) -- JuliaLang/julia#57250. The floor is
+# raised to the first release with the fixed library. Julia 1.10 remains the LTS and is still receiving patches
+# (1.10.13, Nov 2026). The broken early 1.11 patches cannot be excluded by compat (a union of ranges would re-admit
+# them via this floor); users on those versions need to upgrade Julia itself on glibc >= 2.41 systems. <20-11-26> 
+julia = "1.10.9"

@@ -56,6 +56,7 @@ MakieMaestro.cache_lookup!
 MakieMaestro.cache_store!
 MakieMaestro.canonical_repr
 MakieMaestro.get_figure_cache_dir
+MakieMaestro.sha256hex
 
 MakieMaestro.PathSpec
 
@@ -85,6 +86,10 @@ MakieMaestro.TOMLLogger
 MakieMaestro.add_entry(::TOMLLogger, ::String, ::AbstractDict; kwargs...)
 MakieMaestro.logs_path(::TOMLLogger)
 MakieMaestro.inlineids
+
+MakieMaestro.has_entry(::FigureLogger, ::String)
+MakieMaestro.get_entry(::FigureLogger, ::String)
+MakieMaestro.get_entry(::TOMLLogger, ::String)
 
 MakieMaestro.NullLogger
 
