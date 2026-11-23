@@ -247,7 +247,10 @@ end
 Documenter.Selectors.order(::Type{MakieFigureBlocks}) = 8.0
 
 function Documenter.Selectors.matcher(::Type{MakieFigureBlocks}, node, page, doc)
-    return Documenter.iscode(node, r"^@makie")
+    # NOTE: Documenter 1.20 changed `iscode` to compare the block info by exact string equality, so the regex has to be
+    # matched manually here to remain compatible with both older and newer versions. <22-11-26> 
+    return node.element isa Documenter.MarkdownAST.CodeBlock &&
+           match(r"^@makie", node.element.info) !== nothing
 end
 
 # NOTE: Using code from the @example expander in Documenter.jl:

@@ -57,8 +57,14 @@ function create_axes!(
         @assert nrows * ncols == naxes "Data length must match nrows * ncols"
     end
 
-    axis_multi = filter(v -> v isa Vector && length(v) == naxes, axis)
-    axis_single = filter(v -> !(v isa Vector) || length(v) != naxes, axis)
+    # NOTE: `Base.filter(::Function, ::NamedTuple)` is only available on Julia >= 1.12, so the filtering is done over
+    # `pairs` instead. <22-11-26> 
+    axis_multi = NamedTuple(
+        k => v for (k, v) in pairs(axis) if v isa Vector && length(v) == naxes
+    )
+    axis_single = NamedTuple(
+        k => v for (k, v) in pairs(axis) if !(v isa Vector) || length(v) != naxes
+    )
 
     if forced_dim == :nrows
         ax_inds = sort!([
