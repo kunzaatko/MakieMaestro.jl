@@ -316,9 +316,11 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
         push!(kwarg_parts, "cache=false")
     else
         # NOTE: The cache store must live outside of the Documenter build directory, since it is wiped on every build.
+        # It is anchored on the document root (which Documenter resolves to an absolute path), NOT on the working
+        # directory, so that the location is the same no matter where `make.jl` is invoked from. <23-11-26> 
         cache_dir = cache_setting isa String ?
             cache_setting :
-            joinpath(dirname(abspath(joinpath(pwd(), doc.user.build))), "cached", "figures")
+            joinpath(dirname(abspath(joinpath(doc.user.root, doc.user.build))), "cached", "figures")
         push!(kwarg_parts, "cache=$(repr(cache_dir))")
         # NOTE: The digest is computed from the block code text; the sandboxed function that wraps it has no
         # trackable source, so `savefig` could not compute a stable digest on its own.

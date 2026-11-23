@@ -62,6 +62,20 @@ jobs:
         with:
           version: '1'
       - uses: julia-actions/cache@v3
+      # NOTE: The `@makie` figure cache store is content-addressed and append-only: restored entries are looked up by
+      # digest, so unchanged figure definitions are not re-rendered, while new or changed ones render and are added to
+      # the store, which is saved back after the job. The key includes `${{ github.run_id }}` so that every run saves
+      # the grown store (an exact key hit would skip the save-back and new figures would be re-rendered on every
+      # run). NOTE: The digest deliberately does not cover package versions (documented stale risk), so bump the
+      # `v1` segment to force a full re-render after rendering-semantics changes, or delete the caches with
+      # `gh cache delete --all`. <23-11-26> 
+      - name: Cache generated figures
+        uses: actions/cache@v4
+        with:
+          path: docs/cached/figures
+          key: docs-figures-v1-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            docs-figures-v1-${{ runner.os }}-
       - name: Setup docs julia project
         run: >
             DISPLAY=:0 xvfb-run -s '-screen 0 1024x768x24' -- julia --project=docs --color=yes --eval "using Pkg; Pkg.develop(PackageSpec(path=abspath(\".\"))); Pkg.instantiate()"; # NOTE: compilation of Makie also needs a screen 
