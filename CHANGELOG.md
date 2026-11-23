@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.2] - 2026-11-23
+
+### 🐛 Bug Fixes
+
+- Restore Julia and Documenter version compatibility by @kunzaatko
+
+- *(documenter)* Persist figure cache across CI builds
+
+
 ## [0.8.1] - 2026-11-22
 
 ### 🐛 Bug Fixes
