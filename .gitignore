@@ -18,3 +18,4 @@ test/documenter/builds/*
 test/quietly-logs/*
 docs/cached/*
 .figurecache/
+docs/cached-build/
