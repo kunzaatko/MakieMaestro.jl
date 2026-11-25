@@ -1,12 +1,31 @@
 # Changelog
 
+## [0.9.0] - 2026-11-25
+
+### 🚀 Features
+
+- *(export)* [**breaking**] Return figure paths and cache reuse data by @kunzaatko
+
+
+### 🐛 Bug Fixes
+
+- *(docs)* Separate cached builds from figure cache by @kunzaatko
+
+- *(docs)* Run documentation build from docs directory by @kunzaatko
+
+
+### ⚙️ Miscellaneous Tasks
+
+- *(docs)* Ignore cached documentation builds by @kunzaatko
+
+
 ## [0.8.2] - 2026-11-23
 
 ### 🐛 Bug Fixes
 
 - Restore Julia and Documenter version compatibility by @kunzaatko
 
-- *(documenter)* Persist figure cache across CI builds
+- *(documenter)* Persist figure cache across CI builds by @kunzaatko
 
 
 ## [0.8.1] - 2026-11-22
