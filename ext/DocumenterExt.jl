@@ -350,6 +350,7 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
     #     lines === nothing ? 0 : lines.first, basename(page.source)
     # )
 
+    result = nothing
     for (ex, _str) in Documenter.parseblock(
         code,
         doc,
@@ -376,9 +377,20 @@ function Documenter.Selectors.runner(::Type{MakieFigureBlocks}, node, page, doc)
             )
             return nothing
         end
+        # NOTE: The last expression of the generated code is the `savefig` call, so after the loop `result` holds its
+        # returned logging data. <24-11-26> 
+        result = c.value
     end
 
-    @info "MakieCodeBlocks: Saved figure `$(makie_block.basename)` to `$(makie_block.build)`"
+    # NOTE: `savefig` logs "Saved figure" vs "Retrieved figure from cache" summaries, but its messages are captured by
+    # `IOCapture` here and never reach the build log, so the distinction is re-logged from the returned data (the
+    # second element of the `(paths, logging_data)` return). <24-11-26> 
+    data = result isa Tuple ? last(result) : result
+    if data isa AbstractDict && get(data, "reused", false)
+        @info "MakieCodeBlocks: Retrieved figure `$(makie_block.basename)` from cache to `$(makie_block.build)`"
+    else
+        @info "MakieCodeBlocks: Saved figure `$(makie_block.basename)` to `$(makie_block.build)`"
+    end
 
     prefered_formats = [:svg, :png, :pdf]
     format = prefered_formats[findfirst(x -> x in makie_block.formats, prefered_formats)] # TODO: allow the user to pick a preferred format

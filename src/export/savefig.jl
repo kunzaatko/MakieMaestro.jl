@@ -95,6 +95,10 @@ arguments should work granted that they are in the correct order.
     _environment_ (Julia, Makie or backend versions), to global state that the figure function reads, or to the
     contents of data files that it opens are _not_ detected. Pass `cache=false` for such figures, or delete the cache
     store to force a re-render.
+
+Returns `(paths, logging_data)`: the paths of the exported figure files (one per format and subfigure, in export
+order) and the figure's logging data as a `Dict{String, Any}` (also written to the figure log). The logging data
+includes the `reused` flag, which is `true` when all requested formats were retrieved from the cache store.
 """
 function savefig(
     fig::FunctionSpec,
@@ -147,6 +151,7 @@ function savefig(
     logging_data["backends"] = InlineDict{String,Any}()
     logging_data["exportduration"] = InlineDict{String,Any}()
     logging_data["reused"] = false
+    paths = String[] # Paths of all exported figure files, filled in export order below
 
     fsize = Themes.figsize(size.width, size.hwratio)
 
@@ -165,6 +170,7 @@ function savefig(
         if !isnothing(store)
             target = joinpath(path.dirname, path.basename(0) * extension(fmt))
             reused[fmt] = cache_lookup!(store, digests[fmt], target)
+            reused[fmt] && push!(paths, target)
         end
     end
     logging_data["reused"] = !isempty(formats) && all(values(reused))
@@ -200,9 +206,11 @@ function savefig(
                 # NOTE: The index-0 entry has already been looked up before the figure function was called.
                 if !isnothing(store) && i != 0 && cache_lookup!(store, digest, target)
                     @info "Reusing cached figure `$(basename(target))` in $(path.dirname)"
+                    push!(paths, target)
                     continue
                 end
                 _savefig(subfig, name, fmt, b, path.dirname; update)
+                push!(paths, target)
                 if !isnothing(store)
                     cache_store!(
                         store, digest, target,
@@ -223,9 +231,22 @@ function savefig(
     end
     map!(x -> round(x; sigdigits=3), values(logging_data["exportduration"]))
 
+    # NOTE: A distinct summary message makes cache retrievals distinguishable from rendered figures in the logs no
+    # matter whether `savefig` was called directly or from a `@makie` Documenter block. <24-11-26> 
+    if logging_data["reused"]
+        @info "Retrieved figure `$(path.basename(0))` from cache in $(path.dirname)"
+    else
+        @info "Saved figure `$(path.basename(0))` in $(path.dirname)"
+    end
+
     # NOTE: Cached retrievals are recorded in the store index (`lastsaved` timestamps) and in this figure log via the
     # `reused` flags.
-    return add_entry(logger, path.basename(0), logging_data)
+    add_entry(logger, path.basename(0), logging_data)
+    # NOTE: The first return value are the paths of the exported files (in export order), so that callers can react to
+    # the concrete files; the second is the figure's logging data. The `@makie` Documenter block expander uses the
+    # `reused` flag from it to log a cache retrieval instead of a save (the `@info` messages of `savefig` itself are
+    # captured by Documenter and do not reach the build log). <24-11-26> 
+    return paths, logging_data
 end
 
 # TODO: Add a type and conversion for the output type of `mosaic` <14-08-25> 
