@@ -1,0 +1,271 @@
+[06c0eddb1e8a93937f1d2265584623944e6d05dfc83a93889a01c0ac548e58c7]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:25.980"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [595, 476]
+file = "06c0eddb1e8a93937f1d2265584623944e6d05dfc83a93889a01c0ac548e58c7.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:26.651"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[092626ecc378a65475860f3af6fc0d8a53d6149df45cfb7f096aa04bcda66d6e]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:28.989"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [566, 283]
+file = "092626ecc378a65475860f3af6fc0d8a53d6149df45cfb7f096aa04bcda66d6e.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.989"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[0da0ef1afc8d200d445fcefdcff6a188cb24f3cb960d5fbb60a650930eac41a0]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:28.930"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [283, 283]
+file = "0da0ef1afc8d200d445fcefdcff6a188cb24f3cb960d5fbb60a650930eac41a0.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.930"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[0f5695beb8f91a9c291a1009db3331bda0f284de9ff630fa1ec15cd7ba9f7114]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:28.057"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [595, 476]
+file = "0f5695beb8f91a9c291a1009db3331bda0f284de9ff630fa1ec15cd7ba9f7114.pdf"
+format = "Pdf"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.057"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[17e51aca7158fee5932745e4e5174bf6b9691c2cf2b45163e8449f529fcf4d1a]
+backend = "0.15.17"
+basename = "bessely_fig_wide"
+code_sha256 = "bce29a7840d5c3e2dc19467232440ba98131d4c039f19d2947c63c355ec25edc"
+code_source = "name"
+created = "2026-11-25T09:39:25.347"
+figdigest = "bc3b0f2ae1f239b3b6662bd7b4c2a42664af647f68e39c9ad4e079060206889c"
+figsize = [595, 238]
+file = "17e51aca7158fee5932745e4e5174bf6b9691c2cf2b45163e8449f529fcf4d1a.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:25.347"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:3cc9a2e92be91440d79eb8f5662e1bdb72a721dd5125a7a096885b1c9eca95ce"]
+
+[22c020a76d24e0900199c68bcdbdf908fc37778985fe62d1d163ed198a14473c]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:27.559"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [595, 476]
+file = "22c020a76d24e0900199c68bcdbdf908fc37778985fe62d1d163ed198a14473c.png"
+format = "Png"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:27.559"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "raster", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[3fc2e9dfec6c0440c665e74c3f7df28ef119a1b7ce93491d7d0ee7eeb9fff175]
+backend = "0.15.17"
+basename = "not_a_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:28.187"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [595, 476]
+file = "3fc2e9dfec6c0440c665e74c3f7df28ef119a1b7ce93491d7d0ee7eeb9fff175.png"
+format = "Png"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.187"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "raster", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[489f7cb8e855e30b9f2b7bed1bb3b30ff01c8494d162e5c528838f694080f324]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "9b00b14e1140c9c8542c497e44e7d504bc9829c063e4fb45bd3577645e3dc77c"
+code_source = "name"
+created = "2026-11-25T09:39:26.054"
+figdigest = "0ff384956a26bb7154c3eff8be5371b63b045bd3de5ed5d32300cf7dba174d10"
+figsize = [595, 476]
+file = "489f7cb8e855e30b9f2b7bed1bb3b30ff01c8494d162e5c528838f694080f324.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:26.054"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[52386447f29186c02b3b1d7cde1adde69bd1aad3385c1abd7ce8acb5bf418672]
+backend = "0.15.17"
+basename = "bessely_fig_large"
+code_sha256 = "bce29a7840d5c3e2dc19467232440ba98131d4c039f19d2947c63c355ec25edc"
+code_source = "name"
+created = "2026-11-25T09:39:25.247"
+figdigest = "bc3b0f2ae1f239b3b6662bd7b4c2a42664af647f68e39c9ad4e079060206889c"
+figsize = [595, 476]
+file = "52386447f29186c02b3b1d7cde1adde69bd1aad3385c1abd7ce8acb5bf418672.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:25.247"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:3cc9a2e92be91440d79eb8f5662e1bdb72a721dd5125a7a096885b1c9eca95ce"]
+
+[6b32972f6fd0bea53fdeaf55be951b7da776bac342c8b74c86a51c2f43063eb4]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "9b00b14e1140c9c8542c497e44e7d504bc9829c063e4fb45bd3577645e3dc77c"
+code_source = "name"
+created = "2026-11-25T09:39:26.493"
+figdigest = "101655d80e2ab497dd92a98b0920aede0baa62511b549f217f236e682579fa0e"
+figsize = [595, 476]
+file = "6b32972f6fd0bea53fdeaf55be951b7da776bac342c8b74c86a51c2f43063eb4.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:26.493"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[7ffb78a8ec17b0995386bb1242347b43b81dbe8e79deb638a2284499717502a3]
+backend = "0.15.17"
+basename = "bessely_fig"
+code_sha256 = "bce29a7840d5c3e2dc19467232440ba98131d4c039f19d2947c63c355ec25edc"
+code_source = "name"
+created = "2026-11-25T09:39:23.009"
+figdigest = "bc3b0f2ae1f239b3b6662bd7b4c2a42664af647f68e39c9ad4e079060206889c"
+figsize = [512, 409]
+file = "7ffb78a8ec17b0995386bb1242347b43b81dbe8e79deb638a2284499717502a3.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:23.009"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[8def0ec4eb66be00b7185187fab74d61072d5496dc773c84c690db68e1b0ed4d]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "9b00b14e1140c9c8542c497e44e7d504bc9829c063e4fb45bd3577645e3dc77c"
+code_source = "name"
+created = "2026-11-25T09:39:28.699"
+figdigest = "bb01a9c797d97d3ba13bb6431daefe1794d41e3c5e43f17cd36a26fd212fe423"
+figsize = [595, 476]
+file = "8def0ec4eb66be00b7185187fab74d61072d5496dc773c84c690db68e1b0ed4d.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.699"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[d9eda56f2465a0acd803a9fbfba4a3115bf7a667fbdd66cc908ea12fc544c229]
+backend = "0.15.17"
+basename = "not_a_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:28.113"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [595, 476]
+file = "d9eda56f2465a0acd803a9fbfba4a3115bf7a667fbdd66cc908ea12fc544c229.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.113"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[e28770b3b63bf53e21123226deb8868471dfde7eb6ede61b4213e174782b9dd0]
+backend = "0.15.17"
+basename = "not_a_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:28.676"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [595, 476]
+file = "e28770b3b63bf53e21123226deb8868471dfde7eb6ede61b4213e174782b9dd0.eps"
+format = "Eps"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.676"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[e86d70a0b433aff773c96462e4fd86e6ed400ca7e2628078948507aba90b5b70]
+backend = "0.15.17"
+basename = "lissajous_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:28.828"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [1190, 1190]
+file = "e86d70a0b433aff773c96462e4fd86e6ed400ca7e2628078948507aba90b5b70.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.828"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[ef81b802401a06fb61e24fa56d21aaf8670b91830f8c8bd7023b90bd32037e5c]
+backend = "0.15.17"
+basename = "not_a_knot"
+code_sha256 = "e99181094b43db3bc94b8d06e30bbe0a80bae20e52f5ec96fd1ec7c8b297257d"
+code_source = "name"
+created = "2026-11-25T09:39:28.136"
+figdigest = "df1f4ae72b1882beeebc1ac125e603449e93aa2566493fe519c59f8724d2f19f"
+figsize = [595, 476]
+file = "ef81b802401a06fb61e24fa56d21aaf8670b91830f8c8bd7023b90bd32037e5c.pdf"
+format = "Pdf"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:28.136"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:9afa69d4717bfec43a93262e668e01de672f35ab8441237f51fa1f26a7c2b61c"]
+
+[f9873839dbd1100264bc9e5da5eea4028af381575e26e1ac9202fc99c453314e]
+backend = "0.15.17"
+basename = "bessely_fig_appendix"
+code_sha256 = "bce29a7840d5c3e2dc19467232440ba98131d4c039f19d2947c63c355ec25edc"
+code_source = "name"
+created = "2026-11-25T09:39:23.921"
+figdigest = "bc3b0f2ae1f239b3b6662bd7b4c2a42664af647f68e39c9ad4e079060206889c"
+figsize = [512, 409]
+file = "f9873839dbd1100264bc9e5da5eea4028af381575e26e1ac9202fc99c453314e.svg"
+format = "Svg"
+julia = "1.13.4"
+lastsaved = "2026-11-25T09:39:23.921"
+makie = "0.24.17"
+makie_maestro = "0.9.0"
+theme_keys = ["base", "cairomakie", "vector", "size", "repr:3cc9a2e92be91440d79eb8f5662e1bdb72a721dd5125a7a096885b1c9eca95ce"]
