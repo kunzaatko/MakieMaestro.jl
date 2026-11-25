@@ -1,9 +1,9 @@
 [bessely_fig]
 backends = {Svg = {backend = "CairoMakie", digest = "7ffb78a8ec17b0995386bb1242347b43b81dbe8e79deb638a2284499717502a3", reused = false}}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 12.3}
+exportduration = {Svg = 9.49}
 formats = ["Svg"]
-modified = {date = 2026-11-25, time = 08:47:13.399}
+modified = {date = 2026-11-25, time = 09:30:24.113}
 reused = false
 
     [bessely_fig.figure]
@@ -22,9 +22,9 @@ reused = false
 [bessely_fig_appendix]
 backends = {Svg = {backend = "CairoMakie", digest = "f9873839dbd1100264bc9e5da5eea4028af381575e26e1ac9202fc99c453314e", reused = false}}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.654}
+exportduration = {Svg = 0.553}
 formats = ["Svg"]
-modified = {date = 2026-11-25, time = 08:47:26.136}
+modified = {date = 2026-11-25, time = 09:30:33.935}
 reused = false
 
     [bessely_fig_appendix.figure]
@@ -42,9 +42,9 @@ reused = false
 [bessely_fig_large]
 backends = {Svg = {backend = "CairoMakie", digest = "52386447f29186c02b3b1d7cde1adde69bd1aad3385c1abd7ce8acb5bf418672", reused = false}}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.0621}
+exportduration = {Svg = 0.0464}
 formats = ["Svg"]
-modified = {date = 2026-11-25, time = 08:47:28.165}
+modified = {date = 2026-11-25, time = 09:30:35.474}
 reused = false
 
     [bessely_fig_large.figure]
@@ -62,9 +62,9 @@ reused = false
 [bessely_fig_wide]
 backends = {Svg = {backend = "CairoMakie", digest = "17e51aca7158fee5932745e4e5174bf6b9691c2cf2b45163e8449f529fcf4d1a", reused = false}}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.0578}
+exportduration = {Svg = 0.0434}
 formats = ["Svg"]
-modified = {date = 2026-11-25, time = 08:47:28.296}
+modified = {date = 2026-11-25, time = 09:30:35.573}
 reused = false
 
     [bessely_fig_wide.figure]
@@ -82,9 +82,9 @@ reused = false
 [lissajous_knot]
 backends = {Svg = {backend = "CairoMakie", digest = "092626ecc378a65475860f3af6fc0d8a53d6149df45cfb7f096aa04bcda66d6e", reused = false}}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Svg = 0.0219}
+exportduration = {Svg = 0.0156}
 formats = ["Svg"]
-modified = {date = 2026-11-25, time = 08:47:32.304}
+modified = {date = 2026-11-25, time = 09:30:38.664}
 reused = false
 
     [lissajous_knot.figure]
@@ -103,9 +103,9 @@ reused = false
 [not_a_knot]
 backends = {Eps = {backend = "CairoMakie", digest = "e28770b3b63bf53e21123226deb8868471dfde7eb6ede61b4213e174782b9dd0", reused = false}, Png = {backend = "CairoMakie", digest = "3fc2e9dfec6c0440c665e74c3f7df28ef119a1b7ce93491d7d0ee7eeb9fff175", reused = false}}
 cwd = "/home/runner/work/MakieMaestro.jl/MakieMaestro.jl/docs/build/workflows"
-exportduration = {Eps = 0.552, Png = 0.0536, total = 0.605}
+exportduration = {Eps = 0.417, Png = 0.0431, total = 0.461}
 formats = ["Eps", "Png"]
-modified = {date = 2026-11-25, time = 08:47:31.944}
+modified = {date = 2026-11-25, time = 09:30:38.396}
 reused = false
 
     [not_a_knot.figure]
