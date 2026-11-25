@@ -31,12 +31,12 @@ repl:
 [doc("Generate and open the package documenation")]
 [group("docs")]
 [script("fish")]
-[working-directory(root-dir)]
+[working-directory(root-dir / "docs")]
 docs:
     echo "{{ progress }} Generating documentation..."
-    julia --project=docs --color=yes docs/make.jl
+    julia --project=. --color=yes make.jl
     echo "{{ ok }} Documentation generated."
-    xdg-open docs/build/index.html
+    xdg-open build/index.html
 
 [doc("Instantiate the package environments")]
 [group("dev")]
