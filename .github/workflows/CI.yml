@@ -70,7 +70,7 @@ jobs:
       # `v1` segment to force a full re-render after rendering-semantics changes, or delete the caches with
       # `gh cache delete --all`. <23-11-26> 
       - name: Cache generated figures
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: docs/cached/figures
           key: docs-figures-v1-${{ runner.os }}-${{ github.run_id }}
